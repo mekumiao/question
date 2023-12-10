@@ -1,17 +1,21 @@
 <script setup lang="ts">
-withDefaults(
+import type { Options, OptionsType } from './data'
+
+const props = withDefaults(
   defineProps<{
     title?: string
-    type: 'single' | 'multiple' | 'panduan' | 'tiankong'
-    options: { number: number; answer: string | undefined | string[] | boolean }[]
+    type: OptionsType
+    options: Options[]
   }>(),
   { title: '标题' }
 )
 const emit = defineEmits<{
-  select: [value: { number: number; answer: string | undefined | string[] | boolean }]
+  select: [value: Options, type: OptionsType]
 }>()
 
-function select() {}
+function handleClick(item: Options) {
+  emit('select', item, props.type)
+}
 </script>
 
 <template>
@@ -19,10 +23,11 @@ function select() {}
     <h2>{{ title }}</h2>
     <ul role="list" class="m-1 flex flex-row items-start justify-start justify-items-center">
       <li
-        class="mx-1 flex w-fit flex-row justify-around rounded bg-gray-400 px-1"
+        class="mx-1 flex w-fit cursor-pointer select-none flex-row justify-around rounded bg-gray-400 px-1"
         :class="{ activate: item.answer !== undefined }"
         v-for="(item, key) in options"
         :key="key"
+        @click="handleClick(item)"
       >
         <span>{{ item.number }}.&nbsp;</span>
         <span v-if="item.answer === undefined">__</span>

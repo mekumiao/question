@@ -3,6 +3,7 @@ import BtClock from '@/components/BtClock.vue'
 import SheetList from './SheetList.vue'
 import { NButton } from 'naive-ui'
 import { reactive } from 'vue'
+import type { Options, OptionsType } from './data'
 
 const data = reactive({
   topic: {
@@ -39,11 +40,11 @@ const data = reactive({
         answer: undefined
       },
       {
-        number: 2,
-        answer: undefined
+        number: 3,
+        answer: 'B'
       },
       {
-        number: 2,
+        number: 4,
         answer: undefined
       }
     ],
@@ -80,8 +81,15 @@ const data = reactive({
   }
 })
 
-function handleOptionsClick(value: string) {
-  data.topic.answer = value
+function handleOptionsClick(answer: string) {
+  data.topic.answer = answer
+}
+
+function handleSheetSelect(value: Options, type: OptionsType) {
+  if (type === 'single') {
+    const item = data.sheet.single.find((v) => v.number === value.number)
+    item && typeof item.answer === 'string' && handleOptionsClick(item.answer)
+  }
 }
 </script>
 
@@ -112,10 +120,30 @@ function handleOptionsClick(value: string) {
     </div>
     <div class="mx-1 w-2/5 rounded bg-white p-3">
       <div class="mx-3">
-        <SheetList title="一、单选题" type="single" :options="data.sheet.single"></SheetList>
-        <SheetList title="二、多选题" type="multiple" :options="data.sheet.multiple"></SheetList>
-        <SheetList title="三、判断题" type="panduan" :options="data.sheet.panduan"></SheetList>
-        <SheetList title="四、填空题" type="tiankong" :options="data.sheet.tiankong"></SheetList>
+        <SheetList
+          title="一、单选题"
+          type="single"
+          :options="data.sheet.single"
+          @select="handleSheetSelect"
+        ></SheetList>
+        <SheetList
+          title="二、多选题"
+          type="multiple"
+          :options="data.sheet.multiple"
+          @select="handleSheetSelect"
+        ></SheetList>
+        <SheetList
+          title="三、判断题"
+          type="panduan"
+          :options="data.sheet.panduan"
+          @select="handleSheetSelect"
+        ></SheetList>
+        <SheetList
+          title="四、填空题"
+          type="tiankong"
+          :options="data.sheet.tiankong"
+          @select="handleSheetSelect"
+        ></SheetList>
       </div>
     </div>
   </div>

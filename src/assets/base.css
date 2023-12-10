@@ -9,6 +9,8 @@
 :root {
   --color-background: var(--vt-c-white-main);
   --color-theme: var(--vt-c-blue);
+  --color-text: var(--vt-c-black);
+  --color-text-white: var(--vt-c-white);
 }
 
 *,
@@ -45,6 +47,8 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  margin: 0;
 }
 
 ul {

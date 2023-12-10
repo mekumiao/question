@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
+import NavHeader from '@/components/NavHeader.vue'
 </script>
 
 <template>
-  <RouterView />
+  <div class="flex flex-col" style="background-color: var(--color-background)">
+    <NavHeader></NavHeader>
+    <main class="m-2">
+      <RouterView></RouterView>
+    </main>
+  </div>
 </template>
 
-<style scoped></style>
+<style lang="css" scoped></style>

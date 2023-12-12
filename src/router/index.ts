@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import StudentLayout from '@/layout/StudentLayout.vue'
 import HomeView from '@/views/HomeView.vue'
+import LoginView from '@/views/login/LoginView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -9,6 +10,11 @@ const router = createRouter({
       path: '/',
       name: 'home',
       redirect: '/student/home',
+    },
+    {
+      path: '/open',
+      component: StudentLayout,
+      children: [{ path: 'login', alias: '/login', component: LoginView }],
     },
     {
       path: '/student',

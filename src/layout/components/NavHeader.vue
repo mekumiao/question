@@ -44,9 +44,7 @@ function handleClick(path: string) {
     class="flex flex-row items-center justify-between justify-items-center p-2"
     style="background-color: var(--vt-c-white)"
   >
-    <div class="ms-5 flex flex-row p-2">
-      <img src="@/assets/img/icon.png" height="40" width="40" />
-    </div>
+    <div class="icon ms-5 flex flex-row p-2"></div>
     <nav class="flex flex-row">
       <ul class="flex flex-row items-center justify-start text-xl font-bold">
         <li
@@ -72,5 +70,14 @@ function handleClick(path: string) {
 .activate {
   color: var(--color-theme);
   border-bottom: 4px solid var(--color-theme);
+}
+
+.icon {
+  background-image: url('@/assets/img/icon.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  width: 4rem;
+  height: 4rem;
 }
 </style>

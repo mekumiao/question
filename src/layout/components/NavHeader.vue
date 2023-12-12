@@ -16,14 +16,14 @@ import {
   BuildOutline as ControlPanelIcon,
   LogOutOutline as LogoutIcon,
 } from '@vicons/ionicons5'
-import { logout } from '@/api/login'
+import { logout } from '@/api/user'
 
 const route = useRoute()
 
 const data = reactive({
   menus: [
     {
-      path: '/',
+      path: '/home',
       text: '首页',
     },
     {
@@ -106,7 +106,7 @@ async function handleAvatarMenuSelect(key: string | number) {
   >
     <div class="icon ms-5 flex flex-row p-2"></div>
     <nav class="flex flex-row">
-      <ul class="flex flex-row items-center justify-start text-xl font-bold">
+      <ul class="flex flex-row items-center justify-start text-lg font-bold">
         <li
           class="mx-2 cursor-pointer"
           :class="{ activate: item.path === route.path }"
@@ -145,3 +145,4 @@ async function handleAvatarMenuSelect(key: string | number) {
   height: 4rem;
 }
 </style>
+@/api/user

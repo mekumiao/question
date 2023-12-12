@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NMenu, NLayoutSider } from 'naive-ui'
+import { NMenu, NLayout, NLayoutSider } from 'naive-ui'
 import { h, ref, type Component } from 'vue'
 import { NIcon } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
@@ -79,22 +79,24 @@ const collapsed = ref(false)
 
 <template>
   <div class="sider-menu">
-    <NLayoutSider
-      bordered
-      collapse-mode="width"
-      :collapsed-width="64"
-      :width="240"
-      :collapsed="collapsed"
-      @collapse="collapsed = true"
-      @expand="collapsed = false"
-    >
-      <NMenu
-        :collapsed="collapsed"
+    <NLayout has-sider>
+      <NLayoutSider
+        bordered
+        collapse-mode="width"
         :collapsed-width="64"
-        :collapsed-icon-size="22"
-        :options="menuOptions"
-      />
-    </NLayoutSider>
+        :width="240"
+        :collapsed="collapsed"
+        @collapse="collapsed = true"
+        @expand="collapsed = false"
+      >
+        <NMenu
+          :collapsed="collapsed"
+          :collapsed-width="64"
+          :collapsed-icon-size="22"
+          :options="menuOptions"
+        />
+      </NLayoutSider>
+    </NLayout>
   </div>
 </template>
 

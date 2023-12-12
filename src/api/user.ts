@@ -22,3 +22,11 @@ export async function checkUserAuthentication() {
   const islogin = !!getRefreshToken()
   return Promise.resolve(islogin)
 }
+
+export async function info() {
+  return Promise.resolve({
+    username: 'mekumiao',
+    email: 'mekumiao@qq.com',
+    role: ['admin', 'student'],
+  })
+}

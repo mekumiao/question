@@ -2,7 +2,7 @@
 import type { FormInst } from 'naive-ui'
 import { NButton, NForm, NFormItem, NInput, useMessage } from 'naive-ui'
 import { reactive, ref } from 'vue'
-import { login } from '@/api/login'
+import { login } from '@/api/user'
 import { AxiosError } from 'axios'
 import { useRouter } from 'vue-router'
 
@@ -62,3 +62,4 @@ async function handleLoginClick(e: MouseEvent) {
 </template>
 
 <style lang="scss" scoped></style>
+@/api/user

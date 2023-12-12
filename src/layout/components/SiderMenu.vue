@@ -12,6 +12,7 @@ import {
   Server,
   TimeOutline,
 } from '@vicons/ionicons5'
+import { DashboardOutlined } from '@vicons/antd'
 import { RouterLink, type RouteLocationRaw } from 'vue-router'
 
 function renderMenuLabel(label: string, to?: RouteLocationRaw) {
@@ -27,6 +28,11 @@ function renderIcon(icon: Component) {
 }
 
 const menuOptions: MenuOption[] = [
+  {
+    label: renderMenuLabel('仪表板', { path: '/admin/dashboard' }),
+    key: 'dashboard',
+    icon: renderIcon(DashboardOutlined),
+  },
   {
     label: renderMenuLabel('用户管理'),
     key: 'user-management',

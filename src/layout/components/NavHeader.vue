@@ -1,7 +1,22 @@
 <script setup lang="ts">
 import router from '@/router'
-import { reactive } from 'vue'
+import { reactive, h } from 'vue'
+import type { Component } from 'vue'
 import { useRoute } from 'vue-router'
+import BtAvatar from '@/components/BtAvatar.vue'
+import { NDropdown, NIcon } from 'naive-ui'
+import type {
+  DropdownOption,
+  DropdownGroupOption,
+  DropdownDividerOption,
+  DropdownRenderOption,
+} from 'naive-ui'
+import {
+  PersonCircleOutline as UserIcon,
+  BuildOutline as ControlPanelIcon,
+  LogOutOutline as LogoutIcon,
+} from '@vicons/ionicons5'
+import { logout } from '@/api/login'
 
 const route = useRoute()
 
@@ -34,8 +49,53 @@ const data = reactive({
   ],
 })
 
+const menuList: (
+  | DropdownOption
+  | DropdownGroupOption
+  | DropdownDividerOption
+  | DropdownRenderOption
+)[] = [
+  {
+    label: '个人中心',
+    key: 'personal center',
+    icon: renderIcon(UserIcon),
+  },
+  {
+    label: '控制面板',
+    key: 'control panel',
+    icon: renderIcon(ControlPanelIcon),
+  },
+  {
+    type: 'divider',
+  },
+  {
+    label: '退出登录',
+    key: 'logout',
+    icon: renderIcon(LogoutIcon),
+  },
+]
+
+function renderIcon(icon: Component) {
+  return () => {
+    return h(NIcon, null, {
+      default: () => h(icon),
+    })
+  }
+}
+
 function handleClick(path: string) {
   router.push(path)
+}
+
+async function handleAvatarMenuSelect(key: string | number) {
+  if (key === 'personal center') {
+    router.push({ path: '/student/personal' })
+  } else if (key === 'control panel') {
+    router.push({ path: '/admin' })
+  } else if (key === 'logout') {
+    await logout()
+    router.replace({ name: 'login' })
+  }
 }
 </script>
 
@@ -57,11 +117,15 @@ function handleClick(path: string) {
           {{ item.text }}
         </li>
       </ul>
-      <div
-        class="ms-5 flex h-16 w-16 items-center justify-center rounded-full border bg-blue-700 text-white"
-      >
-        头像
-      </div>
+
+      <NDropdown trigger="click" :options="menuList" @select="handleAvatarMenuSelect">
+        <div
+          class="ms-5 flex cursor-pointer flex-col items-center justify-center rounded p-1 shadow hover:shadow-2xl"
+        >
+          <BtAvatar name="别听鬼故事"></BtAvatar>
+          <div class="w-16 truncate text-xs font-bold">别听鬼故事</div>
+        </div>
+      </NDropdown>
     </nav>
   </div>
 </template>

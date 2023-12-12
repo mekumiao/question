@@ -10,8 +10,8 @@ export type TokenResult = {
   refreshToken: string
 }
 
-export const apiBaseUrl = 'https://localhost:7224'
-// export const apiBaseUrl = 'https://qbank.yuxiaoyu.top'
+// export const apiBaseUrl = 'https://localhost:7224'
+export const apiBaseUrl = 'https://qbank.yuxiaoyu.top'
 
 const axiosInstance = axios.create({
   baseURL: `${apiBaseUrl}/api/`,
@@ -58,7 +58,7 @@ axiosInstance.interceptors.response.use(
   },
 )
 
-function getAccessToken() {
+export function getAccessToken() {
   return localStorage.getItem('access_token')
 }
 
@@ -66,12 +66,17 @@ export function setAccessToken(token: string) {
   localStorage.setItem('access_token', token)
 }
 
-function getRefreshToken() {
+export function getRefreshToken() {
   return localStorage.getItem('refresh_token')
 }
 
 export function setRefreshToken(token: string) {
   return localStorage.setItem('refresh_token', token)
+}
+
+export function clearToken() {
+  localStorage.removeItem('access_token')
+  localStorage.removeItem('refresh_token')
 }
 
 async function refreshAccessToken() {

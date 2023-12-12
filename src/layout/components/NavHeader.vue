@@ -9,29 +9,29 @@ const data = reactive({
   menus: [
     {
       path: '/',
-      text: '首页'
+      text: '首页',
     },
     {
-      path: '/answer',
-      text: '开始考试'
+      path: '/student/answer',
+      text: '开始考试',
     },
     {
-      path: '/2',
-      text: '模拟考试'
+      path: '/student/2',
+      text: '模拟考试',
     },
     {
-      path: '/3',
-      text: '考试记录'
+      path: '/student/3',
+      text: '考试记录',
     },
     {
-      path: '/4',
-      text: '错题重做'
+      path: '/student/4',
+      text: '错题重做',
     },
     {
-      path: '/5',
-      text: '我要练习'
-    }
-  ]
+      path: '/student/5',
+      text: '我要练习',
+    },
+  ],
 })
 
 function handleClick(path: string) {

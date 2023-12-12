@@ -13,72 +13,72 @@ const data = reactive({
     options: [
       {
         label: '方法',
-        value: 'A'
+        value: 'A',
       },
       {
         label: '方法',
-        value: 'B'
+        value: 'B',
       },
       {
         label: '方法',
-        value: 'C'
+        value: 'C',
       },
       {
         label: '方法',
-        value: 'D'
-      }
-    ]
+        value: 'D',
+      },
+    ],
   },
   sheet: {
-    single: [
+    singleChoice: [
       {
         number: 1,
-        answer: 'A'
+        answer: 'A',
       },
       {
         number: 2,
-        answer: undefined
+        answer: undefined,
       },
       {
         number: 3,
-        answer: 'B'
+        answer: 'B',
       },
       {
         number: 4,
-        answer: undefined
-      }
+        answer: undefined,
+      },
     ],
-    multiple: [
+    multipleChoice: [
       {
         number: 3,
-        answer: ['A', 'B', 'C']
+        answer: ['A', 'B', 'C'],
       },
       {
         number: 4,
-        answer: ['A', 'B', 'C']
-      }
+        answer: ['A', 'B', 'C'],
+      },
     ],
-    panduan: [
+    trueFalse: [
       {
         number: 5,
-        answer: true
+        answer: true,
       },
       {
         number: 6,
-        answer: false
-      }
+        answer: false,
+      },
     ],
-    tiankong: [
+    fillInTheBlank: [
       {
         number: 7,
-        answer: '答：'
+        answer: '答：',
       },
       {
         number: 8,
-        answer: undefined
-      }
-    ]
-  }
+        answer: undefined,
+      },
+    ],
+  },
 })
 
 function handleOptionsClick(answer: string) {
@@ -86,8 +86,8 @@ function handleOptionsClick(answer: string) {
 }
 
 function handleSheetSelect(value: Options, type: OptionsType) {
-  if (type === 'single') {
-    const item = data.sheet.single.find((v) => v.number === value.number)
+  if (type === 'SingleChoice') {
+    const item = data.sheet.singleChoice.find((v) => v.number === value.number)
     item && typeof item.answer === 'string' && handleOptionsClick(item.answer)
   }
 }
@@ -122,26 +122,26 @@ function handleSheetSelect(value: Options, type: OptionsType) {
       <div class="mx-3">
         <SheetList
           title="一、单选题"
-          type="single"
-          :options="data.sheet.single"
+          type="SingleChoice"
+          :options="data.sheet.singleChoice"
           @select="handleSheetSelect"
         ></SheetList>
         <SheetList
           title="二、多选题"
-          type="multiple"
-          :options="data.sheet.multiple"
+          type="MultipleChoice"
+          :options="data.sheet.multipleChoice"
           @select="handleSheetSelect"
         ></SheetList>
         <SheetList
           title="三、判断题"
-          type="panduan"
-          :options="data.sheet.panduan"
+          type="TrueFalse"
+          :options="data.sheet.trueFalse"
           @select="handleSheetSelect"
         ></SheetList>
         <SheetList
           title="四、填空题"
-          type="tiankong"
-          :options="data.sheet.tiankong"
+          type="FillInTheBlank"
+          :options="data.sheet.fillInTheBlank"
           @select="handleSheetSelect"
         ></SheetList>
       </div>

@@ -1,2 +1,2 @@
 export type Options = { number: number; answer: string | undefined | string[] | boolean }
-export type OptionsType = 'single' | 'multiple' | 'panduan' | 'tiankong'
+export type OptionsType = 'SingleChoice' | 'MultipleChoice' | 'TrueFalse' | 'FillInTheBlank'

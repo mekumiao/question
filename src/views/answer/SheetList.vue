@@ -7,7 +7,7 @@ const props = withDefaults(
     type: OptionsType
     options: Options[]
   }>(),
-  { title: '标题' }
+  { title: '标题' },
 )
 const emit = defineEmits<{
   select: [value: Options, type: OptionsType]
@@ -31,10 +31,10 @@ function handleClick(item: Options) {
       >
         <span>{{ item.number }}.&nbsp;</span>
         <span v-if="item.answer === undefined">__</span>
-        <span v-else-if="type === 'single'">{{ item.answer }}</span>
-        <span v-else-if="type === 'multiple'">{{ (item.answer as string[]).join(',') }}</span>
-        <span v-else-if="type === 'panduan'">{{ item.answer ? '√' : '×' }}</span>
-        <span v-else-if="type === 'tiankong'">{{ item.answer ? '已填' : '未填' }}</span>
+        <span v-else-if="type === 'SingleChoice'">{{ item.answer }}</span>
+        <span v-else-if="type === 'MultipleChoice'">{{ (item.answer as string[]).join(',') }}</span>
+        <span v-else-if="type === 'TrueFalse'">{{ item.answer ? '√' : '×' }}</span>
+        <span v-else-if="type === 'FillInTheBlank'">{{ item.answer ? '已填' : '未填' }}</span>
       </li>
     </ul>
   </div>

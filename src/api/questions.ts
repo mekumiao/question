@@ -13,12 +13,19 @@ export interface Option {
   optionId: number
   questionId: number
   optionText: string
+  optionCode: string
   isCorrect: boolean
 }
 
 export interface QuestionCreate {
   questionText: string
   questionType: number
+  correctAnswer: string
+  options: OptionCreate[]
+}
+
+export interface QuestionUpdate {
+  questionText: string
   correctAnswer: string
   options: OptionCreate[]
 }
@@ -49,7 +56,7 @@ export async function create(question: QuestionCreate) {
   return response.data
 }
 
-export async function update(questionId: number, question: QuestionCreate) {
+export async function update(questionId: number, question: QuestionUpdate) {
   const response = await axios.put<Question>(`/questions/${questionId}`, question)
   return response.data
 }

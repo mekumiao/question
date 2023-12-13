@@ -1,27 +1,30 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { useMessage, NDataTable, NForm, NFormItem, NInput } from 'naive-ui'
+import { NDataTable, NForm, NFormItem, NInput } from 'naive-ui'
 import { list as fetchQuestionList, count as fetchQuestionCount } from '@/api/questions'
 import type { Question } from '@/api/questions'
 import { createColumns } from './data'
+import QuestionEdit from './QuestionEdit.vue'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
+const editRef = ref<InstanceType<typeof QuestionEdit>>()
 
-const message = useMessage()
 const loading = ref(false)
-const data = ref<Question[]>([])
+const model = ref<Question[]>([])
 const pagination = reactive({
   page: 1,
   pageSize: 10,
-  itemCount: 10,
+  itemCount: 0,
   // @ts-ignore
   prefix({ itemCount }) {
     return `Total: ${itemCount}`
   },
 })
 const columns = createColumns({
-  sendMail: (row) => {
-    message.success(row.questionText)
+  edit: (row) => {
+    editRef.value?.open(row.questionId, () => {
+      handlePageChange(pagination.page)
+    })
   },
 })
 
@@ -34,7 +37,7 @@ async function handlePageChange(currentPage: number) {
   if (!loading.value) {
     try {
       loading.value = true
-      data.value = await fetchQuestionList({
+      model.value = await fetchQuestionList({
         offset: (currentPage - 1) * pagination.pageSize,
         limit: pagination.pageSize,
       })
@@ -59,7 +62,7 @@ async function handlePageChange(currentPage: number) {
       size="small"
       :loading="loading"
       :columns="columns"
-      :data="data"
+      :data="model"
       :min-height="350"
       :max-height="350"
       :pagination="pagination"
@@ -67,6 +70,7 @@ async function handlePageChange(currentPage: number) {
       @update:page="handlePageChange"
     />
   </div>
+  <QuestionEdit ref="editRef"></QuestionEdit>
 </template>
 
 <style lang="css" scoped></style>

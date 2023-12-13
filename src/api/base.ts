@@ -10,14 +10,15 @@ export type TokenResult = {
   refreshToken: string
 }
 
-// export const apiBaseUrl = 'https://localhost:7224/api'
-export const apiBaseUrl = 'https://qbank.yuxiaoyu.top/api'
+export const apiBaseUrl = 'https://localhost:7224/api'
+// export const apiBaseUrl = 'https://qbank.yuxiaoyu.top/api'
 
 const axiosInstance = axios.create({
-  baseURL: `${apiBaseUrl}/api/`,
+  baseURL: `${apiBaseUrl}`,
   headers: {
     'Content-Type': 'application/json',
   },
+  validateStatus: (status) => status >= 200 && status < 300,
 })
 
 axiosInstance.interceptors.request.use(

@@ -27,7 +27,7 @@ const columns = createColumns({
 
 onMounted(async () => {
   pagination.itemCount = await fetchQuestionCount()
-  data.value = await fetchQuestionList({ limit: pagination.pageSize })
+  await handlePageChange(1)
 })
 
 async function handlePageChange(currentPage: number) {

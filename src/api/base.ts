@@ -10,11 +10,12 @@ export type TokenResult = {
   refreshToken: string
 }
 
-export const apiBaseUrl = 'https://localhost:7224/api'
-// export const apiBaseUrl = 'https://qbank.yuxiaoyu.top/api'
+export const apiBaseUrl = `${import.meta.env.VITE_GLOB_API_HOST}${
+  import.meta.env.VITE_GLOB_API_PREFIX
+}`
 
 const axiosInstance = axios.create({
-  baseURL: `${apiBaseUrl}`,
+  baseURL: apiBaseUrl,
   headers: {
     'Content-Type': 'application/json',
   },

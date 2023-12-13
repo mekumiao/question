@@ -10,8 +10,8 @@ export type TokenResult = {
   refreshToken: string
 }
 
-// export const apiBaseUrl = 'https://localhost:7224'
-export const apiBaseUrl = 'https://qbank.yuxiaoyu.top'
+// export const apiBaseUrl = 'https://localhost:7224/api'
+export const apiBaseUrl = 'https://qbank.yuxiaoyu.top/api'
 
 const axiosInstance = axios.create({
   baseURL: `${apiBaseUrl}/api/`,

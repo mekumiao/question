@@ -50,22 +50,22 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  //需要登录
   if (to.matched.some((v) => v.path === '/student')) {
     const isAuthenticated = await checkUserAuthentication()
-    if (isAuthenticated) {
-      next()
-    } else {
-      next('/login')
+    if (!isAuthenticated) {
+      return next('/login')
     }
+    next()
   } else if (to.matched.some((v) => v.path === '/admin')) {
-    const info = await fetchInfo()
-    console.log(info)
-    if (info.role.includes('admin')) {
-      next()
-    } else {
-      next('/login')
+    const isAuthenticated = await checkUserAuthentication()
+    if (!isAuthenticated) {
+      return next('/login')
     }
+    const info = await fetchInfo()
+    if (!info.role.includes('admin')) {
+      return next('/login')
+    }
+    next()
   } else {
     next()
   }

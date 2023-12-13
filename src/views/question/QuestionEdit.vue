@@ -3,7 +3,8 @@ import type { Question } from '@/api/questions'
 import { get as fetchItem, update as fetchUpdate } from '@/api/questions'
 import { NDrawer, NDrawerContent, NButton, NSpin } from 'naive-ui'
 import { useMessage } from 'naive-ui'
-import SingleChoiceForm from './SingleChoiceForm.vue'
+import SingleChoiceForm from './form/SingleChoiceForm.vue'
+import MultipleChoiceForm from './form/MultipleChoiceForm.vue'
 import { ref } from 'vue'
 
 const message = useMessage()
@@ -61,6 +62,7 @@ defineExpose({ open })
       <template #header>编辑题目&nbsp;&nbsp;ID:&nbsp;{{ model.questionId }}</template>
       <NSpin :show="loading">
         <SingleChoiceForm v-if="model.questionType === 0" :data="model"></SingleChoiceForm>
+        <MultipleChoiceForm v-if="model.questionType === 1" :data="model"></MultipleChoiceForm>
       </NSpin>
       <template #footer>
         <NButton :loading="loading" @click="handleSaveClick">保存</NButton>

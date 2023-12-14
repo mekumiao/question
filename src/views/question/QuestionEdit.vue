@@ -7,6 +7,7 @@ import SingleChoiceForm from './form/SingleChoiceForm.vue'
 import MultipleChoiceForm from './form/MultipleChoiceForm.vue'
 import TrueFalseForm from './form/TrueFalseForm.vue'
 import FillInTheBlankForm from './form/FillInTheBlankForm.vue'
+import { createDefaultModel } from './data'
 import { ref } from 'vue'
 
 const signleRef = ref<InstanceType<typeof SingleChoiceForm>>()
@@ -18,16 +19,6 @@ const message = useMessage()
 const active = ref(false)
 const loading = ref(false)
 const model = ref<Question>(createDefaultModel())
-
-function createDefaultModel() {
-  return {
-    questionId: 0,
-    questionText: '',
-    questionType: 0,
-    correctAnswer: '',
-    options: [],
-  }
-}
 
 let callback: VoidFunction
 

@@ -35,14 +35,25 @@ export interface OptionCreate {
   isCorrect: boolean
 }
 
-export async function count() {
-  const response = await axios.get<number>(`/questions/count`)
+export interface QuestionFilter {
+  questionText?: string
+  questionType?: number
+}
+
+export async function count(params?: QuestionFilter) {
+  // 类型小于值1则不传入条件
+  if (params && params.questionType && params.questionType < 0) {
+    params = { ...params, questionType: undefined }
+  }
+  const response = await axios.get<number>(`/questions/count`, { params })
   return response.data
 }
 
-export async function list(params: PaginationParameters) {
-  const { offset = 0, limit = 10 } = params
-  const response = await axios.get<Question[]>(`/questions/?offset=${offset}&limit=${limit}`)
+export async function list(params?: PaginationParameters & QuestionFilter) {
+  if (params && params.questionType && params.questionType < 0) {
+    params = { ...params, questionType: undefined }
+  }
+  const response = await axios.get<Question[]>(`/questions/`, { params })
   return response.data
 }
 
@@ -62,6 +73,6 @@ export async function update(questionId: number, question: QuestionUpdate) {
 }
 
 export async function remove(questionId: number) {
-  const response = await axios.delete<void>(`/questions/${questionId}`)
+  const response = await axios.delete<void>(`/questions/`, { params: { questionId } })
   return response.data
 }

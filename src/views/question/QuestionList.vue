@@ -1,20 +1,28 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { NDataTable, NForm, NFormItem, NInput } from 'naive-ui'
+import { NDataTable, NInput, NButton, NButtonGroup, NInputGroup, NInputGroupLabel } from 'naive-ui'
+import { NIcon, NSelect } from 'naive-ui'
 import {
   list as fetchQuestionList,
   count as fetchQuestionCount,
   remove as fetchQuestionDelete,
 } from '@/api/questions'
-import type { Question } from '@/api/questions'
-import { createColumns } from './data'
+import type { Question, QuestionFilter } from '@/api/questions'
+import { createColumns, createQuestionTypeOptions } from './data'
 import QuestionEdit from './QuestionEdit.vue'
+import QuestionDetail from './QuestionDetail.vue'
+import { SearchOutline } from '@vicons/ionicons5'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 const editRef = ref<InstanceType<typeof QuestionEdit>>()
+const detailRef = ref<InstanceType<typeof QuestionDetail>>()
 
 const loading = ref(false)
 const model = ref<Question[]>([])
+const filter = reactive<QuestionFilter>({ questionType: -1 })
+
+const questionTypeOptions = ref(createQuestionTypeOptions())
+
 const pagination = reactive({
   page: 1,
   pageSize: 10,
@@ -24,6 +32,7 @@ const pagination = reactive({
     return `Total: ${itemCount}`
   },
 })
+
 const columns = createColumns({
   edit(row) {
     editRef.value?.open(row.questionId, () => {
@@ -37,8 +46,7 @@ const columns = createColumns({
 })
 
 onMounted(async () => {
-  pagination.itemCount = await fetchQuestionCount()
-  await handlePageChange(1)
+  await handleSearch()
 })
 
 async function handlePageChange(currentPage: number) {
@@ -48,6 +56,7 @@ async function handlePageChange(currentPage: number) {
       model.value = await fetchQuestionList({
         offset: (currentPage - 1) * pagination.pageSize,
         limit: pagination.pageSize,
+        ...filter,
       })
       pagination.page = currentPage
     } finally {
@@ -55,15 +64,49 @@ async function handlePageChange(currentPage: number) {
     }
   }
 }
+
+async function handleSearch() {
+  pagination.itemCount = await fetchQuestionCount(filter)
+  await handlePageChange(1)
+}
+
+async function handleEnter(e: KeyboardEvent) {
+  if (e.key === 'Enter') {
+    await handleSearch()
+  }
+}
 </script>
 
 <template>
   <div class="question-list">
-    <NForm>
-      <NFormItem>
-        <NInput></NInput>
-      </NFormItem>
-    </NForm>
+    <div
+      class="flex flex-row items-center justify-between rounded border border-solid border-gray-400 p-3"
+    >
+      <div class="flex flex-row items-center justify-start space-x-8">
+        <NInputGroup>
+          <NInputGroupLabel type="primary">搜索题型</NInputGroupLabel>
+          <NSelect
+            v-model:value="filter.questionType"
+            :options="questionTypeOptions"
+            @update:value="handleSearch"
+          ></NSelect>
+        </NInputGroup>
+        <NInputGroup>
+          <NInputGroupLabel type="primary">搜索题目</NInputGroupLabel>
+          <NInput v-model:value="filter.questionText" @keydown="handleEnter" />
+          <NButton type="info" @click="handleSearch">
+            <NIcon><SearchOutline></SearchOutline></NIcon>
+          </NButton>
+        </NInputGroup>
+      </div>
+      <div class="flex flex-row justify-end">
+        <NButtonGroup size="small">
+          <NButton type="primary">新建</NButton>
+          <NButton type="warning">导入</NButton>
+          <NButton type="info">导出</NButton>
+        </NButtonGroup>
+      </div>
+    </div>
     <NDataTable
       remote
       ref="tableRef"
@@ -77,8 +120,9 @@ async function handlePageChange(currentPage: number) {
       :row-key="(row: Question) => row.questionId"
       @update:page="handlePageChange"
     />
+    <QuestionEdit ref="editRef"></QuestionEdit>
+    <QuestionDetail ref="detailRef"></QuestionDetail>
   </div>
-  <QuestionEdit ref="editRef"></QuestionEdit>
 </template>
 
 <style lang="css" scoped></style>

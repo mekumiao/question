@@ -1,12 +1,45 @@
 import type { Question } from '@/api/questions'
 import { NTag, type DataTableColumns, NButton, NButtonGroup, NPopconfirm } from 'naive-ui'
 
+export function createQuestionTypeOptions() {
+  return [
+    {
+      label: '全部',
+      value: -1,
+    },
+    {
+      label: '单选题',
+      value: 0,
+    },
+    {
+      label: '多选题',
+      value: 1,
+    },
+    {
+      label: '判断题',
+      value: 2,
+    },
+    {
+      label: '填空题',
+      value: 3,
+    },
+  ]
+}
+
+export function createDefaultModel() {
+  return {
+    questionId: 0,
+    questionText: '',
+    questionType: 0,
+    correctAnswer: '',
+    options: [],
+  }
+}
+
 export function createColumns({
-  view,
   edit,
   remove,
 }: {
-  view?: (rowData: Question) => void
   edit?: (rowData: Question) => void
   remove?: (rowData: Question) => void
 }): DataTableColumns<Question> {
@@ -57,9 +90,6 @@ export function createColumns({
       render(row) {
         return (
           <NButtonGroup>
-            <NButton type="info" size="small" onClick={() => view?.(row)}>
-              查看
-            </NButton>
             <NButton type="primary" size="small" onClick={() => edit?.(row)}>
               编辑
             </NButton>

@@ -84,7 +84,7 @@ async function handleEnter(e: KeyboardEvent) {
     >
       <div class="flex flex-row items-center justify-start space-x-8">
         <NInputGroup>
-          <NInputGroupLabel type="primary">搜索题型</NInputGroupLabel>
+          <NInputGroupLabel type="primary">题型</NInputGroupLabel>
           <NSelect
             v-model:value="filter.questionType"
             :options="questionTypeOptions"

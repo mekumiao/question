@@ -94,8 +94,8 @@ function handleSheetSelect(value: Options, type: OptionsType) {
 </script>
 
 <template>
-  <div class="answer-view flex flex-row justify-between">
-    <div class="mx-1 w-3/5 rounded bg-white p-3">
+  <div class="answer-view grid grid-cols-5 gap-2">
+    <div class="col-span-3 rounded bg-white p-3">
       <BtClock></BtClock>
       <div class="mt-2">
         <h4 class="my-5">{{ data.topic.number }}.&nbsp;{{ data.topic.remark }}</h4>
@@ -118,7 +118,7 @@ function handleSheetSelect(value: Options, type: OptionsType) {
         </div>
       </div>
     </div>
-    <div class="mx-1 w-2/5 rounded bg-white p-3">
+    <div class="col-span-2 rounded bg-white p-3">
       <div class="mx-3">
         <SheetList
           title="一、单选题"

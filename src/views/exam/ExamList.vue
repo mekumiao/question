@@ -8,7 +8,7 @@ import {
   remove as fetchExamDelete,
 } from '@/api/exams'
 import type { Exam, ExamFilter } from '@/api/exams'
-import { SearchOutline } from '@vicons/ionicons5'
+import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
 import { createColumns, createDifficultyLevelOptions } from './data'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
@@ -95,7 +95,12 @@ async function handleEnter(e: KeyboardEvent) {
           </NButton>
         </NInputGroup>
       </div>
-      <div class="flex flex-row justify-end">
+      <div class="flex flex-row justify-end space-x-4">
+        <NButtonGroup size="small">
+          <NButton type="default" circle @click="handleSearch">
+            <NIcon><RefreshOutline></RefreshOutline></NIcon>
+          </NButton>
+        </NButtonGroup>
         <NButtonGroup size="small">
           <NButton type="primary">新建</NButton>
           <NButton type="warning">导入</NButton>

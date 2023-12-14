@@ -91,29 +91,27 @@ const menuOptions: MenuOption[] = [
 </script>
 
 <template>
-  <div class="sider-menu">
-    <NLayout has-sider>
-      <NLayoutSider
-        bordered
-        collapse-mode="width"
-        :collapsed-width="64"
-        :width="240"
+  <NLayout has-sider>
+    <NLayoutSider
+      bordered
+      collapse-mode="width"
+      :collapsed-width="64"
+      :width="240"
+      :collapsed="collapsed"
+      @collapse="collapsed = true"
+      @expand="collapsed = false"
+    >
+      <NMenu
+        ref="menuInstRef"
+        v-model:value="selectedKey"
         :collapsed="collapsed"
-        @collapse="collapsed = true"
-        @expand="collapsed = false"
-      >
-        <NMenu
-          ref="menuInstRef"
-          v-model:value="selectedKey"
-          :collapsed="collapsed"
-          :collapsed-width="64"
-          :collapsed-icon-size="22"
-          :options="menuOptions"
-          :accordion="true"
-        />
-      </NLayoutSider>
-    </NLayout>
-  </div>
+        :collapsed-width="64"
+        :collapsed-icon-size="22"
+        :options="menuOptions"
+        :accordion="true"
+      />
+    </NLayoutSider>
+  </NLayout>
 </template>
 
 <style lang="css" scoped></style>

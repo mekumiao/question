@@ -6,7 +6,7 @@ import NavHeader from './components/NavHeader.vue'
 <template>
   <div class="student-layout flex flex-col" style="background-color: var(--color-background)">
     <NavHeader></NavHeader>
-    <main class="m-2">
+    <main class="my-2">
       <RouterView></RouterView>
     </main>
   </div>

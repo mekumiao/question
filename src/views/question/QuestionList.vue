@@ -66,8 +66,8 @@ async function handlePageChange(currentPage: number) {
 }
 
 async function handleSearch() {
-  pagination.itemCount = await fetchQuestionCount(filter)
   await handlePageChange(1)
+  pagination.itemCount = await fetchQuestionCount(filter)
 }
 
 async function handleEnter(e: KeyboardEvent) {

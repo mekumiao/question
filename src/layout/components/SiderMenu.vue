@@ -21,7 +21,6 @@ const menuInstRef = ref<InstanceType<typeof NMenu>>()
 const route = useRoute()
 
 onMounted(() => {
-  console.log(route.fullPath)
   selectAndExpand(route.fullPath)
 })
 

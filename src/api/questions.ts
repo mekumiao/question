@@ -60,3 +60,8 @@ export async function update(questionId: number, question: QuestionUpdate) {
   const response = await axios.put<Question>(`/questions/${questionId}`, question)
   return response.data
 }
+
+export async function remove(questionId: number) {
+  const response = await axios.delete<void>(`/questions/${questionId}`)
+  return response.data
+}

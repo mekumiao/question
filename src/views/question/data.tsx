@@ -1,10 +1,14 @@
 import type { Question } from '@/api/questions'
-import { NTag, type DataTableColumns, NButton, NButtonGroup } from 'naive-ui'
+import { NTag, type DataTableColumns, NButton, NButtonGroup, NPopconfirm } from 'naive-ui'
 
 export function createColumns({
+  view,
   edit,
+  remove,
 }: {
-  edit: (rowData: Question) => void
+  view?: (rowData: Question) => void
+  edit?: (rowData: Question) => void
+  remove?: (rowData: Question) => void
 }): DataTableColumns<Question> {
   return [
     {
@@ -53,15 +57,22 @@ export function createColumns({
       render(row) {
         return (
           <NButtonGroup>
-            <NButton type="info" size="small">
+            <NButton type="info" size="small" onClick={() => view?.(row)}>
               查看
             </NButton>
-            <NButton type="primary" size="small" onClick={() => edit(row)}>
+            <NButton type="primary" size="small" onClick={() => edit?.(row)}>
               编辑
             </NButton>
-            <NButton type="warning" size="small">
-              删除
-            </NButton>
+            <NPopconfirm onPositiveClick={() => remove?.(row)}>
+              {{
+                trigger: () => (
+                  <NButton type="warning" size="small">
+                    删除
+                  </NButton>
+                ),
+                default: () => `删除 "${row.questionText}" 吗？`,
+              }}
+            </NPopconfirm>
           </NButtonGroup>
         )
       },

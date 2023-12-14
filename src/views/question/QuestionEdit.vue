@@ -95,7 +95,7 @@ defineExpose({ open })
         ></FillInTheBlankForm>
       </NSpin>
       <template #footer>
-        <NButton :loading="loading" @click="handleSaveClick">保存</NButton>
+        <NButton :loading="loading" type="primary" @click="handleSaveClick">保存</NButton>
       </template>
     </NDrawerContent>
   </NDrawer>

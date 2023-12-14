@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { NDataTable, NForm, NFormItem, NInput } from 'naive-ui'
-import { list as fetchQuestionList, count as fetchQuestionCount } from '@/api/questions'
+import {
+  list as fetchQuestionList,
+  count as fetchQuestionCount,
+  remove as fetchQuestionDelete,
+} from '@/api/questions'
 import type { Question } from '@/api/questions'
 import { createColumns } from './data'
 import QuestionEdit from './QuestionEdit.vue'
@@ -21,10 +25,14 @@ const pagination = reactive({
   },
 })
 const columns = createColumns({
-  edit: (row) => {
+  edit(row) {
     editRef.value?.open(row.questionId, () => {
       handlePageChange(pagination.page)
     })
+  },
+  async remove(row) {
+    await fetchQuestionDelete(row.questionId)
+    await handlePageChange(pagination.page)
   },
 })
 

@@ -100,7 +100,7 @@ async function handleAvatarMenuSelect(key: string | number) {
 </script>
 
 <template>
-  <div
+  <header
     class="flex flex-row items-center justify-between justify-items-center rounded p-2"
     style="background-color: var(--vt-c-white)"
   >
@@ -127,7 +127,7 @@ async function handleAvatarMenuSelect(key: string | number) {
         </div>
       </NDropdown>
     </nav>
-  </div>
+  </header>
 </template>
 
 <style lang="css" scoped>

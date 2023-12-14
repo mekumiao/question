@@ -54,9 +54,6 @@ export async function count(params?: QuestionFilter) {
 }
 
 export async function list(params?: PaginationParameters & QuestionFilter) {
-  // if (params && params.questionType && params.questionType < 0) {
-  //   params = { ...params, questionType: undefined }
-  // }
   const response = await axios.get<Question[]>(`/questions/`, { params })
   return response.data
 }
@@ -77,6 +74,6 @@ export async function update(questionId: number, question: QuestionUpdate) {
 }
 
 export async function remove(questionId: number) {
-  const response = await axios.delete<void>(`/questions/`, { params: { questionId } })
+  const response = await axios.delete<void>(`/questions/${questionId}`)
   return response.data
 }

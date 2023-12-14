@@ -3,20 +3,19 @@ import { onMounted, reactive, ref } from 'vue'
 import { NDataTable, NInput, NButton, NButtonGroup, NInputGroup, NInputGroupLabel } from 'naive-ui'
 import { NIcon, NSelect } from 'naive-ui'
 import {
-  list as fetchQuestionList,
-  count as fetchQuestionCount,
-  remove as fetchQuestionDelete,
-} from '@/api/questions'
-import type { Question, QuestionFilter } from '@/api/questions'
+  list as fetchExamList,
+  count as fetchExamCount,
+  remove as fetchExamDelete,
+} from '@/api/exams'
+import type { Exam, ExamFilter } from '@/api/exams'
 import { SearchOutline } from '@vicons/ionicons5'
+import { createColumns, createDifficultyLevelOptions } from './data'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 
 const loading = ref(false)
-const model = ref<Question[]>([])
-const filter = reactive<QuestionFilter>({ questionType: -1 })
-
-const questionTypeOptions = ref(createQuestionTypeOptions())
+const model = ref<Exam[]>([])
+const filter = reactive<ExamFilter>({ difficultyLevel: 0 })
 
 const pagination = reactive({
   page: 1,
@@ -28,14 +27,16 @@ const pagination = reactive({
   },
 })
 
+const difficultyLevelOptions = ref(createDifficultyLevelOptions())
+
 const columns = createColumns({
-  edit(row) {
-    editRef.value?.open(row.questionId, () => {
-      handlePageChange(pagination.page)
-    })
-  },
+  // edit(row) {
+  //   editRef.value?.open(row.questionId, () => {
+  //     handlePageChange(pagination.page)
+  //   })
+  // },
   async remove(row) {
-    await fetchQuestionDelete(row.questionId)
+    await fetchExamDelete(row.examId)
     await handlePageChange(pagination.page)
   },
 })
@@ -48,7 +49,7 @@ async function handlePageChange(currentPage: number) {
   if (!loading.value) {
     try {
       loading.value = true
-      model.value = await fetchQuestionList({
+      model.value = await fetchExamList({
         offset: (currentPage - 1) * pagination.pageSize,
         limit: pagination.pageSize,
         ...filter,
@@ -61,7 +62,7 @@ async function handlePageChange(currentPage: number) {
 }
 
 async function handleSearch() {
-  pagination.itemCount = await fetchQuestionCount(filter)
+  pagination.itemCount = await fetchExamCount(filter)
   await handlePageChange(1)
 }
 
@@ -79,16 +80,16 @@ async function handleEnter(e: KeyboardEvent) {
     >
       <div class="flex flex-row items-center justify-start space-x-8">
         <NInputGroup>
-          <NInputGroupLabel type="primary">搜索题型</NInputGroupLabel>
+          <NInputGroupLabel type="primary">难度</NInputGroupLabel>
           <NSelect
-            v-model:value="filter.questionType"
-            :options="questionTypeOptions"
+            v-model:value="filter.difficultyLevel"
+            :options="difficultyLevelOptions"
             @update:value="handleSearch"
           ></NSelect>
         </NInputGroup>
         <NInputGroup>
-          <NInputGroupLabel type="primary">搜索题目</NInputGroupLabel>
-          <NInput v-model:value="filter.questionText" @keydown="handleEnter" />
+          <NInputGroupLabel type="primary">搜索试卷</NInputGroupLabel>
+          <NInput v-model:value="filter.examName" @keydown="handleEnter" />
           <NButton type="info" @click="handleSearch">
             <NIcon><SearchOutline></SearchOutline></NIcon>
           </NButton>
@@ -112,11 +113,11 @@ async function handleEnter(e: KeyboardEvent) {
       :min-height="350"
       :max-height="350"
       :pagination="pagination"
-      :row-key="(row: Question) => row.questionId"
+      :row-key="(row: Exam) => row.examId"
       @update:page="handlePageChange"
     />
-    <QuestionEdit ref="editRef"></QuestionEdit>
-    <QuestionDetail ref="detailRef"></QuestionDetail>
+    <!-- <QuestionEdit ref="editRef"></QuestionEdit>
+    <QuestionDetail ref="detailRef"></QuestionDetail> -->
   </div>
 </template>
 

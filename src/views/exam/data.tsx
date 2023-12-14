@@ -1,26 +1,23 @@
-import type { Question } from '@/api/questions'
-import { NTag, type DataTableColumns, NButton, NButtonGroup, NPopconfirm } from 'naive-ui'
+import type { Exam } from '@/api/exams'
+import type { DataTableColumns } from 'naive-ui'
+import { NRate, NButton, NButtonGroup, NPopconfirm } from 'naive-ui'
 
-export function createQuestionTypeOptions() {
+export function createDifficultyLevelOptions() {
   return [
     {
       label: '全部',
-      value: -1,
-    },
-    {
-      label: '单选题',
       value: 0,
     },
     {
-      label: '多选题',
+      label: '简单',
       value: 1,
     },
     {
-      label: '判断题',
+      label: '中等',
       value: 2,
     },
     {
-      label: '填空题',
+      label: '困难',
       value: 3,
     },
   ]
@@ -40,48 +37,24 @@ export function createColumns({
   edit,
   remove,
 }: {
-  edit?: (rowData: Question) => void
-  remove?: (rowData: Question) => void
-}): DataTableColumns<Question> {
+  edit?: (rowData: Exam) => void
+  remove?: (rowData: Exam) => void
+}): DataTableColumns<Exam> {
   return [
     {
       title: 'ID',
-      key: 'questionId',
+      key: 'examId',
       width: 80,
     },
     {
-      title: '题目',
-      key: 'questionText',
+      title: '试卷名称',
+      key: 'examName',
     },
     {
-      title: '类型',
-      key: 'questionType',
+      title: '难度',
+      key: 'difficultyLevel',
       render(row) {
-        return (
-          // @ts-ignore
-          <NTag type={['primary', 'success', 'info', 'warning'][row.questionType]}>
-            {['单选题', '多选题', '判断题', '填空题'][row.questionType]}
-          </NTag>
-        )
-      },
-    },
-    {
-      title: '答案',
-      key: 'correctAnswer',
-      render(row) {
-        if (row.questionType === 0) {
-          return <NTag type="primary">{row.correctAnswer}</NTag>
-        } else if (row.questionType === 1) {
-          return <NTag type="success">{row.correctAnswer}</NTag>
-        } else if (row.questionType === 2) {
-          return (
-            <NTag type={row.correctAnswer === '1' ? 'success' : 'error'}>
-              {row.correctAnswer === '1' ? '对' : '错'}
-            </NTag>
-          )
-        } else if (row.questionType == 3) {
-          return <NTag type="warning">{row.correctAnswer}</NTag>
-        }
+        return <NRate readonly size="small" value={row.difficultyLevel} count={3}></NRate>
       },
     },
     {
@@ -100,7 +73,7 @@ export function createColumns({
                     删除
                   </NButton>
                 ),
-                default: () => `确定删除ID为 "${row.questionId}" 的题目吗？`,
+                default: () => `确定删除ID为 "${row.examId}" 的试卷吗？`,
               }}
             </NPopconfirm>
           </NButtonGroup>

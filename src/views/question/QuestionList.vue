@@ -19,7 +19,7 @@ const detailRef = ref<InstanceType<typeof QuestionDetail>>()
 
 const loading = ref(false)
 const model = ref<Question[]>([])
-const filter = reactive<QuestionFilter>({ questionType: -1 })
+const filter = reactive<QuestionFilter>({ questionType: 0 })
 
 const questionTypeOptions = ref(createQuestionTypeOptions())
 

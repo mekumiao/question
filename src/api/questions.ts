@@ -6,6 +6,7 @@ export interface Question {
   questionText: string
   questionType: number
   correctAnswer: string
+  difficultyLevel: number
   options: Option[]
 }
 
@@ -21,12 +22,14 @@ export interface QuestionCreate {
   questionText: string
   questionType: number
   correctAnswer: string
+  difficultyLevel: number
   options: OptionCreate[]
 }
 
 export interface QuestionUpdate {
   questionText: string
   correctAnswer: string
+  difficultyLevel: number
   options: OptionCreate[]
 }
 
@@ -38,21 +41,22 @@ export interface OptionCreate {
 export interface QuestionFilter {
   questionText?: string
   questionType?: number
+  difficultyLevel?: number
 }
 
 export async function count(params?: QuestionFilter) {
-  // 类型小于值1则不传入条件
-  if (params && params.questionType && params.questionType < 0) {
-    params = { ...params, questionType: undefined }
-  }
+  // // 类型值为0则不传入条件
+  // if (params && params.questionType && params.questionType < 0) {
+  //   params = { ...params, questionType: undefined }
+  // }
   const response = await axios.get<number>(`/questions/count`, { params })
   return response.data
 }
 
 export async function list(params?: PaginationParameters & QuestionFilter) {
-  if (params && params.questionType && params.questionType < 0) {
-    params = { ...params, questionType: undefined }
-  }
+  // if (params && params.questionType && params.questionType < 0) {
+  //   params = { ...params, questionType: undefined }
+  // }
   const response = await axios.get<Question[]>(`/questions/`, { params })
   return response.data
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Option, Question } from '@/api/questions'
-import { NForm, NFormItem, NInput, type FormRules } from 'naive-ui'
+import type { FormRules } from 'naive-ui'
+import { NForm, NFormItem, NInput, NRate } from 'naive-ui'
 import { NSpace, NCheckbox, NCheckboxGroup } from 'naive-ui'
 import { computed, ref } from 'vue'
 
@@ -56,6 +57,9 @@ defineExpose({
   <NForm ref="formRef" :rules="rules" :model="model">
     <NFormItem label="题目" path="questionText">
       <NInput v-model:value="model.questionText" placeholder="请输入题目"></NInput>
+    </NFormItem>
+    <NFormItem label="难度" path="difficultyLevel">
+      <NRate v-model:value="model.difficultyLevel" :count="3"></NRate>
     </NFormItem>
     <NFormItem label="答案" path="options">
       <NCheckboxGroup v-model:value="optionsSelected">

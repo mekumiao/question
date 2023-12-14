@@ -66,22 +66,22 @@ defineExpose({ open })
       <NSpin :show="loading">
         <SingleChoiceForm
           ref="signleRef"
-          v-if="model.questionType === 0"
+          v-if="model.questionType === 1"
           :data="model"
         ></SingleChoiceForm>
         <MultipleChoiceForm
           ref="multipleRef"
-          v-else-if="model.questionType === 1"
+          v-else-if="model.questionType === 2"
           :data="model"
         ></MultipleChoiceForm>
         <TrueFalseForm
           ref="trueFalseRef"
-          v-else-if="model.questionType === 2"
+          v-else-if="model.questionType === 3"
           :data="model"
         ></TrueFalseForm>
         <FillInTheBlankForm
           ref="fillInTheBlankRef"
-          v-else-if="model.questionType === 3"
+          v-else-if="model.questionType === 4"
           :data="model"
         ></FillInTheBlankForm>
       </NSpin>

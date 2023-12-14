@@ -1,6 +1,3 @@
-// 安装 Axios（如果没有安装的话）
-// npm install axios
-
 import axios from 'axios'
 
 export type TokenResult = {

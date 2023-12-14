@@ -100,7 +100,7 @@ export function createColumns({
                     删除
                   </NButton>
                 ),
-                default: () => `删除 "${row.questionText}" 吗？`,
+                default: () => `确定删除ID为 "${row.questionId}" 的题目吗？`,
               }}
             </NPopconfirm>
           </NButtonGroup>

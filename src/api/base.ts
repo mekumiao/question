@@ -81,17 +81,20 @@ export function clearToken() {
 async function refreshAccessToken() {
   const refresh_token = getRefreshToken()
   if (refresh_token) {
-    const response = await axios.post<TokenResult>(`${apiBaseUrl}/refresh`, {
-      refreshToken: refresh_token,
-    })
-    if (response.status === 200) {
-      setRefreshToken(response.data.refreshToken)
-      setAccessToken(response.data.accessToken)
-      return response.data.accessToken
+    try {
+      const response = await axios.post<TokenResult>(`${apiBaseUrl}/refresh`, {
+        refreshToken: refresh_token,
+      })
+      if (response.status === 200) {
+        setRefreshToken(response.data.refreshToken)
+        setAccessToken(response.data.accessToken)
+        return response.data.accessToken
+      }
+    } catch (error) {
+      console.error(error)
     }
   }
-  clearToken()
-  return null
+  return clearToken()
 }
 
 export default axiosInstance

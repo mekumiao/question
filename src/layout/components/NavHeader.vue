@@ -16,7 +16,7 @@ import {
   BuildOutline as ControlPanelIcon,
   LogOutOutline as LogoutIcon,
 } from '@vicons/ionicons5'
-import { logout } from '@/api/user'
+import { logout } from '@/api/users'
 
 const route = useRoute()
 
@@ -145,4 +145,3 @@ async function handleAvatarMenuSelect(key: string | number) {
   height: 4rem;
 }
 </style>
-@/api/user

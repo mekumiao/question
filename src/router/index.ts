@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import StudentLayout from '@/layout/StudentLayout.vue'
 import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/login/LoginView.vue'
-import { checkUserAuthentication, info as fetchInfo } from '@/api/user'
+import { checkUserAuthentication, info as fetchInfo } from '@/api/users'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

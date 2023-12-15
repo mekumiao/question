@@ -65,9 +65,14 @@ async function handlePageChange(currentPage: number) {
   }
 }
 
-async function handleSearch() {
-  await handlePageChange(1)
-  pagination.itemCount = await fetchQuestionCount(filter)
+function handleSearch() {
+  return Promise.all([
+    handlePageChange(1),
+    fetchQuestionCount(filter).then((v) => {
+      pagination.itemCount = v
+      return v
+    }),
+  ])
 }
 
 async function handleEnter(e: KeyboardEvent) {

@@ -90,6 +90,7 @@ async function refreshAccessToken() {
       return response.data.accessToken
     }
   }
+  clearToken()
   return null
 }
 

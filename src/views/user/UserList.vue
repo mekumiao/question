@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { NDataTable, NInput, NButton, NButtonGroup, NInputGroup, NInputGroupLabel } from 'naive-ui'
-import { NIcon, NSelect } from 'naive-ui'
+import { NIcon } from 'naive-ui'
 import { list as fetchUserList, count as fetchUserCount } from '@/api/users'
 import type { User, UserFilter } from '@/api/users'
 import { createColumns } from './data'
@@ -11,13 +11,7 @@ const tableRef = ref<InstanceType<typeof NDataTable>>()
 
 const loading = ref(false)
 const model = ref<User[]>([])
-const filter = reactive<UserFilter>({ role: '' })
-
-const rolesOptions = ref([
-  { label: '全部', value: '' },
-  { label: '管理员', value: 'admin' },
-  { label: '学生', value: 'student' },
-])
+const filter = reactive<UserFilter>({})
 
 const pagination = reactive({
   page: 1,
@@ -75,14 +69,6 @@ async function handleEnter(e: KeyboardEvent) {
       class="flex flex-row items-center justify-between rounded border border-solid border-gray-400 p-3"
     >
       <div class="flex flex-row items-center justify-start space-x-8">
-        <NInputGroup>
-          <NInputGroupLabel type="primary">角色</NInputGroupLabel>
-          <NSelect
-            v-model:value="filter.role"
-            :options="rolesOptions"
-            @update:value="handleSearch"
-          ></NSelect>
-        </NInputGroup>
         <NInputGroup>
           <NInputGroupLabel type="primary">用户名</NInputGroupLabel>
           <NInput v-model:value="filter.userName" @keydown="handleEnter" />

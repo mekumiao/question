@@ -34,7 +34,6 @@ export async function info() {
 }
 
 export interface UserFilter {
-  role?: string
   userName?: string
   email?: string
 }

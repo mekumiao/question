@@ -29,7 +29,9 @@ export function createColumns({
         return (
           <NSpace>
             {row.roles.map((v) => (
-              <NTag type={v === 'admin' ? 'primary' : 'info'}>{v}</NTag>
+              <NTag type={v === 'admin' ? 'primary' : v === 'student' ? 'warning' : 'default'}>
+                {v === 'admin' ? '管理员' : v === 'student' ? '学生' : '默认'}
+              </NTag>
             ))}
           </NSpace>
         )

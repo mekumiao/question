@@ -1,22 +1,31 @@
 <script setup lang="ts">
 import { NStatistic, NIcon } from 'naive-ui'
-import { MdSave } from '@vicons/ionicons4'
 import { UserAddOutlined } from '@vicons/antd'
+import { count as fetchQuestionCount } from '@/api/questions'
+import { count as fetchUserCount } from '@/api/users'
+import { reactive } from 'vue'
+
+const data = reactive({
+  questionCount: 0,
+  userCount: 0,
+})
+
+fetchQuestionCount().then((v) => {
+  data.questionCount = v
+})
+
+fetchUserCount().then((v) => {
+  data.userCount = v
+})
 </script>
 
 <template>
   <div class="dashboard-view grid grid-cols-4 grid-rows-2 gap-4">
     <NStatistic
-      label="统计数据"
-      :value="99"
+      label="总题目数"
       class="col-span-1 row-span-1 rounded border border-solid border-gray-300 p-2 shadow"
     >
-      <template #prefix>
-        <NIcon>
-          <MdSave />
-        </NIcon>
-      </template>
-      <template #suffix> / 100 </template>
+      共&nbsp;{{ data.questionCount.toLocaleString() }}&nbsp;题
     </NStatistic>
     <NStatistic
       label="活跃用户"
@@ -28,7 +37,7 @@ import { UserAddOutlined } from '@vicons/antd'
           <UserAddOutlined />
         </NIcon>
       </template>
-      1,234,123
+      {{ data.userCount.toLocaleString() }} / {{ (10000).toLocaleString() }}
     </NStatistic>
   </div>
 </template>

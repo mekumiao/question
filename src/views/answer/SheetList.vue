@@ -42,7 +42,7 @@ function handleClick(item: AnswerOption) {
 
 <template>
   <div class="sheet-list">
-    <h2>{{ title }}</h2>
+    <h4>{{ title }}</h4>
     <ul role="list" class="m-1 flex flex-row items-start justify-start justify-items-center">
       <li
         class="mx-1 flex w-fit cursor-pointer select-none flex-row justify-around"

@@ -6,6 +6,7 @@ import { login } from '@/api/users'
 import { AxiosError } from 'axios'
 import { useRouter } from 'vue-router'
 
+const loading = ref(false)
 const data = reactive({
   form: { email: 'admin@qq.com', password: 'Az.123123!' },
   rules: {
@@ -28,6 +29,7 @@ const router = useRouter()
 async function handleLoginClick(e: MouseEvent) {
   e.preventDefault()
   try {
+    loading.value = true
     await formRef.value?.validate()
     await login(data.form.email, data.form.password)
     message.success('登录成功！')
@@ -39,6 +41,8 @@ async function handleLoginClick(e: MouseEvent) {
     } else if (error instanceof Error) {
       message.error(error.message)
     }
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -54,7 +58,7 @@ async function handleLoginClick(e: MouseEvent) {
           <NInput v-model:value="data.form.password" type="password" placeholder="请输入密码" />
         </NFormItem>
         <div class="flex justify-end">
-          <NButton type="primary" block @click="handleLoginClick">登录</NButton>
+          <NButton :loading="loading" type="primary" block @click="handleLoginClick">登录</NButton>
         </div>
       </NForm>
     </div>

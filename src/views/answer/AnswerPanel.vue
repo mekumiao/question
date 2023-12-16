@@ -4,7 +4,16 @@ import { onMounted, provide, reactive, ref, watch } from 'vue'
 import type { CountdownTimeInfo } from 'naive-ui'
 import type { Exam, ExamQuestion } from '@/api/exams'
 import type { AnswerOption } from './data'
-import { NRadio, NRadioGroup, NCheckbox, NCheckboxGroup, NInput, NButton } from 'naive-ui'
+import {
+  NRadio,
+  NRadioGroup,
+  NCheckbox,
+  NCheckboxGroup,
+  NInput,
+  NButton,
+  useDialog,
+  useMessage,
+} from 'naive-ui'
 import { NCountdown, NIcon } from 'naive-ui'
 import { TimeOutline } from '@vicons/ionicons5'
 
@@ -28,6 +37,9 @@ const data = reactive<{
   select: {},
 })
 const selected = ref<number>()
+
+const dialog = useDialog()
+const message = useMessage()
 
 provide('selected', selected)
 
@@ -142,6 +154,18 @@ function handleSheetSelect(value: AnswerOption) {
 function renderCountdown({ minutes, seconds }: CountdownTimeInfo) {
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
 }
+
+function handleSucmit() {
+  dialog.create({
+    title: '确认',
+    content: '提交之后不能修改，确定继续吗？',
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: () => {
+      message.success('提交成功')
+    },
+  })
+}
 </script>
 
 <template>
@@ -186,7 +210,7 @@ function renderCountdown({ minutes, seconds }: CountdownTimeInfo) {
       <div class="mt-3 flex flex-row justify-end gap-2">
         <NButton @click="handleBackClick">上一题</NButton>
         <NButton type="info" @click="handleAnswer">确认（下一题）</NButton>
-        <NButton type="success">交卷</NButton>
+        <NButton type="success" @click="handleSucmit">交卷</NButton>
       </div>
     </div>
     <div class="col-span-2 rounded bg-white p-3">

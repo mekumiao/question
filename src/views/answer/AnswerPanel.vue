@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SheetList from './SheetList.vue'
-import { onMounted, reactive, ref, watch } from 'vue'
+import { onMounted, provide, reactive, ref, watch } from 'vue'
 import type { CountdownTimeInfo } from 'naive-ui'
 import type { Exam, ExamQuestion } from '@/api/exams'
 import type { AnswerOption } from './data'
@@ -27,6 +27,9 @@ const data = reactive<{
   sheet: [[], [], [], []],
   select: {},
 })
+const selected = ref<number>()
+
+provide('selected', selected)
 
 onMounted(async () => {
   fullData(props.exam)
@@ -51,6 +54,7 @@ function fullData(exam: Exam) {
     const item = exam.examQuestions.find((v) => v.questionId === first.questionId)
     if (item) {
       data.question = { ...item, number: first.number }
+      selected.value = item.questionId
     }
   }
 }
@@ -125,6 +129,7 @@ function nextAnswerOption(current: AnswerOptionWithIndex): AnswerOption | void {
 }
 
 function handleSheetSelect(value: AnswerOption) {
+  selected.value = value.questionId
   if (value.questionId !== data.question.questionId) {
     const question = props.exam.examQuestions.find((v) => v.questionId === value.questionId)
     if (question) {

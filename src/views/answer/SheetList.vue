@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import type { AnswerOption } from './data'
+import { NTag, NIcon } from 'naive-ui'
+import { CheckmarkCircle } from '@vicons/ionicons5'
+import { inject, type Ref } from 'vue'
 
 withDefaults(
   defineProps<{
@@ -11,6 +14,8 @@ withDefaults(
 const emit = defineEmits<{
   select: [value: AnswerOption]
 }>()
+
+const selected = inject<Ref<number>>('selected')
 
 function renderAnswerText(item: AnswerOption) {
   if (item.answer) {
@@ -28,7 +33,6 @@ function renderAnswerText(item: AnswerOption) {
       return item.answer
     }
   }
-  return '__'
 }
 
 function handleClick(item: AnswerOption) {
@@ -41,23 +45,28 @@ function handleClick(item: AnswerOption) {
     <h2>{{ title }}</h2>
     <ul role="list" class="m-1 flex flex-row items-start justify-start justify-items-center">
       <li
-        class="mx-1 flex w-fit cursor-pointer select-none flex-row justify-around rounded bg-gray-400 px-2"
-        :class="{ activate: item.answer !== undefined }"
+        class="mx-1 flex w-fit cursor-pointer select-none flex-row justify-around"
         v-for="(item, key) in options"
         :key="key"
         @click="handleClick(item)"
       >
-        <span>{{ item.number }}.&nbsp;</span>
-        <span class="w-1"></span>
-        <span>{{ renderAnswerText(item) }}</span>
+        <NTag v-if="item.answer !== undefined" round type="success" class="hover:shadow">
+          <template #icon>
+            <NIcon><CheckmarkCircle></CheckmarkCircle></NIcon>
+          </template>
+          <span>{{ item.number }}.&nbsp;</span>
+          <span class="w-1"></span>
+          <span>{{ renderAnswerText(item) }}</span>
+        </NTag>
+        <NTag v-else-if="selected === item.questionId" round type="warning" class="hover:shadow">
+          <span>{{ item.number }}</span>
+        </NTag>
+        <NTag v-else round type="info" class="hover:shadow">
+          <span>{{ item.number }}</span>
+        </NTag>
       </li>
     </ul>
   </div>
 </template>
 
-<style lang="css" scoped>
-.activate {
-  background-color: var(--color-theme);
-  color: var(--color-text-white);
-}
-</style>
+<style lang="css" scoped></style>

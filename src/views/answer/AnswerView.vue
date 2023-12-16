@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import AnswerContent from './AnswerContent.vue'
+import AnswerPanel from './AnswerPanel.vue'
 
 const examId = 4
 </script>
 
 <template>
   <div class="answer-view">
-    <AnswerContent :exam-id="examId"></AnswerContent>
+    <AnswerPanel :exam-id="examId"></AnswerPanel>
   </div>
 </template>
 

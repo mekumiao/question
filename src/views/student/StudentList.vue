@@ -69,10 +69,8 @@ async function handleEnter(e: KeyboardEvent) {
 </script>
 
 <template>
-  <div class="student-list">
-    <div
-      class="flex flex-row items-center justify-between rounded border border-solid border-gray-400 p-3"
-    >
+  <div class="student-list m-3">
+    <div class="flex flex-row items-center justify-between pb-3">
       <div class="flex flex-row items-center justify-start space-x-8">
         <NInputGroup>
           <NInputGroupLabel type="primary">学生名称</NInputGroupLabel>
@@ -102,8 +100,6 @@ async function handleEnter(e: KeyboardEvent) {
       :loading="loading"
       :columns="columns"
       :data="model"
-      :min-height="350"
-      :max-height="350"
       :pagination="pagination"
       :row-key="(row: Student) => row.studentId"
       @update:page="handlePageChange"

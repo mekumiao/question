@@ -101,8 +101,7 @@ async function handleAvatarMenuSelect(key: string | number) {
 
 <template>
   <header
-    class="sticky top-0 z-50 flex flex-row items-center justify-between justify-items-center rounded p-2 shadow"
-    style="background-color: var(--vt-c-white)"
+    class="flex flex-row items-center justify-between justify-items-center rounded bg-white p-2 shadow"
   >
     <div class="icon ms-5 flex flex-row p-2"></div>
     <nav class="flex flex-row">

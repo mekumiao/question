@@ -20,18 +20,11 @@ fetchUserCount().then((v) => {
 </script>
 
 <template>
-  <div class="dashboard-view grid grid-cols-4 gap-4">
-    <NStatistic
-      label="总题目数"
-      class="col-span-1 row-span-1 rounded border border-solid border-gray-300 p-2 shadow"
-    >
+  <div class="dashboard-view m-3 grid grid-cols-4 gap-4">
+    <NStatistic label="总题目数" class="col-span-1 row-span-1 p-2 shadow">
       共&nbsp;{{ data.questionCount.toLocaleString() }}&nbsp;题
     </NStatistic>
-    <NStatistic
-      label="活跃用户"
-      tabular-nums
-      class="col-span-1 row-span-1 rounded border border-solid border-gray-300 p-2 shadow"
-    >
+    <NStatistic label="活跃用户" tabular-nums class="col-span-1 row-span-1 p-2 shadow">
       <template #prefix>
         <NIcon>
           <UserAddOutlined />

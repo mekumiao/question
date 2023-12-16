@@ -6,15 +6,15 @@ import SiderMenu from './components/SiderMenu.vue'
 
 <template>
   <div
-    class="admin-layout container mx-auto flex h-screen flex-col overflow-hidden"
+    class="admin-layout container mx-auto flex flex-col"
     style="background-color: var(--color-background)"
   >
     <NavHeader></NavHeader>
-    <main class="my-2 grid grid-cols-10 gap-2">
-      <div class="col-span-2 overflow-hidden rounded bg-white">
+    <main class="my-2 grid min-h-screen grid-cols-10 gap-2">
+      <div class="col-span-2 rounded bg-white">
         <SiderMenu></SiderMenu>
       </div>
-      <div class="col-span-8 overflow-y-auto overflow-x-hidden rounded bg-white p-3">
+      <div class="col-span-8 rounded bg-white">
         <RouterView></RouterView>
       </div>
     </main>

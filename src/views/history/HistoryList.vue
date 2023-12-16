@@ -66,10 +66,8 @@ async function handleEnter(e: KeyboardEvent) {
 </script>
 
 <template>
-  <div class="history-list">
-    <div
-      class="flex flex-row items-center justify-between rounded border border-solid border-gray-400 p-3"
-    >
+  <div class="history-list m-3">
+    <div class="flex flex-row items-center justify-between pb-3">
       <div class="flex flex-row items-center justify-start space-x-8">
         <NInputGroup>
           <NInputGroupLabel type="primary">难度</NInputGroupLabel>
@@ -107,8 +105,6 @@ async function handleEnter(e: KeyboardEvent) {
       :loading="loading"
       :columns="columns"
       :data="model"
-      :min-height="350"
-      :max-height="350"
       :pagination="pagination"
       :row-key="(row: AnswerHistory) => row.answerHistoryId"
       @update:page="handlePageChange"

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SheetList from './SheetList.vue'
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, shallowRef } from 'vue'
 import { get as fetchExam } from '@/api/exams'
 import type { Exam, ExamQuestion } from '@/api/exams'
 import type { AnswerOption } from './data'
@@ -8,10 +8,12 @@ import QuestionPanel from './QuestionPanel.vue'
 
 const props = defineProps<{ examId: number }>()
 
-const examCache = ref<Exam>()
+type AnswerOptionWithIndex = AnswerOption & { index: [number, number] }
+
+const examCache = shallowRef<Exam>()
 const data = reactive<{
   question: ExamQuestion & { number?: number; answer?: AnswerOption['answer'] }
-  sheet: AnswerOption[][]
+  sheet: AnswerOptionWithIndex[][]
 }>({
   question: {} as ExamQuestion,
   sheet: [[], [], [], []],
@@ -25,14 +27,16 @@ onMounted(async () => {
 function fullData(exam: Exam) {
   if (exam.examQuestions.length) {
     // 目前仅有4种题型：单选、多选、判断、填空
+    let number = 0
     for (let i = 0; i < 4; i++) {
       data.sheet[i] = exam.examQuestions
         .filter((v) => v.questionType === i + 1)
-        .map<AnswerOption>((v, n) => ({
-          number: n + 1,
+        .map((v, n) => ({
+          number: ++number,
           questionId: v.questionId,
           questionType: v.questionType,
           options: v.options,
+          index: [i, n],
         }))
     }
     const first = data.sheet[0][0]
@@ -50,6 +54,26 @@ function handleAnswer(answer: AnswerOption['answer']) {
   )
   if (item) {
     item.answer = answer
+    const nextQuestion = nextAnswerOption(item)
+    nextQuestion && handleSheetSelect(nextQuestion)
+  }
+}
+
+function backAnswerOption(current: AnswerOptionWithIndex): AnswerOption | void {
+  let [x, y] = current.index
+  if (y > 0) {
+    return data.sheet[x][y - 1]
+  } else if (x > 0) {
+    return data.sheet[x - 1][0]
+  }
+}
+
+function nextAnswerOption(current: AnswerOptionWithIndex): AnswerOption | void {
+  let [x, y] = current.index
+  if (y + 1 < data.sheet[x].length) {
+    return data.sheet[x][y + 1]
+  } else if (x + 1 < data.sheet.length) {
+    return data.sheet[x + 1][0]
   }
 }
 

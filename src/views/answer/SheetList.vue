@@ -13,18 +13,20 @@ const emit = defineEmits<{
 }>()
 
 function renderAnswerText(item: AnswerOption) {
-  if (item.questionType === 1) {
-    const option = item.options?.find((v) => v.optionId === item.answer)
-    return option?.optionCode
-  } else if (item.questionType === 2) {
-    const option = item.options
-      ?.filter((v) => (item.answer as number[]).includes(v.optionId))
-      .map((v) => v.optionCode)
-    return option?.join(',')
-  } else if (item.questionType === 3) {
-    return item.answer === '1' ? '√' : '×'
-  } else if (item.questionType === 4) {
-    return item.answer
+  if (item.answer) {
+    if (item.questionType === 1) {
+      const option = item.options?.find((v) => v.optionId === item.answer)
+      return option?.optionCode
+    } else if (item.questionType === 2) {
+      const option = item.options
+        ?.filter((v) => (item.answer as number[]).includes(v.optionId))
+        .map((v) => v.optionCode)
+      return option?.join(',')
+    } else if (item.questionType === 3) {
+      return item.answer === '1' ? '√' : '×'
+    } else if (item.questionType === 4) {
+      return item.answer
+    }
   }
   return '__'
 }

@@ -23,7 +23,6 @@
 }
 
 body {
-  min-height: 100vh;
   color: var(--color-text);
   background-color: var(--color-background);
   line-height: 1.6;

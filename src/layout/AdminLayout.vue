@@ -6,7 +6,7 @@ import SiderMenu from './components/SiderMenu.vue'
 
 <template>
   <div
-    class="admin-layout container mx-auto flex flex-col"
+    class="admin-layout container mx-auto flex h-screen flex-col overflow-hidden"
     style="background-color: var(--color-background)"
   >
     <NavHeader></NavHeader>
@@ -14,7 +14,7 @@ import SiderMenu from './components/SiderMenu.vue'
       <div class="col-span-2 overflow-hidden rounded bg-white">
         <SiderMenu></SiderMenu>
       </div>
-      <div class="col-span-8 rounded bg-white p-3">
+      <div class="col-span-8 overflow-y-auto overflow-x-hidden rounded bg-white p-3">
         <RouterView></RouterView>
       </div>
     </main>

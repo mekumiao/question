@@ -20,7 +20,7 @@ function renderAnswerText(item: AnswerOption) {
       return option?.optionCode
     }
   }
-  return ''
+  return '__'
 }
 
 function handleClick(item: AnswerOption) {

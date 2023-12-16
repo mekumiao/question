@@ -15,7 +15,7 @@ const data = reactive<{
   sheet: AnswerOption[][]
 }>({
   queston: {} as ExamQuestion,
-  sheet: [],
+  sheet: [[], [], [], []],
 })
 
 onMounted(async () => {
@@ -54,15 +54,21 @@ function handleOptionsClick(answer: AnswerOption['answer']) {
 }
 
 function handleSheetSelect(value: AnswerOption) {
+  if (value.questionId !== data.queston.questionId) {
+    const question = examCache.value?.examQuestions.find((v) => v.questionId === value.questionId)
+    if (question) {
+      data.queston = { ...question, number: value.number }
+    }
+  }
   data.queston.answer = value.answer
 }
 </script>
 
 <template>
   <div class="grid grid-cols-5 gap-2">
-    <div class="col-span-3 rounded bg-white p-3">
-      <BtClock></BtClock>
-      <div class="mt-2">
+    <div class="col-span-3 flex flex-col justify-between rounded bg-white p-3">
+      <div class="mt-1">
+        <BtClock></BtClock>
         <h4 class="my-5">{{ data.queston.number }}.&nbsp;{{ data.queston.questionText }}</h4>
         <ul
           class="flex flex-row justify-around rounded border border-solid border-gray-400 p-3 text-start"
@@ -77,10 +83,11 @@ function handleSheetSelect(value: AnswerOption) {
             {{ item.optionCode }}.&nbsp;{{ item.optionText }}
           </li>
         </ul>
-        <div class="mt-3 flex flex-row justify-end">
-          <NButton>上一题</NButton>
-          <NButton type="success">下一题/交卷</NButton>
-        </div>
+      </div>
+      <div class="mt-3 flex flex-row justify-end gap-2">
+        <NButton>上一题</NButton>
+        <NButton type="info">下一题</NButton>
+        <NButton type="success">交卷</NButton>
       </div>
     </div>
     <div class="col-span-2 rounded bg-white p-3">

@@ -20,7 +20,7 @@ fetchUserCount().then((v) => {
 </script>
 
 <template>
-  <div class="dashboard-view grid grid-cols-4 grid-rows-2 gap-4">
+  <div class="dashboard-view grid grid-cols-4 gap-4">
     <NStatistic
       label="总题目数"
       class="col-span-1 row-span-1 rounded border border-solid border-gray-300 p-2 shadow"

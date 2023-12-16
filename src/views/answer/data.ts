@@ -1,10 +1,9 @@
 import type { Option } from '@/api/questions'
 
-export type OptionsType = 'SingleChoice' | 'MultipleChoice' | 'TrueFalse' | 'FillInTheBlank'
-
 export type AnswerOption = {
   number: number
   questionId: number
-  answer?: number | string | string[]
+  questionType: number
+  answer?: number | number[] | string
   options?: Option[]
 }

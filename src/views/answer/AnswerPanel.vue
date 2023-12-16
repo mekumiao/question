@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import SheetList from './SheetList.vue'
-import { onMounted, reactive, shallowRef, watch } from 'vue'
-import { get as fetchExam } from '@/api/exams'
+import { onMounted, reactive, ref, watch } from 'vue'
+import type { CountdownTimeInfo } from 'naive-ui'
 import type { Exam, ExamQuestion } from '@/api/exams'
 import type { AnswerOption } from './data'
 import { NRadio, NRadioGroup, NCheckbox, NCheckboxGroup, NInput, NButton } from 'naive-ui'
-import BtClock from '@/components/BtClock.vue'
-
-const props = defineProps<{ examId: number }>()
+import { NCountdown, NIcon } from 'naive-ui'
+import { TimeOutline } from '@vicons/ionicons5'
 
 type AnswerOptionWithIndex = AnswerOption & { index: [number, number] }
 
-const examCache = shallowRef<Exam>()
+const props = defineProps<{ exam: Exam }>()
+
+const active = ref(true)
 const data = reactive<{
   question: ExamQuestion & { number?: number; answer?: AnswerOption['answer'] }
   sheet: AnswerOptionWithIndex[][]
@@ -28,8 +29,7 @@ const data = reactive<{
 })
 
 onMounted(async () => {
-  examCache.value = await fetchExam(props.examId)
-  fullData(examCache.value)
+  fullData(props.exam)
 })
 
 function fullData(exam: Exam) {
@@ -126,12 +126,16 @@ function nextAnswerOption(current: AnswerOptionWithIndex): AnswerOption | void {
 
 function handleSheetSelect(value: AnswerOption) {
   if (value.questionId !== data.question.questionId) {
-    const question = examCache.value?.examQuestions.find((v) => v.questionId === value.questionId)
+    const question = props.exam.examQuestions.find((v) => v.questionId === value.questionId)
     if (question) {
       data.question = { ...question, number: value.number }
     }
   }
   data.question.answer = value.answer
+}
+
+function renderCountdown({ minutes, seconds }: CountdownTimeInfo) {
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
 }
 </script>
 
@@ -139,7 +143,10 @@ function handleSheetSelect(value: AnswerOption) {
   <div class="grid grid-cols-5 gap-2">
     <div class="col-span-3 flex flex-col justify-between rounded bg-white p-3">
       <div class="mt-1">
-        <BtClock></BtClock>
+        <div class="flex w-fit flex-row items-center justify-center gap-1 text-red-500">
+          <NIcon color="#18a058"><TimeOutline></TimeOutline></NIcon>
+          <NCountdown :render="renderCountdown" :duration="1800 * 1000" :active="active" />
+        </div>
         <h4 class="my-5">{{ data.question.number }}.&nbsp;{{ data.question.questionText }}</h4>
         <template v-if="data.question.questionType === 1">
           <NRadioGroup v-model:value="data.select.single">

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { FormInst } from 'naive-ui'
-import { NButton, NForm, NFormItem, NInput, useMessage } from 'naive-ui'
+import { NButton, NForm, NFormItem, NInput, useMessage, NCard } from 'naive-ui'
 import { reactive, ref } from 'vue'
 import { login } from '@/api/users'
 import { AxiosError } from 'axios'
@@ -49,7 +49,7 @@ async function handleLoginClick(e: MouseEvent) {
 
 <template>
   <div class="login-view flex flex-row justify-center">
-    <div class="mt-20 rounded-lg bg-white px-20 py-10 shadow-lg">
+    <NCard class="mt-10 w-fit rounded-lg px-20 py-10 shadow-lg">
       <NForm ref="formRef" :model="data.form" :rules="data.rules">
         <NFormItem label="邮箱" path="email">
           <NInput v-model:value="data.form.email" placeholder="请输入邮箱" />
@@ -61,7 +61,7 @@ async function handleLoginClick(e: MouseEvent) {
           <NButton :loading="loading" type="primary" block @click="handleLoginClick">登录</NButton>
         </div>
       </NForm>
-    </div>
+    </NCard>
   </div>
 </template>
 

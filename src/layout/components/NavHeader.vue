@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import router from '@/router'
-import { reactive, h } from 'vue'
-import type { Component } from 'vue'
+import { reactive, h, inject } from 'vue'
+import type { Component, Ref } from 'vue'
 import { useRoute } from 'vue-router'
 import BtAvatar from '@/components/BtAvatar.vue'
-import { NDropdown, NIcon } from 'naive-ui'
+import { NDropdown, NIcon, NSwitch } from 'naive-ui'
 import type {
   DropdownOption,
   DropdownGroupOption,
@@ -15,10 +15,13 @@ import {
   PersonCircleOutline as UserIcon,
   BuildOutline as ControlPanelIcon,
   LogOutOutline as LogoutIcon,
+  MoonOutline,
+  SunnyOutline,
 } from '@vicons/ionicons5'
 import { logout } from '@/api/users'
 
 const route = useRoute()
+const isDark = inject<Ref<boolean>>('isDark')
 
 const data = reactive({
   menus: [
@@ -101,10 +104,10 @@ async function handleAvatarMenuSelect(key: string | number) {
 
 <template>
   <header
-    class="flex flex-row items-center justify-between justify-items-center rounded bg-white p-2 shadow"
+    class="flex flex-row items-center justify-between justify-items-center rounded p-2 shadow"
   >
     <div class="icon ms-5 flex flex-row p-2"></div>
-    <nav class="flex flex-row">
+    <nav class="flex flex-row items-center justify-center">
       <ul class="flex flex-row items-center justify-start text-lg font-bold">
         <li
           class="mx-2 cursor-pointer"
@@ -116,7 +119,18 @@ async function handleAvatarMenuSelect(key: string | number) {
           {{ item.text }}
         </li>
       </ul>
-
+      <NSwitch title="切换主题" v-model:value="isDark">
+        <template #checked-icon>
+          <NIcon>
+            <MoonOutline></MoonOutline>
+          </NIcon>
+        </template>
+        <template #unchecked-icon>
+          <NIcon>
+            <SunnyOutline></SunnyOutline>
+          </NIcon>
+        </template>
+      </NSwitch>
       <NDropdown trigger="click" :options="menuList" @select="handleAvatarMenuSelect">
         <div
           class="ms-5 flex cursor-pointer flex-col items-center justify-center rounded p-1 shadow hover:shadow-2xl"

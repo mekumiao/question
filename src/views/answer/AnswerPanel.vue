@@ -14,7 +14,7 @@ import {
   useDialog,
   useMessage,
 } from 'naive-ui'
-import { NCountdown, NIcon } from 'naive-ui'
+import { NCountdown, NIcon, NCard } from 'naive-ui'
 import { TimeOutline } from '@vicons/ionicons5'
 
 type AnswerOptionWithIndex = AnswerOption & { index: [number, number] }
@@ -170,7 +170,7 @@ function handleSucmit() {
 
 <template>
   <div class="grid grid-cols-5 gap-2">
-    <div class="col-span-3 flex flex-col justify-between rounded bg-white p-3">
+    <NCard class="col-span-3 flex flex-col justify-between rounded p-3">
       <div class="mt-1">
         <div class="flex w-fit flex-row items-center justify-center gap-1 text-red-500">
           <NIcon color="#18a058"><TimeOutline></TimeOutline></NIcon>
@@ -212,36 +212,30 @@ function handleSucmit() {
         <NButton type="info" @click="handleAnswer">确认（下一题）</NButton>
         <NButton type="success" @click="handleSucmit">交卷</NButton>
       </div>
-    </div>
-    <div class="col-span-2 rounded bg-white p-3">
-      <div class="mx-3">
-        <SheetList
-          title="一、单选题"
-          :options="data.sheet[0]"
-          @select="handleSheetSelect"
-        ></SheetList>
-        <SheetList
-          title="二、多选题"
-          :options="data.sheet[1]"
-          @select="handleSheetSelect"
-        ></SheetList>
-        <SheetList
-          title="三、判断题"
-          :options="data.sheet[2]"
-          @select="handleSheetSelect"
-        ></SheetList>
-        <SheetList
-          title="四、填空题"
-          :options="data.sheet[3]"
-          @select="handleSheetSelect"
-        ></SheetList>
-      </div>
-    </div>
+    </NCard>
+    <NCard class="col-span-2 rounded">
+      <SheetList
+        title="一、单选题"
+        :options="data.sheet[0]"
+        @select="handleSheetSelect"
+      ></SheetList>
+      <SheetList
+        title="二、多选题"
+        :options="data.sheet[1]"
+        @select="handleSheetSelect"
+      ></SheetList>
+      <SheetList
+        title="三、判断题"
+        :options="data.sheet[2]"
+        @select="handleSheetSelect"
+      ></SheetList>
+      <SheetList
+        title="四、填空题"
+        :options="data.sheet[3]"
+        @select="handleSheetSelect"
+      ></SheetList>
+    </NCard>
   </div>
 </template>
 
-<style lang="scss" scoped>
-.activate {
-  background-color: var(--color-theme);
-}
-</style>
+<style lang="scss" scoped></style>

@@ -19,7 +19,7 @@ const style = computed(() => {
 
 <template>
   <div
-    class="bt-avatar flex h-14 w-14 select-none items-center justify-center rounded-full bg-blue-600 text-white"
+    class="bt-avatar flex h-14 w-14 select-none items-center justify-center rounded-full"
     :style="style"
   ></div>
 </template>

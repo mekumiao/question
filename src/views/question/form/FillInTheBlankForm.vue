@@ -34,14 +34,14 @@ defineExpose({
 
 <template>
   <NForm ref="formRef" :rules="rules" :model="model">
-    <NFormItem label="题目" path="questionText">
-      <NInput v-model:value="model.questionText" placeholder="请输入题目"></NInput>
-    </NFormItem>
     <NFormItem label="难度" path="difficultyLevel">
       <NRate v-model:value="model.difficultyLevel" :count="3"></NRate>
     </NFormItem>
+    <NFormItem label="题目" path="questionText">
+      <NInput v-model:value="model.questionText" type="textarea" placeholder="请输入题目"></NInput>
+    </NFormItem>
     <NFormItem label="答案" path="correctAnswer">
-      <NInput v-model:value="model.correctAnswer" placeholder="请输入答案"></NInput>
+      <NInput v-model:value="model.correctAnswer" type="textarea" placeholder="请输入答案"></NInput>
     </NFormItem>
   </NForm>
 </template>

@@ -26,7 +26,7 @@ function renderAnswerText(item: AnswerOption) {
       const option = item.options
         ?.filter((v) => (item.answer as number[]).includes(v.optionId))
         .map((v) => v.optionCode)
-      return option?.join(',')
+      return option?.join('')
     } else if (item.questionType === 3) {
       return item.answer === '1' ? '√' : '×'
     } else if (item.questionType === 4) {

@@ -1,6 +1,6 @@
 import type { Question } from '@/api/questions'
 import { NTag, NButton, NButtonGroup, NPopconfirm, NRate } from 'naive-ui'
-import { type DataTableColumns } from 'naive-ui'
+import type { DataTableColumns } from 'naive-ui'
 
 export function createQuestionTypeOptions() {
   return [
@@ -54,6 +54,9 @@ export function createColumns({
     {
       title: '题目',
       key: 'questionText',
+      render(row) {
+        return <div class="w-10 truncate md:w-24 xl:w-36">{row.questionText}</div>
+      },
     },
     {
       title: '类型',
@@ -79,17 +82,25 @@ export function createColumns({
       key: 'correctAnswer',
       render(row) {
         if (row.questionType === 1) {
-          return <NTag type="primary">{row.correctAnswer}</NTag>
+          return (
+            <NTag round type="primary">
+              {row.correctAnswer}
+            </NTag>
+          )
         } else if (row.questionType === 2) {
           return <NTag type="success">{row.correctAnswer}</NTag>
         } else if (row.questionType === 3) {
           return (
             <NTag type={row.correctAnswer === '1' ? 'success' : 'error'}>
-              {row.correctAnswer === '1' ? '对' : '错'}
+              {row.correctAnswer === '1' ? '√' : '×'}
             </NTag>
           )
         } else if (row.questionType == 4) {
-          return <NTag type="warning">{row.correctAnswer}</NTag>
+          return (
+            <NTag class="truncate" style={{ maxWidth: '10rem' }} type="warning">
+              {row.correctAnswer}
+            </NTag>
+          )
         }
       },
     },

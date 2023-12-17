@@ -4,17 +4,8 @@ import { onMounted, provide, reactive, ref, watch } from 'vue'
 import type { CountdownTimeInfo } from 'naive-ui'
 import type { Exam, ExamQuestion } from '@/api/exams'
 import type { AnswerOption } from './data'
-import {
-  NRadio,
-  NRadioGroup,
-  NCheckbox,
-  NCheckboxGroup,
-  NInput,
-  NButton,
-  useDialog,
-  useMessage,
-} from 'naive-ui'
-import { NCountdown, NIcon, NCard } from 'naive-ui'
+import { NRadio, NRadioGroup, NCheckbox, NCheckboxGroup, NInput, NButton } from 'naive-ui'
+import { useDialog, useMessage, NCountdown, NIcon, NCard, NScrollbar } from 'naive-ui'
 import { TimeOutline } from '@vicons/ionicons5'
 
 type AnswerOptionWithIndex = AnswerOption & { index: [number, number] }
@@ -95,7 +86,7 @@ function toAnswer() {
   } else if (value.questionType === 3) {
     return data.select.truefalse
   } else if (value.questionType === 4) {
-    return data.select.fillblank
+    return data.select.fillblank || undefined
   }
 }
 
@@ -171,12 +162,17 @@ function handleSucmit() {
 <template>
   <div class="grid grid-cols-5 gap-2">
     <NCard class="col-span-3 flex flex-col justify-between rounded p-3">
-      <div class="mt-1">
+      <div class="mt-1 xl:h-80">
         <div class="flex w-fit flex-row items-center justify-center gap-1 text-red-500">
           <NIcon color="#18a058"><TimeOutline></TimeOutline></NIcon>
           <NCountdown :render="renderCountdown" :duration="1800 * 1000" :active="active" />
         </div>
-        <h4 class="my-5">{{ data.question.number }}.&nbsp;{{ data.question.questionText }}</h4>
+        <h4 class="flex flex-row items-baseline justify-start">
+          <span>{{ data.question.number }}.&nbsp;</span>
+          <NScrollbar class="my-5 xl:max-h-56">
+            {{ data.question.questionText }}
+          </NScrollbar>
+        </h4>
         <template v-if="data.question.questionType === 1">
           <NRadioGroup v-model:value="data.select.single">
             <NRadio

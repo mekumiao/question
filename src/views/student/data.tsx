@@ -7,6 +7,7 @@ export function createDefaultModel(): User {
     email: '',
     userId: '',
     userName: '',
+    nickName: '',
     roles: [],
   }
 }

@@ -1,8 +1,7 @@
-<script setup lang="ts">
-import router from '@/router'
-import { reactive, h, inject } from 'vue'
+<script setup lang="tsx">
+import { reactive, inject } from 'vue'
 import type { Component, Ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import BtAvatar from '@/components/BtAvatar.vue'
 import { NDropdown, NIcon, NSwitch } from 'naive-ui'
 import type {
@@ -21,6 +20,7 @@ import {
 import { logout } from '@/api/users'
 
 const route = useRoute()
+const router = useRouter()
 const isDark = inject<Ref<boolean>>('isDark')
 
 const data = reactive({
@@ -79,15 +79,7 @@ const menuList: (
 ]
 
 function renderIcon(icon: Component) {
-  return () => {
-    return h(NIcon, null, {
-      default: () => h(icon),
-    })
-  }
-}
-
-function handleClick(path: string) {
-  router.push(path)
+  return () => <NIcon component={icon}></NIcon>
 }
 
 async function handleAvatarMenuSelect(key: string | number) {
@@ -108,15 +100,14 @@ async function handleAvatarMenuSelect(key: string | number) {
   >
     <div class="icon ms-5 flex flex-row p-2"></div>
     <nav class="flex flex-row items-center justify-center">
-      <ul class="flex flex-row items-center justify-start text-lg font-bold">
+      <ul role="list" class="flex flex-row items-center justify-start">
         <li
-          class="mx-2 cursor-pointer"
+          class="mx-2 cursor-pointer text-lg font-bold"
           :class="{ activate: item.path === route.path }"
           v-for="(item, key) in data.menus"
           :key="key"
-          @click="handleClick(item.path)"
         >
-          {{ item.text }}
+          <RouterLink :to="item.path">{{ item.text }}</RouterLink>
         </li>
       </ul>
       <NSwitch title="切换主题" v-model:value="isDark">

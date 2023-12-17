@@ -1,6 +1,6 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { NMenu } from 'naive-ui'
-import { h, ref, type Component, onMounted } from 'vue'
+import { ref, type Component, onMounted } from 'vue'
 import { NIcon } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
 import {
@@ -26,14 +26,14 @@ onMounted(() => {
 
 function renderMenuLabel(label: string, to?: RouteLocationRaw) {
   if (to) {
-    return () => h(RouterLink, { to: to }, { default: () => label })
+    return () => <RouterLink to={to}>{label}</RouterLink>
   } else {
     return label
   }
 }
 
 function renderIcon(icon: Component) {
-  return () => h(NIcon, null, { default: () => h(icon) })
+  return () => <NIcon component={icon}></NIcon>
 }
 
 function selectAndExpand(key: string) {

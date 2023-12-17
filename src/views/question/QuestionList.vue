@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { NDataTable, NInput, NButton, NButtonGroup, NInputGroup, NInputGroupLabel } from 'naive-ui'
-import { NIcon, NSelect } from 'naive-ui'
+import { NIcon, NSelect, useMessage } from 'naive-ui'
 import {
   list as fetchQuestionList,
   count as fetchQuestionCount,
@@ -16,6 +16,8 @@ import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 const editRef = ref<InstanceType<typeof QuestionEdit>>()
 const detailRef = ref<InstanceType<typeof QuestionDetail>>()
+
+const message = useMessage()
 
 const loading = ref(false)
 const model = ref<Question[]>([])
@@ -36,6 +38,7 @@ const pagination = reactive({
 const columns = createColumns({
   edit(row) {
     editRef.value?.open(row.questionId, () => {
+      message.success('保存成功')
       handlePageChange(pagination.page)
     })
   },

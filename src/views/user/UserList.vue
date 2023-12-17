@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { NDataTable, NInput, NButton, NButtonGroup, NInputGroup, NInputGroupLabel } from 'naive-ui'
-import { NIcon } from 'naive-ui'
+import { NIcon, useMessage } from 'naive-ui'
 import { list as fetchUserList, count as fetchUserCount } from '@/api/users'
 import type { User, UserFilter } from '@/api/users'
 import { createColumns } from './data'
@@ -12,6 +12,8 @@ import UserCreate from './UserCreate.vue'
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 const editRef = ref<InstanceType<typeof UserEdit>>()
 const createRef = ref<InstanceType<typeof UserCreate>>()
+
+const message = useMessage()
 
 const loading = ref(false)
 const model = ref<User[]>([])
@@ -30,6 +32,7 @@ const pagination = reactive({
 const columns = createColumns({
   edit(row) {
     editRef.value?.open(row.userId, () => {
+      message.success('保存成功')
       handlePageChange(pagination.page)
     })
   },

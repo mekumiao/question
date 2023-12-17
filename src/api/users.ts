@@ -52,6 +52,14 @@ export interface UserUpdate {
   roles: string[]
 }
 
+export interface UserInput {
+  email: string
+  nickName: string
+  password: string
+  confirmPassword: string
+  roles: string[]
+}
+
 export async function count(params?: UserFilter) {
   const response = await axios.get<number>(`/users/count`, { params })
   return response.data
@@ -69,5 +77,10 @@ export async function get(userId: string) {
 
 export async function update(userId: string, user: UserUpdate) {
   const response = await axios.put<User>(`/users/${userId}`, user)
+  return response.data
+}
+
+export async function create(user: UserInput) {
+  const response = await axios.post<User>(`/users/`, user)
   return response.data
 }

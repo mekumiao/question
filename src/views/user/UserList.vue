@@ -7,9 +7,11 @@ import type { User, UserFilter } from '@/api/users'
 import { createColumns } from './data'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
 import UserEdit from './UserEdit.vue'
+import UserCreate from './UserCreate.vue'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 const editRef = ref<InstanceType<typeof UserEdit>>()
+const createRef = ref<InstanceType<typeof UserCreate>>()
 
 const loading = ref(false)
 const model = ref<User[]>([])
@@ -64,7 +66,11 @@ async function handleEnter(e: KeyboardEvent) {
   }
 }
 
-async function handleCreate() {}
+async function handleCreate() {
+  createRef.value?.open(() => {
+    handlePageChange(pagination.page)
+  })
+}
 </script>
 
 <template>
@@ -109,6 +115,7 @@ async function handleCreate() {}
       @update:page="handlePageChange"
     />
     <UserEdit ref="editRef"></UserEdit>
+    <UserCreate ref="createRef"></UserCreate>
   </div>
 </template>
 

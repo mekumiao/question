@@ -5,10 +5,10 @@ import { NIcon } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
 import {
   BookmarkOutline,
-  People,
+  // People,
   PeopleOutline,
   RibbonOutline,
-  SchoolOutline,
+  // SchoolOutline,
   Server,
   TimeOutline,
 } from '@vicons/ionicons5'
@@ -48,21 +48,21 @@ const menuOptions: MenuOption[] = [
     icon: renderIcon(DashboardOutlined),
   },
   {
-    label: renderMenuLabel('用户管理'),
-    key: 'user-management',
-    icon: renderIcon(People),
-    children: [
-      {
-        label: renderMenuLabel('用户列表', { path: '/admin/user' }),
-        key: '/admin/user',
-        icon: renderIcon(PeopleOutline),
-      },
-      {
-        label: renderMenuLabel('学生列表', { path: '/admin/student' }),
-        key: '/admin/student',
-        icon: renderIcon(SchoolOutline),
-      },
-    ],
+    // label: renderMenuLabel('用户管理'),
+    // key: 'user-management',
+    // icon: renderIcon(People),
+    // children: [
+    // {
+    label: renderMenuLabel('用户列表', { path: '/admin/user' }),
+    key: '/admin/user',
+    icon: renderIcon(PeopleOutline),
+    // },
+    // {
+    //   label: renderMenuLabel('学生列表', { path: '/admin/student' }),
+    //   key: '/admin/student',
+    //   icon: renderIcon(SchoolOutline),
+    // },
+    // ],
   },
   {
     label: renderMenuLabel('题库管理'),

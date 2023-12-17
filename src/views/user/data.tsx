@@ -7,19 +7,25 @@ export function createDefaultModel(): User {
     email: '',
     userId: '',
     userName: '',
+    nickName: '',
     roles: [],
   }
 }
 
 export function createColumns({
   edit,
+  lock,
 }: {
   edit?: (rowData: User) => void
-  remove?: (rowData: User) => void
+  lock?: (rowData: User) => void
 }): DataTableColumns<User> {
   return [
     {
       title: '名称',
+      key: 'nickName',
+    },
+    {
+      title: '账号',
       key: 'userName',
     },
     {
@@ -49,6 +55,9 @@ export function createColumns({
           <NButtonGroup>
             <NButton type="primary" size="small" onClick={() => edit?.(row)}>
               编辑
+            </NButton>
+            <NButton type="warning" size="small" onClick={() => lock?.(row)}>
+              锁定
             </NButton>
           </NButtonGroup>
         )

@@ -9,7 +9,7 @@ import {
   PeopleOutline,
   RibbonOutline,
   // SchoolOutline,
-  Server,
+  // Server,
   TimeOutline,
 } from '@vicons/ionicons5'
 import { DashboardOutlined } from '@vicons/antd'
@@ -64,28 +64,28 @@ const menuOptions: MenuOption[] = [
     // },
     // ],
   },
+  // {
+  //   label: renderMenuLabel('题库管理'),
+  //   key: 'qbank-management',
+  //   icon: renderIcon(Server),
+  //   children: [
   {
-    label: renderMenuLabel('题库管理'),
-    key: 'qbank-management',
-    icon: renderIcon(Server),
-    children: [
-      {
-        label: renderMenuLabel('题目列表', { path: '/admin/question' }),
-        key: '/admin/question',
-        icon: renderIcon(BookmarkOutline),
-      },
-      {
-        label: renderMenuLabel('试卷列表', { path: '/admin/exam' }),
-        key: '/admin/exam',
-        icon: renderIcon(RibbonOutline),
-      },
-      {
-        label: renderMenuLabel('答题历史', { path: '/admin/history' }),
-        key: '/admin/history',
-        icon: renderIcon(TimeOutline),
-      },
-    ],
+    label: renderMenuLabel('题目列表', { path: '/admin/question' }),
+    key: '/admin/question',
+    icon: renderIcon(BookmarkOutline),
   },
+  {
+    label: renderMenuLabel('试卷列表', { path: '/admin/exam' }),
+    key: '/admin/exam',
+    icon: renderIcon(RibbonOutline),
+  },
+  {
+    label: renderMenuLabel('答题历史', { path: '/admin/history' }),
+    key: '/admin/history',
+    icon: renderIcon(TimeOutline),
+  },
+  //   ],
+  // },
 ]
 </script>
 

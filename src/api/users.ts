@@ -56,7 +56,6 @@ export interface UserInput {
   email: string
   nickName: string
   password: string
-  confirmPassword: string
   roles: string[]
 }
 

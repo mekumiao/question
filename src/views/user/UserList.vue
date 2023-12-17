@@ -6,8 +6,10 @@ import { list as fetchUserList, count as fetchUserCount } from '@/api/users'
 import type { User, UserFilter } from '@/api/users'
 import { createColumns } from './data'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
+import UserEdit from './UserEdit.vue'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
+const editRef = ref<InstanceType<typeof UserEdit>>()
 
 const loading = ref(false)
 const model = ref<User[]>([])
@@ -24,11 +26,11 @@ const pagination = reactive({
 })
 
 const columns = createColumns({
-  // edit(row) {
-  //   editRef.value?.open(row.questionId, () => {
-  //     handlePageChange(pagination.page)
-  //   })
-  // },
+  edit(row) {
+    editRef.value?.open(row.userId, () => {
+      handlePageChange(pagination.page)
+    })
+  },
 })
 
 onMounted(async () => {
@@ -61,6 +63,8 @@ async function handleEnter(e: KeyboardEvent) {
     await handleSearch()
   }
 }
+
+async function handleCreate() {}
 </script>
 
 <template>
@@ -68,9 +72,16 @@ async function handleEnter(e: KeyboardEvent) {
     <div class="flex flex-row items-center justify-between pb-3">
       <div class="flex flex-row items-center justify-start space-x-8">
         <NInputGroup>
-          <NInputGroupLabel type="primary">用户名</NInputGroupLabel>
-          <NInput v-model:value="filter.userName" @keydown="handleEnter" />
+          <NInputGroupLabel type="primary">名称</NInputGroupLabel>
+          <NInput v-model:value="filter.nickName" @keydown="handleEnter" />
           <NButton type="info" @click="handleSearch">
+            <NIcon><SearchOutline></SearchOutline></NIcon>
+          </NButton>
+        </NInputGroup>
+        <NInputGroup>
+          <NInputGroupLabel type="primary">账号</NInputGroupLabel>
+          <NInput v-model:value="filter.userName" @keydown="handleEnter" />
+          <NButton type="success" @click="handleSearch">
             <NIcon><SearchOutline></SearchOutline></NIcon>
           </NButton>
         </NInputGroup>
@@ -82,9 +93,7 @@ async function handleEnter(e: KeyboardEvent) {
           </NButton>
         </NButtonGroup>
         <NButtonGroup size="small">
-          <NButton type="primary">新建</NButton>
-          <NButton type="warning">导入</NButton>
-          <NButton type="info">导出</NButton>
+          <NButton type="primary" @click="handleCreate">新建</NButton>
         </NButtonGroup>
       </div>
     </div>
@@ -99,6 +108,7 @@ async function handleEnter(e: KeyboardEvent) {
       :row-key="(row: User) => row.userId"
       @update:page="handlePageChange"
     />
+    <UserEdit ref="editRef"></UserEdit>
   </div>
 </template>
 

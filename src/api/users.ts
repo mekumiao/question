@@ -35,18 +35,20 @@ export async function info() {
 
 export interface UserFilter {
   userName?: string
+  nickName?: string
   email?: string
 }
 
 export interface User {
   userId: string
   userName: string
+  nickName: string
   email: string
   roles: string[]
 }
 
 export interface UserUpdate {
-  userName: string
+  nickName: string
   roles: string[]
 }
 
@@ -60,7 +62,12 @@ export async function list(params?: PaginationParameters & UserFilter) {
   return response.data
 }
 
-export async function get(userId: number) {
+export async function get(userId: string) {
   const response = await axios.get<User>(`/users/${userId}`)
+  return response.data
+}
+
+export async function update(userId: string, user: UserUpdate) {
+  const response = await axios.put<User>(`/users/${userId}`, user)
   return response.data
 }

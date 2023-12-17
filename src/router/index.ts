@@ -3,6 +3,9 @@ import StudentLayout from '@/layout/StudentLayout.vue'
 import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/login/LoginView.vue'
 import { checkUserAuthentication, info as fetchInfo } from '@/api/users'
+import { createDiscreteApi } from 'naive-ui'
+
+const { loadingBar } = createDiscreteApi(['loadingBar'])
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,6 +50,15 @@ const router = createRouter({
       component: () => import('../views/NotFound.vue'),
     },
   ],
+})
+
+router.beforeEach((to, from, next) => {
+  loadingBar.start()
+  next()
+})
+
+router.afterEach(() => {
+  loadingBar.finish()
 })
 
 router.beforeEach(async (to, from, next) => {

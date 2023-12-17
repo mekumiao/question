@@ -70,7 +70,6 @@ defineExpose({ open })
           <NFormItem label="角色">
             <NCheckboxGroup v-model:value="model.roles">
               <NCheckbox value="admin" label="管理员"></NCheckbox>
-              <NCheckbox value="student" label="学生"></NCheckbox>
             </NCheckboxGroup>
           </NFormItem>
         </NForm>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { AnswerOption } from './data'
-import { NTag, NIcon } from 'naive-ui'
+import { NTag, NIcon, NEllipsis } from 'naive-ui'
 import { CheckmarkCircle } from '@vicons/ionicons5'
 import { inject, type Ref } from 'vue'
 
@@ -43,7 +43,10 @@ function handleClick(item: AnswerOption) {
 <template>
   <div class="sheet-list">
     <h4>{{ title }}</h4>
-    <ul role="list" class="m-1 flex flex-row items-start justify-start justify-items-center">
+    <ul
+      role="list"
+      class="m-1 flex flex-row flex-wrap items-start justify-start justify-items-center"
+    >
       <li
         class="mx-1 flex w-fit cursor-pointer select-none flex-row justify-around"
         v-for="(item, key) in options"
@@ -56,7 +59,9 @@ function handleClick(item: AnswerOption) {
           </template>
           <span>{{ item.number }}.&nbsp;</span>
           <span class="w-1"></span>
-          <span>{{ renderAnswerText(item) }}</span>
+          <NEllipsis style="max-width: 100px" :tooltip="false">
+            {{ renderAnswerText(item) }}
+          </NEllipsis>
         </NTag>
         <NTag v-else-if="selected === item.questionId" round type="warning" class="hover:shadow">
           <span>{{ item.number }}</span>

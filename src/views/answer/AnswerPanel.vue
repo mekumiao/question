@@ -81,7 +81,7 @@ watch(
     } else if (value.questionType === 3) {
       data.select = { truefalse: value.answer as string }
     } else if (value.questionType === 4) {
-      data.select = { fillblank: value.answer as string }
+      data.select = { fillblank: (value.answer ?? '') as string }
     }
   },
 )

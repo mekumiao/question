@@ -7,7 +7,11 @@ import NavHeader from './components/NavHeader.vue'
   <div class="student-layout container mx-auto flex flex-col">
     <NavHeader></NavHeader>
     <main class="my-2">
-      <RouterView></RouterView>
+      <RouterView v-slot="{ Component }">
+        <KeepAlive>
+          <component :is="Component" />
+        </KeepAlive>
+      </RouterView>
     </main>
   </div>
 </template>

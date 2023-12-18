@@ -12,7 +12,11 @@ import SiderMenu from './components/SiderMenu.vue'
         <SiderMenu></SiderMenu>
       </div>
       <div class="col-span-8 rounded">
-        <RouterView></RouterView>
+        <RouterView v-slot="{ Component }">
+          <KeepAlive>
+            <component :is="Component" />
+          </KeepAlive>
+        </RouterView>
       </div>
     </main>
   </div>

@@ -39,7 +39,7 @@ const router = createRouter({
       component: () => import('@/layout/AdminLayout.vue'),
       redirect: '/admin/dashboard',
       children: [
-        { path: 'dashboard', component: () => import('../views/DashboardView.vue') },
+        { path: 'dashboard', component: () => import('../views/dashboard/DashboardView.vue') },
         { path: 'exam-paper', component: () => import('../views/exam-paper/ExamPaperList.vue') },
         { path: 'question', component: () => import('../views/question/QuestionList.vue') },
         { path: 'student', component: () => import('../views/student/StudentList.vue') },

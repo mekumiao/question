@@ -4,6 +4,7 @@ import { UserAddOutlined } from '@vicons/antd'
 import { count as fetchQuestionCount } from '@/api/questions'
 import { count as fetchUserCount } from '@/api/users'
 import { reactive } from 'vue'
+import VisualCharts from './VisualCharts.vue'
 
 const data = reactive({
   questionCount: 0,
@@ -43,7 +44,9 @@ fetchUserCount().then((v) => {
         </template>
         80%
       </NStatistic>
-      <NCard class="col-span-4 row-span-2 p-2 shadow">图表</NCard>
+      <div class="col-span-4 row-span-2 shadow">
+        <VisualCharts></VisualCharts>
+      </div>
     </div>
   </NCard>
 </template>

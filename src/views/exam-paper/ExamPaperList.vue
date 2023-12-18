@@ -74,7 +74,7 @@ async function handleEnter(e: KeyboardEvent) {
 </script>
 
 <template>
-  <div class="exam-list m-3">
+  <div class="m-3">
     <div class="flex flex-row items-center justify-between pb-3">
       <div class="flex flex-row items-center justify-start space-x-8">
         <NInputGroup>

@@ -30,11 +30,11 @@ const data = reactive({
       text: '首页',
     },
     {
-      path: '/student/answer',
+      path: '/student/examination',
       text: '开始考试',
     },
     {
-      path: '/student/2',
+      path: '/student/mock-exam',
       text: '模拟考试',
     },
     {

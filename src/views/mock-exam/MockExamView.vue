@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { shallowRef, ref } from 'vue'
-import AnswerPanel from './AnswerPanel.vue'
+import AnswerPanel from '@/components/answer/AnswerPanel.vue'
 import { NButton, NCard, useMessage, NRate, NSpin, NCountdown } from 'naive-ui'
 import { get as fetchExam, type ExamPaper } from '@/api/examPapers'
 import { list as fetchExaminationList, type Examination } from '@/api/examination'
 
-const exam = shallowRef<ExamPaper>()
+const examPaper = shallowRef<ExamPaper>()
 const loading = ref(false)
 const examinations = ref<Examination[]>([])
 
@@ -14,13 +14,13 @@ const message = useMessage()
 fullData()
 
 async function fullData() {
-  examinations.value = await fetchExaminationList({ examinationType: 1 })
+  examinations.value = await fetchExaminationList({ examinationType: 2 })
 }
 
 async function handleAnswer(item: Examination) {
   try {
     loading.value = true
-    exam.value = await fetchExam(item.examPaperId)
+    examPaper.value = await fetchExam(item.examPaperId)
   } catch (error) {
     if (error instanceof Error) message.error(error.message)
     console.error(error)
@@ -31,8 +31,8 @@ async function handleAnswer(item: Examination) {
 </script>
 
 <template>
-  <div class="answer-view">
-    <AnswerPanel v-if="exam" :exam="exam"></AnswerPanel>
+  <div class="mx-4">
+    <AnswerPanel v-if="examPaper" :exam-paper="examPaper"></AnswerPanel>
     <NSpin v-else :show="loading">
       <div class="grid grid-cols-3 gap-4">
         <NCard v-for="(item, key) in examinations" :key="key">

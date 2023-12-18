@@ -26,7 +26,11 @@ const router = createRouter({
       path: '/student',
       component: StudentLayout,
       children: [
-        { path: 'answer', component: () => import('../views/answer/AnswerView.vue') },
+        {
+          path: 'examination',
+          component: () => import('../views/examination/ExaminationView.vue'),
+        },
+        { path: 'mock-exam', component: () => import('../views/mock-exam/MockExamView.vue') },
         { path: 'personal', component: () => import('../views/user/PersonalView.vue') },
       ],
     },
@@ -36,7 +40,7 @@ const router = createRouter({
       redirect: '/admin/dashboard',
       children: [
         { path: 'dashboard', component: () => import('../views/DashboardView.vue') },
-        { path: 'exam', component: () => import('../views/exam/ExamList.vue') },
+        { path: 'exam-paper', component: () => import('../views/exam-paper/ExamPaperList.vue') },
         { path: 'question', component: () => import('../views/question/QuestionList.vue') },
         { path: 'student', component: () => import('../views/student/StudentList.vue') },
         { path: 'user', component: () => import('../views/user/UserList.vue') },

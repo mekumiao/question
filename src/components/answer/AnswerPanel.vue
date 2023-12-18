@@ -10,7 +10,7 @@ import { TimeOutline } from '@vicons/ionicons5'
 
 type AnswerOptionWithIndex = AnswerOption & { index: [number, number] }
 
-const props = defineProps<{ exam: ExamPaper }>()
+const props = defineProps<{ examPaper: ExamPaper }>()
 
 const active = ref(true)
 const data = reactive<{
@@ -35,15 +35,15 @@ const message = useMessage()
 provide('selected', selected)
 
 onMounted(async () => {
-  fullData(props.exam)
+  fullData(props.examPaper)
 })
 
-function fullData(exam: ExamPaper) {
-  if (exam.examPaperQuestions.length) {
+function fullData(examPaper: ExamPaper) {
+  if (examPaper.examPaperQuestions.length) {
     // 目前仅有4种题型：单选、多选、判断、填空
     let number = 0
     for (let i = 0; i < 4; i++) {
-      data.sheet[i] = exam.examPaperQuestions
+      data.sheet[i] = examPaper.examPaperQuestions
         .filter((v) => v.questionType === i + 1)
         .map((v, n) => ({
           number: ++number,
@@ -54,7 +54,7 @@ function fullData(exam: ExamPaper) {
         }))
     }
     const first = data.sheet[0][0]
-    const item = exam.examPaperQuestions.find((v) => v.questionId === first.questionId)
+    const item = examPaper.examPaperQuestions.find((v) => v.questionId === first.questionId)
     if (item) {
       data.question = { ...item, number: first.number }
       selected.value = item.questionId
@@ -134,7 +134,9 @@ function nextAnswerOption(current: AnswerOptionWithIndex): AnswerOption | void {
 function handleSheetSelect(value: AnswerOption) {
   selected.value = value.questionId
   if (value.questionId !== data.question.questionId) {
-    const question = props.exam.examPaperQuestions.find((v) => v.questionId === value.questionId)
+    const question = props.examPaper.examPaperQuestions.find(
+      (v) => v.questionId === value.questionId,
+    )
     if (question) {
       data.question = { ...question, number: value.number }
     }

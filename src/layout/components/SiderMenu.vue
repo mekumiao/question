@@ -75,8 +75,8 @@ const menuOptions: MenuOption[] = [
     icon: renderIcon(BookmarkOutline),
   },
   {
-    label: renderMenuLabel('试卷列表', { path: '/admin/exam' }),
-    key: '/admin/exam',
+    label: renderMenuLabel('试卷列表', { path: '/admin/exam-paper' }),
+    key: '/admin/exam-paper',
     icon: renderIcon(RibbonOutline),
   },
   {

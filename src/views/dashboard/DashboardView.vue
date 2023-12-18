@@ -27,12 +27,23 @@ fetchUserCount().then((v) => {
       </NStatistic>
       <NStatistic label="活跃用户" tabular-nums class="col-span-1 row-span-1 p-2 shadow">
         <template #prefix>
-          <NIcon>
-            <UserAddOutlined />
-          </NIcon>
+          <NIcon><UserAddOutlined /></NIcon>
         </template>
-        {{ data.userCount.toLocaleString() }} / {{ (10000).toLocaleString() }}
+        {{ data.userCount.toLocaleString() }}
       </NStatistic>
+      <NStatistic label="总考试次数" tabular-nums class="col-span-1 row-span-1 p-2 shadow">
+        <template #prefix>
+          <NIcon><UserAddOutlined /></NIcon>
+        </template>
+        {{ data.userCount.toLocaleString() }}
+      </NStatistic>
+      <NStatistic label="错题率" tabular-nums class="col-span-1 row-span-1 p-2 shadow">
+        <template #prefix>
+          <NIcon><UserAddOutlined /></NIcon>
+        </template>
+        80%
+      </NStatistic>
+      <NCard class="col-span-4 row-span-2 p-2 shadow">图表</NCard>
     </div>
   </NCard>
 </template>

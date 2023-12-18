@@ -31,7 +31,12 @@ const router = createRouter({
           component: () => import('../views/examination/ExaminationView.vue'),
         },
         { path: 'mock-exam', component: () => import('../views/mock-exam/MockExamView.vue') },
-        { path: 'personal', component: () => import('../views/admin/user/PersonalView.vue') },
+        { path: 'personal', component: () => import('../views/personal/PersonalView.vue') },
+        { path: 'practice', component: () => import('../views/mock-exam/MockExamView.vue') },
+        {
+          path: 'answer-history',
+          component: () => import('../views/answer-history/AnswerHistoryView.vue'),
+        },
       ],
     },
     {
@@ -39,8 +44,14 @@ const router = createRouter({
       component: () => import('@/layout/AdminLayout.vue'),
       redirect: '/admin/dashboard',
       children: [
-        { path: 'dashboard', component: () => import('../views/admin/dashboard/DashboardView.vue') },
-        { path: 'exam-paper', component: () => import('../views/admin/exam-paper/ExamPaperList.vue') },
+        {
+          path: 'dashboard',
+          component: () => import('../views/admin/dashboard/DashboardView.vue'),
+        },
+        {
+          path: 'exam-paper',
+          component: () => import('../views/admin/exam-paper/ExamPaperList.vue'),
+        },
         { path: 'question', component: () => import('../views/admin/question/QuestionList.vue') },
         { path: 'student', component: () => import('../views/admin/student/StudentList.vue') },
         { path: 'user', component: () => import('../views/admin/user/UserList.vue') },

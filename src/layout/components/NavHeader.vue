@@ -31,24 +31,24 @@ const data = reactive({
     },
     {
       path: '/student/examination',
-      text: '开始考试',
+      text: '考试',
+    },
+    {
+      path: '/student/practice',
+      text: '练习',
     },
     {
       path: '/student/mock-exam',
       text: '模拟考试',
     },
     {
-      path: '/student/3',
+      path: '/student/answer-history',
       text: '考试记录',
     },
-    {
-      path: '/student/4',
-      text: '错题重做',
-    },
-    {
-      path: '/student/5',
-      text: '我要练习',
-    },
+    // {
+    //   path: '/student/4',
+    //   text: '错题重做',
+    // },
   ],
 })
 

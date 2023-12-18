@@ -1,6 +1,6 @@
-import type { ExamPaper } from '@/api/examPapers'
+import type { AnswerHistory } from '@/api/students'
 import type { DataTableColumns } from 'naive-ui'
-import { NRate, NButton, NButtonGroup, NPopconfirm } from 'naive-ui'
+import { NRate, NButton, NButtonGroup, NPopconfirm, NTag, NTime, NSpace } from 'naive-ui'
 
 export function createDifficultyLevelOptions() {
   return [
@@ -37,9 +37,9 @@ export function createColumns({
   edit,
   remove,
 }: {
-  edit?: (rowData: ExamPaper) => void
-  remove?: (rowData: ExamPaper) => void
-}): DataTableColumns<ExamPaper> {
+  edit?: (rowData: AnswerHistory) => void
+  remove?: (rowData: AnswerHistory) => void
+}): DataTableColumns<AnswerHistory> {
   return [
     {
       title: 'ID',
@@ -56,6 +56,46 @@ export function createColumns({
       render(row) {
         return <NRate readonly size="small" value={row.difficultyLevel} count={3}></NRate>
       },
+    },
+
+    {
+      title: '作答时间',
+      key: 'difficultyLevel',
+      render(row) {
+        return (
+          <NSpace>
+            {{
+              default: () => {
+                const min = new Date(2023)
+                const start = new Date(row.startTime)
+                const end = new Date(row.submissionTime)
+                return (
+                  <>
+                    {start > min ? <NTime time={start}></NTime> : '--'}
+                    <span>至</span>
+                    {end > min ? <NTime time={end}></NTime> : '--'}
+                  </>
+                )
+              },
+            }}
+          </NSpace>
+        )
+      },
+    },
+    {
+      title: '已交卷',
+      key: 'difficultyLevel',
+      render(row) {
+        return (
+          <NTag size="small" type={row.isSubmission ? 'success' : 'error'}>
+            {row.isSubmission ? '是' : '否'}
+          </NTag>
+        )
+      },
+    },
+    {
+      title: '错题数',
+      key: 'totalIncorrectAnswers',
     },
     {
       title: '操作',

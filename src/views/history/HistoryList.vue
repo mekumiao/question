@@ -12,6 +12,7 @@ const tableRef = ref<InstanceType<typeof NDataTable>>()
 
 const loading = ref(false)
 const model = ref<AnswerHistory[]>([])
+const modelCache = ref<AnswerHistory[]>([])
 const filter = reactive<ExamPaperFilter>({ difficultyLevel: 0 })
 
 const pagination = reactive({
@@ -39,7 +40,7 @@ const columns = createColumns({
 })
 
 onMounted(async () => {
-  await handleSearch()
+  await handlePageChange(1)
 })
 
 async function handlePageChange(currentPage: number) {
@@ -47,6 +48,7 @@ async function handlePageChange(currentPage: number) {
     try {
       loading.value = true
       model.value = await fetchHistoryList()
+      modelCache.value = model.value
       pagination.page = currentPage
     } finally {
       loading.value = false
@@ -55,7 +57,9 @@ async function handlePageChange(currentPage: number) {
 }
 
 async function handleSearch() {
-  await handlePageChange(1)
+  model.value = modelCache.value
+    .filter((v) => (filter.difficultyLevel ? v.difficultyLevel === filter.difficultyLevel : true))
+    .filter((v) => (filter.examPaperName ? v.examPaperName.includes(filter.examPaperName) : true))
 }
 
 async function handleEnter(e: KeyboardEvent) {

@@ -19,8 +19,11 @@ export interface AnswerHistory {
   studentName: string
   examPaperId: number
   examPaperName: string
-  startTime: Date
-  submissionTime: Date
+  difficultyLevel: number
+  startTime: string
+  submissionTime: string
+  isSubmission: boolean
+  totalIncorrectAnswers: number
 }
 
 export async function count(params?: StudentFilter) {

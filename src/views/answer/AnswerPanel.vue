@@ -235,4 +235,3 @@ function handleSucmit() {
 </template>
 
 <style lang="scss" scoped></style>
-@/api/examPapers

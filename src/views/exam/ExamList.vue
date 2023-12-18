@@ -123,4 +123,3 @@ async function handleEnter(e: KeyboardEvent) {
 </template>
 
 <style lang="css" scoped></style>
-@/api/examPapers@/api/examPapers

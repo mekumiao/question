@@ -33,4 +33,3 @@ async function handleStartTest() {
 </template>
 
 <style lang="scss" scoped></style>
-@/api/examPapers

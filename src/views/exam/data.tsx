@@ -1,4 +1,4 @@
-import type { Exam } from '@/api/exams'
+import type { ExamPaper } from '@/api/examPapers'
 import type { DataTableColumns } from 'naive-ui'
 import { NRate, NButton, NButtonGroup, NPopconfirm } from 'naive-ui'
 
@@ -37,18 +37,18 @@ export function createColumns({
   edit,
   remove,
 }: {
-  edit?: (rowData: Exam) => void
-  remove?: (rowData: Exam) => void
-}): DataTableColumns<Exam> {
+  edit?: (rowData: ExamPaper) => void
+  remove?: (rowData: ExamPaper) => void
+}): DataTableColumns<ExamPaper> {
   return [
     {
       title: 'ID',
-      key: 'examId',
+      key: 'examPaperId',
       width: 80,
     },
     {
       title: '试卷名称',
-      key: 'examName',
+      key: 'examPaperName',
     },
     {
       title: '难度',
@@ -73,7 +73,7 @@ export function createColumns({
                     删除
                   </NButton>
                 ),
-                default: () => `确定删除ID为 "${row.examId}" 的试卷吗？`,
+                default: () => `确定删除ID为 "${row.examPaperId}" 的试卷吗？`,
               }}
             </NPopconfirm>
           </NButtonGroup>

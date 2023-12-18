@@ -2,10 +2,10 @@
 import { shallowRef, ref } from 'vue'
 import AnswerPanel from './AnswerPanel.vue'
 import { NButton, useMessage } from 'naive-ui'
-import { get as fetchExam, type Exam } from '@/api/exams'
+import { get as fetchExam, type ExamPaper } from '@/api/examPapers'
 
-const examId = 4
-const exam = shallowRef<Exam>()
+const examPaperId = 4
+const exam = shallowRef<ExamPaper>()
 const loading = ref(false)
 
 const message = useMessage()
@@ -13,7 +13,7 @@ const message = useMessage()
 async function handleStartTest() {
   try {
     loading.value = true
-    exam.value = await fetchExam(examId)
+    exam.value = await fetchExam(examPaperId)
   } catch (error) {
     if (error instanceof Error) message.error(error.message)
     console.error(error)
@@ -33,3 +33,4 @@ async function handleStartTest() {
 </template>
 
 <style lang="scss" scoped></style>
+@/api/examPapers

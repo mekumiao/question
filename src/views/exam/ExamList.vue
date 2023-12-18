@@ -6,16 +6,16 @@ import {
   list as fetchExamList,
   count as fetchExamCount,
   remove as fetchExamDelete,
-} from '@/api/exams'
-import type { Exam, ExamFilter } from '@/api/exams'
+} from '@/api/examPapers'
+import type { ExamPaper, ExamPaperFilter } from '@/api/examPapers'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
 import { createColumns, createDifficultyLevelOptions } from './data'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 
 const loading = ref(false)
-const model = ref<Exam[]>([])
-const filter = reactive<ExamFilter>({ difficultyLevel: 0 })
+const model = ref<ExamPaper[]>([])
+const filter = reactive<ExamPaperFilter>({ difficultyLevel: 0 })
 
 const pagination = reactive({
   page: 1,
@@ -36,7 +36,7 @@ const columns = createColumns({
   //   })
   // },
   async remove(row) {
-    await fetchExamDelete(row.examId)
+    await fetchExamDelete(row.examPaperId)
     await handlePageChange(pagination.page)
   },
 })
@@ -87,7 +87,7 @@ async function handleEnter(e: KeyboardEvent) {
         </NInputGroup>
         <NInputGroup>
           <NInputGroupLabel type="primary">搜索试卷</NInputGroupLabel>
-          <NInput v-model:value="filter.examName" @keydown="handleEnter" />
+          <NInput v-model:value="filter.examPaperName" @keydown="handleEnter" />
           <NButton type="info" @click="handleSearch">
             <NIcon><SearchOutline></SearchOutline></NIcon>
           </NButton>
@@ -114,7 +114,7 @@ async function handleEnter(e: KeyboardEvent) {
       :columns="columns"
       :data="model"
       :pagination="pagination"
-      :row-key="(row: Exam) => row.examId"
+      :row-key="(row: ExamPaper) => row.examPaperId"
       @update:page="handlePageChange"
     />
     <!-- <QuestionEdit ref="editRef"></QuestionEdit>
@@ -123,3 +123,4 @@ async function handleEnter(e: KeyboardEvent) {
 </template>
 
 <style lang="css" scoped></style>
+@/api/examPapers@/api/examPapers

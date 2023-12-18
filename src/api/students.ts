@@ -17,8 +17,8 @@ export interface AnswerHistory {
   answerHistoryId: number
   studentId: number
   studentName: string
-  examId: number
-  examName: string
+  examPaperId: number
+  examPaperName: string
   startTime: Date
   submissionTime: Date
 }

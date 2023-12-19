@@ -90,7 +90,7 @@ const menuOptions: MenuOption[] = [
 </script>
 
 <template>
-  <aside class="sticky top-0">
+  <aside>
     <NMenu
       ref="menuInstRef"
       v-model:value="selectedKey"

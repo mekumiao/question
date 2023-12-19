@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SheetList from './SheetList.vue'
-import { onMounted, provide, reactive, ref, watch } from 'vue'
+import { nextTick, onMounted, provide, reactive, ref, watch } from 'vue'
 import type { CountdownTimeInfo } from 'naive-ui'
 import type { ExamPaper, ExamPaperQuestion } from '@/api/examPapers'
 import type { AnswerOption } from './data'
@@ -11,6 +11,8 @@ import { TimeOutline } from '@vicons/ionicons5'
 type AnswerOptionWithIndex = AnswerOption & { index: [number, number] }
 
 const props = defineProps<{ examPaper: ExamPaper }>()
+
+const textareaRef = ref<InstanceType<typeof NInput>>()
 
 const active = ref(true)
 const data = reactive<{
@@ -142,6 +144,12 @@ function handleSheetSelect(value: AnswerOption) {
     }
   }
   data.question.answer = value.answer
+  // 填空题时，将textarea选中
+  if (data.question.questionType === 4) {
+    nextTick(() => {
+      textareaRef.value?.focus()
+    })
+  }
 }
 
 function renderCountdown({ minutes, seconds }: CountdownTimeInfo) {
@@ -202,7 +210,7 @@ function handleSucmit() {
           </NRadioGroup>
         </template>
         <template v-if="data.question.questionType === 4">
-          <NInput v-model:value="data.select.fillblank" type="textarea"></NInput>
+          <NInput ref="textareaRef" v-model:value="data.select.fillblank" type="textarea"></NInput>
         </template>
       </div>
       <div class="mt-3 flex flex-row justify-end gap-2">

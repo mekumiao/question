@@ -48,7 +48,7 @@ async function handleAnswer(item: Examination) {
             </li>
           </ul>
           <template #action>
-            <NButton @click="handleAnswer(item)" type="primary">开始考试</NButton>
+            <NButton @click="handleAnswer(item)" type="primary">进入考试</NButton>
           </template>
         </NCard>
       </div>

@@ -8,7 +8,7 @@ import NavHeader from './components/NavHeader.vue'
     <NavHeader></NavHeader>
     <main class="my-2">
       <RouterView v-slot="{ Component }">
-        <KeepAlive>
+        <KeepAlive :exclude="['AnswerDetail', 'AnswerView']">
           <component :is="Component" />
         </KeepAlive>
       </RouterView>

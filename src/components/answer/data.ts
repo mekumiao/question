@@ -6,4 +6,5 @@ export type AnswerOption = {
   questionType: number
   answer?: number | number[] | string
   options?: Option[]
+  isCorrect?: boolean
 }

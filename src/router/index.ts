@@ -37,6 +37,19 @@ const router = createRouter({
           path: 'answer-history',
           component: () => import('../views/answer-history/AnswerHistoryView.vue'),
         },
+        {
+          path: 'answer/:examPaperId',
+          props: (route) => ({
+            examPaperId: Number(route.params['examPaperId']),
+            examinationId: Number(route.query.examinationId),
+          }),
+          component: () => import('../views/answer/AnswerView.vue'),
+        },
+        {
+          path: 'answer-detail/:answerBoardId',
+          props: (route) => ({ answerBoardId: Number(route.params['answerBoardId']) }),
+          component: () => import('../views/answer/AnswerDetail.vue'),
+        },
       ],
     },
     {

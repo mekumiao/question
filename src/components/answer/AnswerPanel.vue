@@ -1,22 +1,21 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import SheetList from './SheetList.vue'
-import { nextTick, onMounted, provide, reactive, ref, watch } from 'vue'
-import type { CountdownTimeInfo } from 'naive-ui'
-import type { ExamPaper, ExamPaperQuestion } from '@/api/examPapers'
+import { nextTick, provide, reactive, ref, watch } from 'vue'
 import type { AnswerOption } from './data'
 import { NRadio, NRadioGroup, NCheckbox, NCheckboxGroup, NInput, NButton } from 'naive-ui'
-import { useDialog, useMessage, NCountdown, NIcon, NCard, NScrollbar } from 'naive-ui'
-import { TimeOutline } from '@vicons/ionicons5'
+import { NCard, NScrollbar } from 'naive-ui'
+import type { AnswerInput } from '@/api/students'
+import type { AnswerBoard, AnswerBoardQuestion } from '@/api/answerBoard'
 
 type AnswerOptionWithIndex = AnswerOption & { index: [number, number] }
 
-const props = defineProps<{ examPaper: ExamPaper }>()
-
+const props = withDefaults(defineProps<{ answerBoard: AnswerBoard; isEditable?: boolean }>(), {
+  isEditable: true,
+})
 const textareaRef = ref<InstanceType<typeof NInput>>()
 
-const active = ref(true)
 const data = reactive<{
-  question: ExamPaperQuestion & { number?: number; answer?: AnswerOption['answer'] }
+  question: AnswerBoardQuestion & { number?: number; answer?: AnswerOption['answer'] }
   sheet: AnswerOptionWithIndex[][]
   select: {
     single?: number
@@ -25,38 +24,32 @@ const data = reactive<{
     fillblank?: string
   }
 }>({
-  question: {} as ExamPaperQuestion,
+  question: {} as AnswerBoardQuestion,
   sheet: [[], [], [], []],
   select: {},
 })
 const selected = ref<number>()
 
-const dialog = useDialog()
-const message = useMessage()
-
 provide('selected', selected)
+fullData(props.answerBoard)
 
-onMounted(async () => {
-  fullData(props.examPaper)
-})
-
-function fullData(examPaper: ExamPaper) {
-  if (examPaper.examPaperQuestions.length) {
+async function fullData(answerBoard: AnswerBoard) {
+  if (answerBoard.questions.length) {
     // 目前仅有4种题型：单选、多选、判断、填空
     let number = 0
     for (let i = 0; i < 4; i++) {
-      data.sheet[i] = examPaper.examPaperQuestions
+      data.sheet[i] = answerBoard.questions
         .filter((v) => v.questionType === i + 1)
-        .map((v, n) => ({
+        .map<AnswerOptionWithIndex>((v, n) => ({
           number: ++number,
           questionId: v.questionId,
           questionType: v.questionType,
-          options: v.options,
+          options: v.options.map((n) => ({ ...n, isCorrect: false })),
           index: [i, n],
         }))
     }
     const first = data.sheet[0][0]
-    const item = examPaper.examPaperQuestions.find((v) => v.questionId === first.questionId)
+    const item = answerBoard.questions.find((v) => v.questionId === first.questionId)
     if (item) {
       data.question = { ...item, number: first.number }
       selected.value = item.questionId
@@ -136,9 +129,7 @@ function nextAnswerOption(current: AnswerOptionWithIndex): AnswerOption | void {
 function handleSheetSelect(value: AnswerOption) {
   selected.value = value.questionId
   if (value.questionId !== data.question.questionId) {
-    const question = props.examPaper.examPaperQuestions.find(
-      (v) => v.questionId === value.questionId,
-    )
+    const question = props.answerBoard.questions.find((v) => v.questionId === value.questionId)
     if (question) {
       data.question = { ...question, number: value.number }
     }
@@ -152,31 +143,34 @@ function handleSheetSelect(value: AnswerOption) {
   }
 }
 
-function renderCountdown({ minutes, seconds }: CountdownTimeInfo) {
-  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+function toAnswerInputs() {
+  function toAnswerText(answer: AnswerOption['answer']) {
+    if (answer === null || answer === undefined) {
+      return ''
+    } else if (typeof answer === 'number') {
+      return answer.toString()
+    } else if (Array.isArray(answer)) {
+      return answer.join('')
+    } else {
+      return ''
+    }
+  }
+
+  const answers = data.sheet.reduce((v, b) => v.concat(b), [])
+  const inputAnswers = answers.map<AnswerInput>((u) => ({
+    questionId: u.questionId,
+    answerText: toAnswerText(u.answer),
+  }))
+  return inputAnswers
 }
 
-function handleSucmit() {
-  dialog.create({
-    title: '确认',
-    content: '提交之后不能修改，确定继续吗？',
-    positiveText: '确定',
-    negativeText: '取消',
-    onPositiveClick: () => {
-      message.success('提交成功')
-    },
-  })
-}
+defineExpose({ toAnswerInputs })
 </script>
 
 <template>
   <div class="grid grid-cols-5 gap-2">
-    <NCard class="col-span-3 flex flex-col justify-between rounded p-3">
-      <div class="mt-1 xl:h-80">
-        <div class="flex w-fit flex-row items-center justify-center gap-1 text-red-500">
-          <NIcon color="#18a058"><TimeOutline></TimeOutline></NIcon>
-          <NCountdown :render="renderCountdown" :duration="1800 * 1000" :active="active" />
-        </div>
+    <NCard class="col-span-3 flex flex-col justify-between rounded">
+      <div class="xl:h-80">
         <h4 class="flex flex-row items-baseline justify-start">
           <span>{{ data.question.number }}.&nbsp;</span>
           <NScrollbar class="my-5 xl:max-h-56">
@@ -184,7 +178,7 @@ function handleSucmit() {
           </NScrollbar>
         </h4>
         <template v-if="data.question.questionType === 1">
-          <NRadioGroup v-model:value="data.select.single">
+          <NRadioGroup v-model:value="data.select.single" :disabled="!isEditable">
             <NRadio
               v-for="(item, key) in data.question.options"
               :key="key"
@@ -194,7 +188,7 @@ function handleSucmit() {
           </NRadioGroup>
         </template>
         <template v-if="data.question.questionType === 2">
-          <NCheckboxGroup v-model:value="data.select.multiple">
+          <NCheckboxGroup v-model:value="data.select.multiple" :disabled="!isEditable">
             <NCheckbox
               v-for="(item, key) in data.question.options"
               :key="key"
@@ -204,19 +198,23 @@ function handleSucmit() {
           </NCheckboxGroup>
         </template>
         <template v-if="data.question.questionType === 3">
-          <NRadioGroup v-model:value="data.select.truefalse">
+          <NRadioGroup v-model:value="data.select.truefalse" :disabled="!isEditable">
             <NRadio label="√" value="1"></NRadio>
             <NRadio label="×" value="0"></NRadio>
           </NRadioGroup>
         </template>
         <template v-if="data.question.questionType === 4">
-          <NInput ref="textareaRef" v-model:value="data.select.fillblank" type="textarea"></NInput>
+          <NInput
+            ref="textareaRef"
+            v-model:value="data.select.fillblank"
+            :disabled="!isEditable"
+            type="textarea"
+          ></NInput>
         </template>
       </div>
       <div class="mt-3 flex flex-row justify-end gap-2">
         <NButton @click="handleBackClick">上一题</NButton>
         <NButton type="info" @click="handleAnswer">确认（下一题）</NButton>
-        <NButton type="success" @click="handleSucmit">交卷</NButton>
       </div>
     </NCard>
     <NCard class="col-span-2 rounded">

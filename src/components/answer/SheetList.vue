@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { AnswerOption } from './data'
 import { NTag, NIcon, NEllipsis } from 'naive-ui'
-import { CheckmarkCircle } from '@vicons/ionicons5'
+import { CheckmarkCircle, CloseCircleOutline, CheckmarkCircleOutline } from '@vicons/ionicons5'
 import { inject, type Ref } from 'vue'
 
 withDefaults(
@@ -53,22 +53,39 @@ function handleClick(item: AnswerOption) {
         :key="key"
         @click="handleClick(item)"
       >
-        <NTag v-if="item.answer !== undefined" round type="success" class="hover:shadow">
-          <template #icon>
-            <NIcon><CheckmarkCircle></CheckmarkCircle></NIcon>
-          </template>
-          <span>{{ item.number }}.&nbsp;</span>
-          <span class="w-1"></span>
-          <NEllipsis style="max-width: 100px" :tooltip="false">
-            {{ renderAnswerText(item) }}
-          </NEllipsis>
-        </NTag>
-        <NTag v-else-if="selected === item.questionId" round type="warning" class="hover:shadow">
-          <span>{{ item.number }}</span>
-        </NTag>
-        <NTag v-else round type="info" class="hover:shadow">
-          <span>{{ item.number }}</span>
-        </NTag>
+        <template v-if="item.isCorrect != undefined">
+          <NTag round type="default" class="hover:shadow">
+            <template #icon>
+              <NIcon>
+                <CheckmarkCircleOutline v-if="item.isCorrect"></CheckmarkCircleOutline>
+                <CloseCircleOutline v-else></CloseCircleOutline>
+              </NIcon>
+            </template>
+            <span>{{ item.number }}.&nbsp;</span>
+            <span class="w-1"></span>
+            <NEllipsis style="max-width: 100px" :tooltip="false">
+              {{ renderAnswerText(item) }}
+            </NEllipsis>
+          </NTag>
+        </template>
+        <template v-else>
+          <NTag v-if="item.answer !== undefined" round type="primary" class="hover:shadow">
+            <template #icon>
+              <NIcon><CheckmarkCircle></CheckmarkCircle></NIcon>
+            </template>
+            <span>{{ item.number }}.&nbsp;</span>
+            <span class="w-1"></span>
+            <NEllipsis style="max-width: 100px" :tooltip="false">
+              {{ renderAnswerText(item) }}
+            </NEllipsis>
+          </NTag>
+          <NTag v-else-if="selected === item.questionId" round type="warning" class="hover:shadow">
+            <span>{{ item.number }}</span>
+          </NTag>
+          <NTag v-else round type="info" class="hover:shadow">
+            <span>{{ item.number }}</span>
+          </NTag>
+        </template>
       </li>
     </ul>
   </div>

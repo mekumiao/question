@@ -29,22 +29,22 @@ export async function list(params?: PaginationParameters & ExaminationFilter) {
   return response.data
 }
 
-export async function get(questionId: number) {
-  const response = await axios.get<Examination>(`/examination/${questionId}`)
+export async function get(examinationId: number) {
+  const response = await axios.get<Examination>(`/examination/${examinationId}`)
   return response.data
 }
 
-export async function create(question: ExaminationInput) {
-  const response = await axios.post<Examination>(`/examination/`, question)
+export async function create(examination: ExaminationInput) {
+  const response = await axios.post<Examination>(`/examination/`, examination)
   return response.data
 }
 
-export async function update(questionId: number, question: ExaminationUpdate) {
-  const response = await axios.put<Examination>(`/examination/${questionId}`, question)
+export async function update(examinationId: number, examination: ExaminationUpdate) {
+  const response = await axios.put<Examination>(`/examination/${examinationId}`, examination)
   return response.data
 }
 
-export async function remove(questionId: number) {
-  const response = await axios.delete<void>(`/examination/${questionId}`)
+export async function remove(examinationId: number) {
+  const response = await axios.delete<void>(`/examination/${examinationId}`)
   return response.data
 }

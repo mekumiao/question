@@ -25,6 +25,23 @@ export interface ExamPaperFilter {
   difficultyLevel?: number
 }
 
+export interface ExamPaperInput {
+  examPaperName: string
+  difficultyLevel: number
+  ExamPaperQuestions: ExamPaperQuestionInput[]
+}
+
+export interface ExamPaperQuestionInput {
+  questionId: number
+  order: number
+}
+
+export interface ExamPaperUpdate {
+  ExamPaperName?: string
+  DifficultyLevel?: number
+  ExamPaperQuestions?: ExamPaperQuestionInput[]
+}
+
 export async function count(params?: ExamPaperFilter) {
   const response = await axios.get<number>(`/examPapers/count`, { params })
   return response.data
@@ -40,15 +57,15 @@ export async function get(examPaperId: number) {
   return response.data
 }
 
-// export async function create(question: ExamCreate) {
-//   const response = await axios.post<ExamPaper>(`/examPapers/`, question)
-//   return response.data
-// }
+export async function create(examPaper: ExamPaperInput) {
+  const response = await axios.post<ExamPaper>(`/examPapers/`, examPaper)
+  return response.data
+}
 
-// export async function update(examPaperId: number, question: ExamUpdate) {
-//   const response = await axios.put<ExamPaper>(`/examPapers/${examPaperId}`, question)
-//   return response.data
-// }
+export async function update(examPaperId: number, examPaper: ExamPaperQuestionInput) {
+  const response = await axios.put<ExamPaper>(`/examPapers/${examPaperId}`, examPaper)
+  return response.data
+}
 
 export async function remove(examPaperId: number) {
   const response = await axios.delete<void>(`/examPapers/${examPaperId}`)

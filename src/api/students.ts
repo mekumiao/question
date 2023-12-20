@@ -26,6 +26,20 @@ export interface AnswerHistory {
   totalIncorrectAnswers: number
 }
 
+export interface AnswerInput {
+  questionId: number
+  answerText: string
+}
+
+export interface StudentAnswer {
+  answerText: string
+  isCorrect: boolean
+  studentAnswerId: number
+  studentId: number
+  questionId: number
+  answerHistoryId: number
+}
+
 export async function count(params?: StudentFilter) {
   const response = await axios.get<number>(`/students/count`, { params })
   return response.data
@@ -41,12 +55,12 @@ export async function get(studentId: number) {
   return response.data
 }
 
-export async function answerHistory(studentId: number) {
-  const response = await axios.get<AnswerHistory[]>(`/students/${studentId}/answer-history`)
+export async function getMyAnswerHistories() {
+  const response = await axios.get<AnswerHistory[]>(`/students/me/answer-history/`)
   return response.data
 }
 
-export async function meAnswerHistory() {
-  const response = await axios.get<AnswerHistory[]>(`/students/me/answer-history`)
+export async function getMyAnswerHistoryById(answerHistoryId: number) {
+  const response = await axios.post<AnswerHistory>(`/students/me/answer-history/${answerHistoryId}/`)
   return response.data
 }

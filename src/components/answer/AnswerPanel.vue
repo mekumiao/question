@@ -115,7 +115,7 @@ function handleAnswer() {
       item.answer = answer
       item.isAnswer = true
     }
-    const nextQuestion = nextAnswerOption(item)
+    const nextQuestion = nextAnswerOption(item.index)
     nextQuestion && handleSheetSelect(nextQuestion)
   }
 }
@@ -125,30 +125,26 @@ function handleBackClick() {
     (v) => v.questionId === data.question.questionId,
   )
   if (item) {
-    const backQuestion = backAnswerOption(item)
+    const backQuestion = backAnswerOption(item.index)
     backQuestion && handleSheetSelect(backQuestion)
   }
 }
 
-function backAnswerOption(
-  current: AnswerBoardQuestionWithIndex,
-): AnswerBoardQuestionWithIndex | void {
-  let [x, y] = current.index
+function backAnswerOption([x, y]: [number, number]): AnswerBoardQuestionWithIndex | void {
   if (y > 0) {
     return data.sheet[x][y - 1]
   } else if (x > 0) {
-    return data.sheet[x - 1][data.sheet[x - 1].length - 1]
+    const len = data.sheet[x - 1].length
+    return len > 0 ? data.sheet[x - 1][len - 1] : backAnswerOption([x - 1, 0])
   }
 }
 
-function nextAnswerOption(
-  current: AnswerBoardQuestionWithIndex,
-): AnswerBoardQuestionWithIndex | void {
-  let [x, y] = current.index
+function nextAnswerOption([x, y]: [number, number]): AnswerBoardQuestionWithIndex | void {
   if (y + 1 < data.sheet[x].length) {
     return data.sheet[x][y + 1]
   } else if (x + 1 < data.sheet.length) {
-    return data.sheet[x + 1][0]
+    const item = data.sheet[x + 1]
+    return item.length > 0 ? item[0] : nextAnswerOption([x + 1, 0])
   }
 }
 

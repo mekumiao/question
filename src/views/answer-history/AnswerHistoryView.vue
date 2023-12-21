@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import { NDataTable, NInput, NButton, NButtonGroup, NSpace, NTime } from 'naive-ui'
 import { NIcon, NSelect, NInputGroup, NInputGroupLabel, NRate, NPopconfirm, NTag } from 'naive-ui'
-import { getMyAnswerHistories as fetchHistoryList } from '@/api/students'
+import { getMyAnswerHistories as fetchHistoryList, getMyAnswerHistoriesCount } from '@/api/students'
 import type { AnswerHistory } from '@/api/students'
 import type { ExamPaperFilter } from '@/api/examPapers'
 import type { DataTableColumns } from 'naive-ui'
@@ -47,7 +47,7 @@ const difficultyLevelOptions = ref([
 const columns: DataTableColumns<AnswerHistory> = [
   {
     title: 'ID',
-    key: 'examPaperId',
+    key: 'answerHistoryId',
     width: 80,
   },
   {
@@ -84,6 +84,31 @@ const columns: DataTableColumns<AnswerHistory> = [
           }}
         </NSpace>
       )
+    },
+  },
+  {
+    title: '类别',
+    key: 'examinationType',
+    render(row) {
+      if (row.examinationType === 1) {
+        return (
+          <NTag size="small" type="success">
+            考试
+          </NTag>
+        )
+      } else if (row.examinationType === 2) {
+        return (
+          <NTag size="small" type="info">
+            模拟
+          </NTag>
+        )
+      } else {
+        return (
+          <NTag size="small" type="warning">
+            练习
+          </NTag>
+        )
+      }
     },
   },
   {
@@ -126,15 +151,22 @@ const columns: DataTableColumns<AnswerHistory> = [
   },
 ]
 
-onMounted(async () => {
-  await handlePageChange(1)
+onMounted(() => {
+  getMyAnswerHistoriesCount().then((v) => {
+    pagination.itemCount = v
+    return v
+  })
+  handlePageChange(1)
 })
 
 async function handlePageChange(currentPage: number) {
   if (!loading.value) {
     try {
       loading.value = true
-      model.value = await fetchHistoryList()
+      model.value = await fetchHistoryList({
+        offset: (currentPage - 1) * pagination.pageSize,
+        limit: pagination.pageSize,
+      })
       modelCache.value = model.value
       pagination.page = currentPage
     } finally {

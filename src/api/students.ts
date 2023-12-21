@@ -20,6 +20,9 @@ export interface AnswerHistory {
   examPaperId: number
   examPaperName: string
   difficultyLevel: number
+  examinationId: number | null
+  examinationName: string | null
+  examinationType: number | null
   startTime: string
   submissionTime: string
   isSubmission: boolean
@@ -50,12 +53,19 @@ export async function get(studentId: number) {
   return response.data
 }
 
-export async function getMyAnswerHistories() {
-  const response = await axios.get<AnswerHistory[]>(`/students/me/answer-history/`)
+export async function getMyAnswerHistoriesCount() {
+  const response = await axios.get<number>(`/students/me/answer-history/count`)
+  return response.data
+}
+
+export async function getMyAnswerHistories(params: PaginationParameters) {
+  const response = await axios.get<AnswerHistory[]>(`/students/me/answer-history/`, { params })
   return response.data
 }
 
 export async function getMyAnswerHistoryById(answerHistoryId: number) {
-  const response = await axios.post<AnswerHistory>(`/students/me/answer-history/${answerHistoryId}/`)
+  const response = await axios.post<AnswerHistory>(
+    `/students/me/answer-history/${answerHistoryId}/`,
+  )
   return response.data
 }

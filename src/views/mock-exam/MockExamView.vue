@@ -32,11 +32,14 @@ async function handleToAnswerView(item: Examination) {
 </script>
 
 <template>
-  <div class="mx-4 flex flex-row items-center justify-center" style="min-height: 200px">
+  <div class="mx-4">
     <NSpin :show="loading">
-      <div v-if="examinations.length === 0">
-        <span v-if="loading">加载中...</span>
-        <span v-else>没有发布任何考试</span>
+      <div
+        v-if="examinations.length === 0"
+        style="min-height: 200px"
+        class="flex flex-row items-center justify-center"
+      >
+        <span v-if="!loading">没有发布任何考试</span>
       </div>
       <div v-else class="grid grid-cols-3 gap-4">
         <NCard v-for="(item, key) in examinations" :key="key">

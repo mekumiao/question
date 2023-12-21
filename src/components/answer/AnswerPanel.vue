@@ -67,11 +67,7 @@ async function fullData(answerBoard: AnswerBoard) {
         }))
     }
     const first = data.sheet[0][0]
-    const item = answerBoard.questions.find((v) => v.questionId === first.questionId)
-    if (item) {
-      data.question = { ...item, number: first.number, answer: '', isAnswer: false }
-      selected.value = item.questionId
-    }
+    first && handleSheetSelect(first)
   }
 }
 

@@ -34,16 +34,16 @@ const data = reactive({
       text: '考试',
     },
     {
-      path: '/student/practice',
-      text: '练习',
-    },
-    {
       path: '/student/mock-exam',
-      text: '模拟考试',
+      text: '模拟',
     },
     {
       path: '/student/answer-history',
-      text: '考试记录',
+      text: '记录',
+    },
+    {
+      path: '/student/practice',
+      text: '练习',
     },
     // {
     //   path: '/student/4',

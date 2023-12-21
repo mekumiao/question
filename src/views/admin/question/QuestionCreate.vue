@@ -55,7 +55,7 @@ function ensureCorrectAnswer() {
   if (data.model.questionType === 1) {
     data.model.correctAnswer = data.current.single
   } else if (data.model.questionType === 2) {
-    data.model.correctAnswer = data.current.multiple.join('')
+    data.model.correctAnswer = data.current.multiple.sort().join('')
   } else if (data.model.questionType === 3) {
     data.model.correctAnswer = data.current.truefalse
   } else if (data.model.questionType === 4) {

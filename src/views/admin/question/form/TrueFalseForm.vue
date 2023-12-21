@@ -21,7 +21,7 @@ const rules = {
   },
   correctAnswer: {
     required: true,
-    trigger: ['blur', 'input'],
+    trigger: 'change',
     message: '请选择答案',
   },
 }

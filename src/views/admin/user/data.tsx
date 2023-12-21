@@ -1,6 +1,7 @@
 import type { User } from '@/api/users'
-import { NTag, NButton, NButtonGroup, NSpace } from 'naive-ui'
+import { NTag, NButton, NButtonGroup, NSpace, NAvatar } from 'naive-ui'
 import { type DataTableColumns } from 'naive-ui'
+import jdg from '@/assets/img/jdg.png'
 
 export function createDefaultModel(): User {
   return {
@@ -8,6 +9,8 @@ export function createDefaultModel(): User {
     userId: '',
     userName: '',
     nickName: '',
+    avatar: null,
+    createTime: null,
     roles: [],
   }
 }
@@ -25,8 +28,23 @@ export function createColumns({
       key: 'nickName',
     },
     {
-      title: '账号',
+      // 邮箱就是账号
+      title: '邮箱',
       key: 'userName',
+    },
+    {
+      title: '头像',
+      key: 'roles',
+      render(row) {
+        return (
+          <NAvatar round size="small" src={row.avatar || jdg}>
+            {{
+              placeholder: () => 'xxxxx',
+              fallback: () => 'tttttt',
+            }}
+          </NAvatar>
+        )
+      },
     },
     {
       title: '角色',
@@ -42,10 +60,6 @@ export function createColumns({
           </NSpace>
         )
       },
-    },
-    {
-      title: '邮箱',
-      key: 'email',
     },
     {
       title: '操作',

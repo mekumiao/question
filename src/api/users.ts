@@ -44,6 +44,8 @@ export interface User {
   userName: string
   nickName: string
   email: string
+  avatar: string | null
+  createTime: string | null
   roles: string[]
 }
 

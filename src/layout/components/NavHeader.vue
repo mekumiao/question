@@ -2,8 +2,7 @@
 import { reactive, inject } from 'vue'
 import type { Component, Ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import BtAvatar from '@/components/BtAvatar.vue'
-import { NDropdown, NIcon, NSwitch, NEl } from 'naive-ui'
+import { NDropdown, NIcon, NSwitch, NEl, NAvatar } from 'naive-ui'
 import type {
   DropdownOption,
   DropdownGroupOption,
@@ -18,6 +17,7 @@ import {
   SunnyOutline,
 } from '@vicons/ionicons5'
 import { logout } from '@/api/users'
+import jdg from '@/assets/img/jdg.png'
 
 const route = useRoute()
 const router = useRouter()
@@ -134,7 +134,7 @@ async function handleAvatarMenuSelect(key: string | number) {
           <div
             class="ms-5 flex cursor-pointer flex-col items-center justify-center rounded p-1 shadow hover:shadow-2xl"
           >
-            <BtAvatar name="别听鬼故事"></BtAvatar>
+            <NAvatar round size="medium" :src="jdg"></NAvatar>
             <div class="w-16 truncate text-xs font-bold">别听鬼故事</div>
           </div>
         </NDropdown>
@@ -147,14 +147,5 @@ async function handleAvatarMenuSelect(key: string | number) {
 .activate {
   color: var(--color-theme);
   border-bottom: 4px solid var(--color-theme);
-}
-
-.icon {
-  background-image: url('@/assets/img/icon.png');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  width: 4rem;
-  height: 4rem;
 }
 </style>

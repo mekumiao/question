@@ -159,6 +159,7 @@ function handleSheetSelect(value: AnswerBoardQuestionWithIndex) {
   }
   data.question.answer = value.answer
   data.question.isAnswer = value.isAnswer
+  data.question.correctAnswer = value.correctAnswer
   // 填空题时，将textarea选中
   if (data.question.questionType === 4) {
     nextTick(() => {
@@ -245,23 +246,10 @@ defineExpose({ toAnswerInputs })
     </NCard>
     <NCard class="col-span-2 rounded">
       <SheetList
-        title="一、单选题"
-        :options="data.sheet[0]"
-        @select="handleSheetSelect"
-      ></SheetList>
-      <SheetList
-        title="二、多选题"
-        :options="data.sheet[1]"
-        @select="handleSheetSelect"
-      ></SheetList>
-      <SheetList
-        title="三、判断题"
-        :options="data.sheet[2]"
-        @select="handleSheetSelect"
-      ></SheetList>
-      <SheetList
-        title="四、填空题"
-        :options="data.sheet[3]"
+        v-for="(item, key) in data.sheet"
+        :title="['一、单选题', '二、多选题', '三、判断题', '四、填空题'][key]"
+        :options="item"
+        :key="key"
         @select="handleSheetSelect"
       ></SheetList>
     </NCard>

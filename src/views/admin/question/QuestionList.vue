@@ -9,7 +9,7 @@ import {
 } from '@/api/questions'
 import type { Question, QuestionFilter } from '@/api/questions'
 import { createColumns, createQuestionTypeOptions } from './data'
-import QuestionEdit from './QuestionEdit.vue'
+import QuestionEdit from './QuestionEdit2.vue'
 import QuestionCreate from './QuestionCreate.vue'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
 

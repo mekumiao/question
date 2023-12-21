@@ -36,21 +36,17 @@ async function fullData() {
 }
 
 async function handleSucmit() {
+  const inputAnswers = answerPanelRef.value?.toAnswerInputs()
+  if (!inputAnswers || !inputAnswers.length || !inputAnswers.every((v) => v.answerText)) {
+    message.warning('您有未作答的题目，请完成所有题目后继续')
+    return
+  }
   const d = dialog.create({
     title: '确认',
     content: '提交之后不能修改，确定继续吗？',
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: async () => {
-      if (!answerBoard.value) {
-        message.error('没有获取到答题板信息')
-        return
-      }
-      const inputAnswers = answerPanelRef.value?.toAnswerInputs()
-      if (!inputAnswers || !inputAnswers.length) {
-        message.error('您没有答题')
-        return
-      }
       try {
         d.loading = true
         const result = await submitAnswerBoard(props.answerBoardId, inputAnswers)

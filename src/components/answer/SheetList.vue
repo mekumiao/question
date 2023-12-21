@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { AnswerOption } from './data'
+import type { AnswerBoardQuestionWithIndex } from './data'
 import { NTag, NIcon, NEllipsis } from 'naive-ui'
 import { CheckmarkCircle, CloseCircleOutline, CheckmarkCircleOutline } from '@vicons/ionicons5'
 import { inject, type Ref } from 'vue'
@@ -7,24 +7,24 @@ import { inject, type Ref } from 'vue'
 withDefaults(
   defineProps<{
     title?: string
-    options: AnswerOption[]
+    options: AnswerBoardQuestionWithIndex[]
   }>(),
   { title: '标题' },
 )
 const emit = defineEmits<{
-  select: [value: AnswerOption]
+  select: [value: AnswerBoardQuestionWithIndex]
 }>()
 
 const selected = inject<Ref<number>>('selected')
 
-function renderAnswerText(item: AnswerOption) {
+function renderAnswerText(item: AnswerBoardQuestionWithIndex) {
   if (item.answer) {
     if (item.questionType === 1) {
-      const option = item.options?.find((v) => v.optionId === item.answer)
+      const option = item.options?.find((v) => v.optionCode === item.answer)
       return option?.optionCode
     } else if (item.questionType === 2) {
       const option = item.options
-        ?.filter((v) => (item.answer as number[]).includes(v.optionId))
+        ?.filter((v) => (item.answer as string[]).includes(v.optionCode))
         .map((v) => v.optionCode)
       return option?.join('')
     } else if (item.questionType === 3) {
@@ -35,7 +35,7 @@ function renderAnswerText(item: AnswerOption) {
   }
 }
 
-function handleClick(item: AnswerOption) {
+function handleClick(item: AnswerBoardQuestionWithIndex) {
   emit('select', item)
 }
 </script>
@@ -53,8 +53,8 @@ function handleClick(item: AnswerOption) {
         :key="key"
         @click="handleClick(item)"
       >
-        <template v-if="item.isCorrect != undefined">
-          <NTag round type="default" class="hover:shadow">
+        <template v-if="item.isCorrect != null">
+          <NTag round :type="item.isCorrect ? 'success' : 'error'" class="hover:shadow">
             <template #icon>
               <NIcon>
                 <CheckmarkCircleOutline v-if="item.isCorrect"></CheckmarkCircleOutline>
@@ -69,7 +69,7 @@ function handleClick(item: AnswerOption) {
           </NTag>
         </template>
         <template v-else>
-          <NTag v-if="item.answer !== undefined" round type="primary" class="hover:shadow">
+          <NTag v-if="item.isAnswer" round type="primary" class="hover:shadow">
             <template #icon>
               <NIcon><CheckmarkCircle></CheckmarkCircle></NIcon>
             </template>

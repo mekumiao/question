@@ -8,6 +8,7 @@ export interface AnswerBoard {
   durationSeconds: number
   timeTakenSeconds: number
   isTimeout: number
+  isSubmission: boolean
   questions: AnswerBoardQuestion[]
 }
 
@@ -15,6 +16,8 @@ export interface AnswerBoardQuestion {
   questionId: number
   questionText: string
   questionType: number
+  isCorrect: boolean | null
+  answerText: string | null
   options: AnswerBoardQuestionOption[]
 }
 

@@ -26,11 +26,6 @@ export interface AnswerHistory {
   totalIncorrectAnswers: number
 }
 
-export interface AnswerInput {
-  questionId: number
-  answerText: string
-}
-
 export interface StudentAnswer {
   answerText: string
   isCorrect: boolean

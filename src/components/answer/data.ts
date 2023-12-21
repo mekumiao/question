@@ -1,10 +1,8 @@
-import type { Option } from '@/api/questions'
+import type { AnswerBoardQuestion } from '@/api/answerBoard'
 
-export type AnswerOption = {
+export type AnswerBoardQuestionWithIndex = AnswerBoardQuestion & {
   number: number
-  questionId: number
-  questionType: number
-  answer?: number | number[] | string
-  options?: Option[]
-  isCorrect?: boolean
+  index: [number, number]
+  answer: string | string[]
+  isAnswer: boolean
 }

@@ -34,7 +34,7 @@ async function createAnswerBorard() {
 
 <template>
   <div class="mx-auto">
-    <NResult status="info" :description="description">
+    <NResult status="info" :description="description" style="min-height: 200px">
       <template #footer>
         <NButton :loading="loading" type="primary" @click="createAnswerBorard">
           {{ loading ? '请稍后' : '立即进入' }}

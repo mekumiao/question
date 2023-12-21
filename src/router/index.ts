@@ -32,7 +32,7 @@ const router = createRouter({
         },
         { path: 'mock-exam', component: () => import('../views/mock-exam/MockExamView.vue') },
         { path: 'personal', component: () => import('../views/personal/PersonalView.vue') },
-        { path: 'practice', component: () => import('../views/mock-exam/MockExamView.vue') },
+        { path: 'practice', component: () => import('../views/practice/PracticeView.vue') },
         {
           path: 'answer-history',
           component: () => import('../views/answer-history/AnswerHistoryView.vue'),

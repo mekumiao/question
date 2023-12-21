@@ -39,7 +39,7 @@ const columns = createColumns({
   edit(row) {
     editRef.value?.open(row.questionId, () => {
       message.success('保存成功')
-      handlePageChange(1)
+      handlePageChange(pagination.page)
     })
   },
   async remove(row) {

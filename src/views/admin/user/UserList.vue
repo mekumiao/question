@@ -71,7 +71,7 @@ async function handleEnter(e: KeyboardEvent) {
 
 async function handleCreate() {
   createRef.value?.open(() => {
-    handlePageChange(pagination.page)
+    handlePageChange(1)
   })
 }
 </script>

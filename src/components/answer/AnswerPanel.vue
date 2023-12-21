@@ -66,7 +66,6 @@ async function fullData(answerBoard: AnswerBoard) {
                 : v.answerText,
         }))
     }
-    console.log(data.sheet)
     const first = data.sheet[0][0]
     const item = answerBoard.questions.find((v) => v.questionId === first.questionId)
     if (item) {
@@ -111,15 +110,15 @@ function toAnswer() {
 }
 
 function handleAnswer() {
-  const answer = toAnswer()
-  data.question.answer = answer
-  data.question.isAnswer = true
   const item = data.sheet[data.question.questionType - 1].find(
     (v) => v.questionId === data.question.questionId,
   )
   if (item) {
-    item.answer = answer
-    item.isAnswer = true
+    const answer = toAnswer()
+    if ((Array.isArray(answer) && answer.length > 0) || (typeof answer === 'string' && answer)) {
+      item.answer = answer
+      item.isAnswer = true
+    }
     const nextQuestion = nextAnswerOption(item)
     nextQuestion && handleSheetSelect(nextQuestion)
   }

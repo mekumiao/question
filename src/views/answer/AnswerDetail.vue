@@ -114,9 +114,7 @@ function renderCountdown({ minutes, seconds }: CountdownTimeInfo) {
     <NCard style="width: 600px" :bordered="false" size="huge" role="dialog" aria-modal="true">
       <NResult status="success" title="交卷成功！" description="">
         <ul class="flex flex-col items-center gap-2">
-          <li v-if="answerBoard?.totalIncorrectAnswers === answerBoard?.questions.length">
-            恭喜您，已全部答对！
-          </li>
+          <li v-if="answerBoard?.totalIncorrectAnswers === 0">恭喜您，已全部答对！</li>
           <li v-else>
             <span>总共{{ answerBoard?.questions.length }}题，</span>
             <span>错{{ answerBoard?.totalIncorrectAnswers }}题，</span>

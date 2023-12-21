@@ -79,8 +79,12 @@ async function handleSaveClick() {
   }
 }
 
-function handleCreateOption(index: number): OptionCreate {
-  return { optionCode: numberToUpperCaseLetter(index + 1), optionText: '' }
+function handleCreateOption(): OptionCreate {
+  return { optionCode: '', optionText: '' }
+}
+
+function handleUpdateOption() {
+  data.model.options.forEach((v, i) => (v.optionCode = numberToUpperCaseLetter(i + 1)))
 }
 
 defineExpose({ open })
@@ -116,6 +120,7 @@ defineExpose({ open })
                 show-sort-button
                 placeholder="请输入选项"
                 @create="handleCreateOption"
+                @update:value="handleUpdateOption"
               >
                 <template #create-button-default>添加选项</template>
                 <template #default="{ value }">

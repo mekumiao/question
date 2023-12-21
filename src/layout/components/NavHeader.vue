@@ -148,4 +148,12 @@ async function handleAvatarMenuSelect(key: string | number) {
   color: var(--color-theme);
   border-bottom: 4px solid var(--color-theme);
 }
+.icon {
+  background-image: url('@/assets/img/icon.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  width: 4rem;
+  height: 4rem;
+}
 </style>

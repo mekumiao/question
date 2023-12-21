@@ -1,23 +1,13 @@
-import type { User } from '@/api/users'
+import type { Student } from '@/api/students'
 import { NButton, NButtonGroup } from 'naive-ui'
 import { type DataTableColumns } from 'naive-ui'
-
-export function createDefaultModel(): User {
-  return {
-    email: '',
-    userId: '',
-    userName: '',
-    nickName: '',
-    roles: [],
-  }
-}
 
 export function createColumns({
   edit,
 }: {
-  edit?: (rowData: User) => void
-  remove?: (rowData: User) => void
-}): DataTableColumns<User> {
+  edit?: (rowData: Student) => void
+  remove?: (rowData: Student) => void
+}): DataTableColumns<Student> {
   return [
     {
       title: '学生名称',

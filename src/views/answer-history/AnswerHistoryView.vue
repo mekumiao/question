@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import { NDataTable, NInput, NButton, NButtonGroup, NSpace, NTime } from 'naive-ui'
 import { NIcon, NSelect, NInputGroup, NInputGroupLabel, NRate, NPopconfirm, NTag } from 'naive-ui'
-import { meAnswerHistory as fetchHistoryList } from '@/api/students'
+import { getMyAnswerHistories as fetchHistoryList } from '@/api/students'
 import type { AnswerHistory } from '@/api/students'
 import type { ExamPaperFilter } from '@/api/examPapers'
 import type { DataTableColumns } from 'naive-ui'

@@ -2,9 +2,10 @@
 import SheetList from './SheetList.vue'
 import { nextTick, provide, reactive, ref, watch } from 'vue'
 import { NRadio, NRadioGroup, NCheckbox, NCheckboxGroup, NInput, NButton } from 'naive-ui'
-import { NCard, NScrollbar } from 'naive-ui'
+import { NCard, NScrollbar, NAlert, NIcon } from 'naive-ui'
 import type { AnswerBoard, AnswerInput } from '@/api/answerBoard'
 import type { AnswerBoardQuestionWithIndex } from './data'
+import { BookmarksOutline } from '@vicons/ionicons5'
 
 const props = withDefaults(defineProps<{ answerBoard: AnswerBoard; isEditable?: boolean }>(), {
   isEditable: true,
@@ -181,7 +182,7 @@ defineExpose({ toAnswerInputs })
 <template>
   <div class="grid grid-cols-5 gap-2">
     <NCard class="col-span-3 flex flex-col justify-between rounded">
-      <div class="xl:h-80">
+      <div class="xl:h-60">
         <h4 class="flex flex-row items-baseline justify-start">
           <span>{{ data.question.number }}.&nbsp;</span>
           <NScrollbar class="my-5 xl:max-h-56">
@@ -231,6 +232,12 @@ defineExpose({ toAnswerInputs })
           ></NInput>
         </template>
       </div>
+      <NAlert v-if="answerBoard.isSubmission" title="标准答案" type="success">
+        <template #icon>
+          <NIcon><BookmarksOutline /></NIcon>
+        </template>
+        <span>{{ data.question.correctAnswer }}</span>
+      </NAlert>
       <div class="mt-3 flex flex-row justify-end gap-2">
         <NButton @click="handleBackClick">上一题</NButton>
         <NButton type="info" @click="handleAnswer">确认（下一题）</NButton>

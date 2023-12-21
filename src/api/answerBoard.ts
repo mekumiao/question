@@ -18,6 +18,7 @@ export interface AnswerBoardQuestion {
   questionType: number
   isCorrect: boolean | null
   answerText: string | null
+  correctAnswer: string | null
   options: AnswerBoardQuestionOption[]
 }
 

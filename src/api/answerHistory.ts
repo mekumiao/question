@@ -13,6 +13,9 @@ export interface AnswerHistory {
   examPaperId: number
   examPaperName: string
   difficultyLevel: number
+  examinationId: number | null
+  examinationName: string | null
+  examinationType: number | null
   startTime: string
   submissionTime: string
   isSubmission: boolean

@@ -1,6 +1,6 @@
-import type { AnswerHistory } from '@/api/students'
+import type { AnswerHistory } from '@/api/answerHistory'
 import type { DataTableColumns } from 'naive-ui'
-import { NRate, NButton, NButtonGroup, NPopconfirm, NTag, NTime, NSpace } from 'naive-ui'
+import { NRate, NButton, NButtonGroup, NTag, NTime, NSpace } from 'naive-ui'
 
 export function createDifficultyLevelOptions() {
   return [
@@ -34,17 +34,19 @@ export function createDefaultModel() {
 }
 
 export function createColumns({
-  edit,
-  remove,
+  show,
 }: {
-  edit?: (rowData: AnswerHistory) => void
-  remove?: (rowData: AnswerHistory) => void
+  show?: (rowData: AnswerHistory) => void
 }): DataTableColumns<AnswerHistory> {
   return [
     {
       title: 'ID',
-      key: 'examPaperId',
+      key: 'answerHistoryId',
       width: 80,
+    },
+    {
+      title: '学生',
+      key: 'studentName',
     },
     {
       title: '试卷名称',
@@ -103,19 +105,9 @@ export function createColumns({
       render(row) {
         return (
           <NButtonGroup>
-            <NButton type="primary" size="small" onClick={() => edit?.(row)}>
-              编辑
+            <NButton type="primary" size="small" onClick={() => show?.(row)}>
+              查看
             </NButton>
-            <NPopconfirm onPositiveClick={() => remove?.(row)}>
-              {{
-                trigger: () => (
-                  <NButton type="warning" size="small">
-                    删除
-                  </NButton>
-                ),
-                default: () => `确定删除ID为 "${row.examPaperId}" 的试卷吗？`,
-              }}
-            </NPopconfirm>
           </NButtonGroup>
         )
       },

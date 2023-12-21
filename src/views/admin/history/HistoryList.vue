@@ -1,19 +1,17 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { NDataTable, NInput, NButton, NButtonGroup, NInputGroup, NInputGroupLabel } from 'naive-ui'
-import { NIcon, NSelect } from 'naive-ui'
-import { getMyAnswerHistories as fetchHistoryList } from '@/api/students'
-import type { AnswerHistory } from '@/api/students'
-import type { ExamPaperFilter } from '@/api/examPapers'
-import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
-import { createColumns, createDifficultyLevelOptions } from './data'
+import { NDataTable, NButton, NButtonGroup, NIcon } from 'naive-ui'
+import { list as fetchHistoryList, count as fetchHistoryCount } from '@/api/answerHistory'
+import type { AnswerHistory, AnswerHistoryFilter } from '@/api/answerHistory'
+import { RefreshOutline } from '@vicons/ionicons5'
+import { createColumns } from './data'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 
 const loading = ref(false)
 const model = ref<AnswerHistory[]>([])
 const modelCache = ref<AnswerHistory[]>([])
-const filter = reactive<ExamPaperFilter>({ difficultyLevel: 0 })
+const filter = reactive<AnswerHistoryFilter>({})
 
 const pagination = reactive({
   page: 1,
@@ -25,29 +23,29 @@ const pagination = reactive({
   },
 })
 
-const difficultyLevelOptions = ref(createDifficultyLevelOptions())
+// const difficultyLevelOptions = ref(createDifficultyLevelOptions())
 
 const columns = createColumns({
-  // edit(row) {
+  // show(row) {
   //   editRef.value?.open(row.questionId, () => {
   //     handlePageChange(pagination.page)
   //   })
   // },
-  // async remove(row) {
-  //   await fetchExamDelete(row.examPaperId)
-  //   await handlePageChange(pagination.page)
-  // },
 })
 
-onMounted(async () => {
-  await handlePageChange(1)
+onMounted(() => {
+  handleSearch()
 })
 
 async function handlePageChange(currentPage: number) {
   if (!loading.value) {
     try {
       loading.value = true
-      model.value = await fetchHistoryList()
+      model.value = await fetchHistoryList({
+        ...filter,
+        offset: (currentPage - 1) * pagination.pageSize,
+        limit: pagination.pageSize,
+      })
       modelCache.value = model.value
       pagination.page = currentPage
     } finally {
@@ -57,22 +55,26 @@ async function handlePageChange(currentPage: number) {
 }
 
 async function handleSearch() {
-  model.value = modelCache.value
-    .filter((v) => (filter.difficultyLevel ? v.difficultyLevel === filter.difficultyLevel : true))
-    .filter((v) => (filter.examPaperName ? v.examPaperName.includes(filter.examPaperName) : true))
+  await Promise.all([
+    fetchHistoryCount().then((v) => {
+      pagination.itemCount = v
+      return v
+    }),
+    handlePageChange(1),
+  ])
 }
 
-async function handleEnter(e: KeyboardEvent) {
-  if (e.key === 'Enter') {
-    await handleSearch()
-  }
-}
+// async function handleEnter(e: KeyboardEvent) {
+//   if (e.key === 'Enter') {
+//     await handleSearch()
+//   }
+// }
 </script>
 
 <template>
   <div class="history-list m-3">
     <div class="flex flex-row items-center justify-between pb-3">
-      <div class="flex flex-row items-center justify-start space-x-8">
+      <!-- <div class="flex flex-row items-center justify-start space-x-8">
         <NInputGroup>
           <NInputGroupLabel type="primary">难度</NInputGroupLabel>
           <NSelect
@@ -88,17 +90,12 @@ async function handleEnter(e: KeyboardEvent) {
             <NIcon><SearchOutline></SearchOutline></NIcon>
           </NButton>
         </NInputGroup>
-      </div>
+      </div> -->
       <div class="flex flex-row justify-end space-x-4">
         <NButtonGroup size="small">
           <NButton type="default" circle @click="handleSearch">
             <NIcon><RefreshOutline></RefreshOutline></NIcon>
           </NButton>
-        </NButtonGroup>
-        <NButtonGroup size="small">
-          <NButton type="primary">新建</NButton>
-          <NButton type="warning">导入</NButton>
-          <NButton type="info">导出</NButton>
         </NButtonGroup>
       </div>
     </div>

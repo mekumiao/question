@@ -1,3 +1,4 @@
+import type { AnswerHistory } from './answerHistory'
 import axios from './base'
 import type { PaginationParameters } from '/#/utils'
 
@@ -11,31 +12,6 @@ export interface Student {
 
 export interface StudentFilter {
   name?: string
-}
-
-export interface AnswerHistory {
-  answerHistoryId: number
-  studentId: number
-  studentName: string
-  examPaperId: number
-  examPaperName: string
-  difficultyLevel: number
-  examinationId: number | null
-  examinationName: string | null
-  examinationType: number | null
-  startTime: string
-  submissionTime: string
-  isSubmission: boolean
-  totalIncorrectAnswers: number
-}
-
-export interface StudentAnswer {
-  answerText: string
-  isCorrect: boolean
-  studentAnswerId: number
-  studentId: number
-  questionId: number
-  answerHistoryId: number
 }
 
 export async function count(params?: StudentFilter) {

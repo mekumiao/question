@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { NButton, NCard, NRate, NSpin, NCountdown } from 'naive-ui'
+import { NButton, NCard, NRate, NSpin } from 'naive-ui'
 import { list as fetchExaminationList, type Examination } from '@/api/examination'
 import { useRouter } from 'vue-router'
+import { formatSeconds } from '@/utils'
 
 const router = useRouter()
 
@@ -39,7 +40,7 @@ async function handleToAnswerView(item: Examination) {
           <ul role="list" class="flex flex-col justify-center gap-1">
             <li>
               <span>考试时间：</span>
-              <NCountdown :active="false" :duration="item.durationSeconds * 1000" />
+              <span>{{ formatSeconds(item.durationSeconds) }}</span>
             </li>
             <li>
               <span>难度：</span>

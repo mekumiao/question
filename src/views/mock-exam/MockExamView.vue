@@ -1,46 +1,46 @@
 <script setup lang="ts">
-import { shallowRef, ref } from 'vue'
-import AnswerPanel from '@/components/answer/AnswerPanel.vue'
-import { NButton, NCard, useMessage, NRate, NSpin, NCountdown } from 'naive-ui'
-import { get as fetchExam, type ExamPaper } from '@/api/examPapers'
+import { ref } from 'vue'
+import { NButton, NCard, NRate, NSpin } from 'naive-ui'
 import { list as fetchExaminationList, type Examination } from '@/api/examination'
+import { useRouter } from 'vue-router'
+import { formatSeconds } from '@/utils'
 
-const examPaper = shallowRef<ExamPaper>()
+const router = useRouter()
+
 const loading = ref(false)
 const examinations = ref<Examination[]>([])
-
-const message = useMessage()
 
 fullData()
 
 async function fullData() {
-  examinations.value = await fetchExaminationList({ examinationType: 2 })
-}
-
-async function handleAnswer(item: Examination) {
   try {
     loading.value = true
-    examPaper.value = await fetchExam(item.examPaperId)
+    examinations.value = await fetchExaminationList({ examinationType: 2 })
   } catch (error) {
-    if (error instanceof Error) message.error(error.message)
     console.error(error)
   } finally {
     loading.value = false
   }
 }
+
+async function handleToAnswerView(item: Examination) {
+  router.push({
+    path: `/student/answer/${item.examPaperId}`,
+    query: { examinationId: item.examinationId },
+  })
+}
 </script>
 
 <template>
   <div class="mx-4">
-    <AnswerPanel v-if="examPaper" :exam-paper="examPaper"></AnswerPanel>
-    <NSpin v-else :show="loading">
+    <NSpin :show="loading">
       <div class="grid grid-cols-3 gap-4">
         <NCard v-for="(item, key) in examinations" :key="key">
           <template #header>{{ item.examinationName }}</template>
           <ul role="list" class="flex flex-col justify-center gap-1">
             <li>
               <span>考试时间：</span>
-              <NCountdown :active="false" :duration="item.durationSeconds * 1000" />
+              <span>{{ formatSeconds(item.durationSeconds) }}</span>
             </li>
             <li>
               <span>难度：</span>
@@ -48,7 +48,7 @@ async function handleAnswer(item: Examination) {
             </li>
           </ul>
           <template #action>
-            <NButton @click="handleAnswer(item)" type="primary">进入考试</NButton>
+            <NButton @click="handleToAnswerView(item)" type="primary">进入考试</NButton>
           </template>
         </NCard>
       </div>

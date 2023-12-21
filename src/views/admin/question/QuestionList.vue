@@ -43,8 +43,14 @@ const columns = createColumns({
     })
   },
   async remove(row) {
-    await fetchQuestionDelete(row.questionId)
-    await handlePageChange(pagination.page)
+    try {
+      await fetchQuestionDelete(row.questionId)
+      message.success('删除成功')
+      await handlePageChange(pagination.page)
+    } catch (error) {
+      if (error instanceof Error) message.error(error.message)
+      console.error(error)
+    }
   },
 })
 

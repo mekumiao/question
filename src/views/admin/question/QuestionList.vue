@@ -10,12 +10,12 @@ import {
 import type { Question, QuestionFilter } from '@/api/questions'
 import { createColumns, createQuestionTypeOptions } from './data'
 import QuestionEdit from './QuestionEdit.vue'
-import QuestionDetail from './QuestionDetail.vue'
+import QuestionCreate from './QuestionCreate.vue'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 const editRef = ref<InstanceType<typeof QuestionEdit>>()
-const detailRef = ref<InstanceType<typeof QuestionDetail>>()
+const createRef = ref<InstanceType<typeof QuestionCreate>>()
 
 const message = useMessage()
 
@@ -39,7 +39,7 @@ const columns = createColumns({
   edit(row) {
     editRef.value?.open(row.questionId, () => {
       message.success('保存成功')
-      handlePageChange(pagination.page)
+      handlePageChange(1)
     })
   },
   async remove(row) {
@@ -83,6 +83,13 @@ async function handleEnter(e: KeyboardEvent) {
     await handleSearch()
   }
 }
+
+async function handleCreate() {
+  createRef.value?.open(() => {
+    message.success('保存成功')
+    handlePageChange(1)
+  })
+}
 </script>
 
 <template>
@@ -112,9 +119,7 @@ async function handleEnter(e: KeyboardEvent) {
           </NButton>
         </NButtonGroup>
         <NButtonGroup size="small">
-          <NButton type="primary">新建</NButton>
-          <NButton type="warning">导入</NButton>
-          <NButton type="info">导出</NButton>
+          <NButton type="primary" @click="handleCreate">新建</NButton>
         </NButtonGroup>
       </div>
     </div>
@@ -130,7 +135,7 @@ async function handleEnter(e: KeyboardEvent) {
       @update:page="handlePageChange"
     />
     <QuestionEdit ref="editRef"></QuestionEdit>
-    <QuestionDetail ref="detailRef"></QuestionDetail>
+    <QuestionCreate ref="createRef"></QuestionCreate>
   </div>
 </template>
 

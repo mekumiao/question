@@ -15,7 +15,6 @@ export interface Option {
   questionId: number
   optionText: string
   optionCode: string
-  isCorrect: boolean
 }
 
 export interface QuestionCreate {
@@ -35,7 +34,7 @@ export interface QuestionUpdate {
 
 export interface OptionCreate {
   optionText: string
-  isCorrect: boolean
+  optionCode: string
 }
 
 export interface QuestionFilter {

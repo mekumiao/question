@@ -14,3 +14,16 @@ export function formatSeconds(seconds: number) {
 
   return formattedTime
 }
+
+export function numberToUpperCaseLetter(number: number) {
+  if (number < 1 || number > 26) {
+    // 处理数字不在1到26之间的情况，因为字母只有26个
+    return 'Invalid input'
+  }
+
+  // 将数字转换为对应的大写字母
+  const charCode = number + 64 // A的ASCII码是65，因此需要减去1
+  const upperCaseLetter = String.fromCharCode(charCode)
+
+  return upperCaseLetter
+}

@@ -3,7 +3,7 @@ import { reactive, inject } from 'vue'
 import type { Component, Ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import BtAvatar from '@/components/BtAvatar.vue'
-import { NDropdown, NIcon, NSwitch } from 'naive-ui'
+import { NDropdown, NIcon, NSwitch, NEl } from 'naive-ui'
 import type {
   DropdownOption,
   DropdownGroupOption,
@@ -95,44 +95,52 @@ async function handleAvatarMenuSelect(key: string | number) {
 </script>
 
 <template>
-  <header
-    class="flex flex-row items-center justify-between justify-items-center rounded p-2 shadow"
-    style="height: var(--header-height)"
+  <NEl
+    class="sticky top-0 z-10"
+    style="
+      background-color: var(--body-color);
+      transition: background-color 0.3s var(--cubic-bezier-ease-in-out);
+    "
   >
-    <div class="icon ms-5 flex flex-row p-2"></div>
-    <nav class="flex flex-row items-center justify-center">
-      <ul role="list" class="flex flex-row items-center justify-start">
-        <li
-          class="mx-2 cursor-pointer text-lg font-bold"
-          :class="{ activate: item.path === route.path }"
-          v-for="(item, key) in data.menus"
-          :key="key"
-        >
-          <RouterLink :to="item.path">{{ item.text }}</RouterLink>
-        </li>
-      </ul>
-      <NSwitch title="切换主题" v-model:value="isDark">
-        <template #checked-icon>
-          <NIcon>
-            <MoonOutline></MoonOutline>
-          </NIcon>
-        </template>
-        <template #unchecked-icon>
-          <NIcon>
-            <SunnyOutline></SunnyOutline>
-          </NIcon>
-        </template>
-      </NSwitch>
-      <NDropdown trigger="click" :options="menuList" @select="handleAvatarMenuSelect">
-        <div
-          class="ms-5 flex cursor-pointer flex-col items-center justify-center rounded p-1 shadow hover:shadow-2xl"
-        >
-          <BtAvatar name="别听鬼故事"></BtAvatar>
-          <div class="w-16 truncate text-xs font-bold">别听鬼故事</div>
-        </div>
-      </NDropdown>
-    </nav>
-  </header>
+    <header
+      class="flex flex-row items-center justify-between justify-items-center rounded p-2 shadow"
+      style="height: var(--header-height)"
+    >
+      <div class="icon ms-5 flex flex-row p-2"></div>
+      <nav class="flex flex-row items-center justify-center">
+        <ul role="list" class="flex flex-row items-center justify-start">
+          <li
+            class="mx-2 cursor-pointer text-lg font-bold"
+            :class="{ activate: item.path === route.path }"
+            v-for="(item, key) in data.menus"
+            :key="key"
+          >
+            <RouterLink :to="item.path">{{ item.text }}</RouterLink>
+          </li>
+        </ul>
+        <NSwitch title="切换主题" v-model:value="isDark">
+          <template #checked-icon>
+            <NIcon>
+              <MoonOutline></MoonOutline>
+            </NIcon>
+          </template>
+          <template #unchecked-icon>
+            <NIcon>
+              <SunnyOutline></SunnyOutline>
+            </NIcon>
+          </template>
+        </NSwitch>
+        <NDropdown trigger="click" :options="menuList" @select="handleAvatarMenuSelect">
+          <div
+            class="ms-5 flex cursor-pointer flex-col items-center justify-center rounded p-1 shadow hover:shadow-2xl"
+          >
+            <BtAvatar name="别听鬼故事"></BtAvatar>
+            <div class="w-16 truncate text-xs font-bold">别听鬼故事</div>
+          </div>
+        </NDropdown>
+      </nav>
+    </header>
+  </NEl>
 </template>
 
 <style lang="css" scoped>

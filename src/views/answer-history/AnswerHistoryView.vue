@@ -164,7 +164,7 @@ function handleRemoveClick(item: AnswerHistory) {
 </script>
 
 <template>
-  <div class="history-list m-3">
+  <div class="history-list mx-2">
     <div class="flex flex-row items-center justify-between pb-3">
       <div class="flex flex-row items-center justify-start space-x-8">
         <NInputGroup>

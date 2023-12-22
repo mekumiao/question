@@ -6,7 +6,7 @@ export interface ExamPaper {
   examPaperId: number
   examPaperName: string
   difficultyLevel: number
-  examPaperQuestions: ExamPaperQuestion[]
+  questions: ExamPaperQuestion[]
 }
 
 export interface ExamPaperQuestion {
@@ -28,7 +28,7 @@ export interface ExamPaperFilter {
 export interface ExamPaperInput {
   examPaperName: string
   difficultyLevel: number
-  ExamPaperQuestions: ExamPaperQuestionInput[]
+  questions: ExamPaperQuestionInput[]
 }
 
 export interface ExamPaperQuestionInput {
@@ -39,7 +39,7 @@ export interface ExamPaperQuestionInput {
 export interface ExamPaperUpdate {
   ExamPaperName?: string
   DifficultyLevel?: number
-  ExamPaperQuestions?: ExamPaperQuestionInput[]
+  questions?: ExamPaperQuestionInput[]
 }
 
 export async function count(params?: ExamPaperFilter) {

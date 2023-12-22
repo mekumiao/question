@@ -45,10 +45,10 @@ function handleClick(item: AnswerBoardQuestionWithIndex) {
     <h4>{{ title }}</h4>
     <ul
       role="list"
-      class="m-1 flex flex-row flex-wrap items-start justify-start justify-items-center"
+      class="flex flex-row flex-wrap items-start justify-start justify-items-center gap-2"
     >
       <li
-        class="mx-1 flex w-fit cursor-pointer select-none flex-row justify-around"
+        class="flex w-fit cursor-pointer select-none flex-row justify-around"
         v-for="(item, key) in options"
         :key="key"
         @click="handleClick(item)"

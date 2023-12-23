@@ -23,7 +23,7 @@ async function createAnswerBorard() {
       examPaperId: props.examPaperId,
       examinationId: props.examinationId,
     })
-    await router.push({ path: `/student/answer-detail/${answerBoard.value.answerBoardId}` })
+    await router.replace({ path: `/student/answer-detail/${answerBoard.value.answerBoardId}` })
   } catch (error) {
     console.error(error)
   } finally {

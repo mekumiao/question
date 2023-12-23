@@ -97,12 +97,23 @@ export async function importFromExcel(input: ImportExamPaperFromExcelInput) {
  */
 export async function exportToExcel(fileName: string, exampaperIds: number[]): Promise<void> {
   const resp = await axios.post<Blob>(`/examPapers/export`, exampaperIds, { responseType: 'blob' })
-  const blob = resp.data
-  console.log(blob)
-  console.log(resp)
+  downloadFile(resp.data, fileName)
+}
+
+/**
+ * 下载导入模板
+ */
+export async function exportToExcelTemplate() {
+  const resp = await axios.post<Blob>(`/examPapers/export/template`, null, { responseType: 'blob' })
+  downloadFile(resp.data, '试卷导入模板')
+}
+
+function downloadFile(blob: Blob, fileName?: string) {
   const link = document.createElement('a')
   link.href = window.URL.createObjectURL(blob)
-  link.download = fileName
+  if (fileName) {
+    link.download = fileName
+  }
 
   document.body.appendChild(link)
   link.click()

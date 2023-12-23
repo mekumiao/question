@@ -18,6 +18,7 @@ const importRef = ref<InstanceType<typeof ExamPaperImport>>()
 const message = useMessage()
 
 const loading = ref(false)
+const exportLoading = ref(false)
 const model = ref<ExamPaper[]>([])
 const checkedRowKeys = ref<DataTableRowKey[]>([])
 const filter = reactive<ExamPaperFilter>({ difficultyLevel: 0 })
@@ -95,7 +96,16 @@ async function handleExportClick() {
   if (items.length > 0) {
     const examPaper = model.value.find((v) => v.examPaperId == items[0])
     if (examPaper) {
-      await exportToExcel(examPaper.examPaperName, items as number[])
+      try {
+        exportLoading.value = true
+        await exportToExcel(examPaper.examPaperName, items as number[])
+        message.success('导出成功')
+      } catch (error) {
+        if (error instanceof Error) message.error(error.message)
+        console.error(error)
+      } finally {
+        exportLoading.value = false
+      }
     } else {
       message.warning('数据错误，请刷新页面')
     }
@@ -103,10 +113,6 @@ async function handleExportClick() {
     message.warning('请至少选择一项')
   }
 }
-
-// function handleCheck(rowKeys: DataTableRowKey[]) {
-//   checkedRowKeys.value = rowKeys
-// }
 </script>
 
 <template>
@@ -136,9 +142,9 @@ async function handleExportClick() {
           </NButton>
         </NButtonGroup>
         <NButtonGroup size="small">
-          <NButton type="primary">新建</NButton>
+          <!-- <NButton type="primary">新建</NButton> -->
           <NButton type="warning" @click="handleImportClick">导入</NButton>
-          <NButton type="info" @click="handleExportClick">导出</NButton>
+          <NButton type="info" :loading="exportLoading" @click="handleExportClick">导出</NButton>
         </NButtonGroup>
       </div>
     </div>

@@ -75,18 +75,14 @@ async function fullData(answerBoard: AnswerBoard) {
 watch(
   () => data.question,
   (value) => {
-    if (Array.isArray(value.answer)) {
-      if (value.questionType === 2) {
-        data.select = { ...defaultSelect(), multiple: value.answer }
-      }
-    } else {
-      if (value.questionType === 1) {
-        data.select = { ...defaultSelect(), single: value.answer }
-      } else if (value.questionType === 3) {
-        data.select = { ...defaultSelect(), truefalse: value.answer }
-      } else if (value.questionType === 4) {
-        data.select = { ...defaultSelect(), fillblank: value.answer }
-      }
+    if (value.questionType === 1) {
+      data.select = { ...defaultSelect(), single: value.answer as string }
+    } else if (value.questionType === 2) {
+      data.select = { ...defaultSelect(), multiple: value.answer as string[] }
+    } else if (value.questionType === 3) {
+      data.select = { ...defaultSelect(), truefalse: value.answer as string }
+    } else if (value.questionType === 4) {
+      data.select = { ...defaultSelect(), fillblank: value.answer as string }
     }
   },
 )

@@ -42,7 +42,7 @@ function handleClick(item: AnswerBoardQuestionWithIndex) {
 
 <template>
   <div class="sheet-list">
-    <h4>{{ title }}</h4>
+    <h4 class="py-2">{{ title }}</h4>
     <ul
       role="list"
       class="flex flex-row flex-wrap items-start justify-start justify-items-center gap-2"

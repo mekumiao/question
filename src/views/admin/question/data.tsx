@@ -27,6 +27,27 @@ export function createQuestionTypeOptions() {
   ]
 }
 
+export function createDifficultyLevelOptions() {
+  return [
+    {
+      label: '全部',
+      value: 0,
+    },
+    {
+      label: '简单',
+      value: 1,
+    },
+    {
+      label: '中等',
+      value: 2,
+    },
+    {
+      label: '困难',
+      value: 3,
+    },
+  ]
+}
+
 export function createDefaultModel(): Question {
   return {
     questionId: 0,

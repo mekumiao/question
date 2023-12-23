@@ -8,7 +8,7 @@ import {
   remove as fetchQuestionDelete,
 } from '@/api/questions'
 import type { Question, QuestionFilter } from '@/api/questions'
-import { createColumns, createQuestionTypeOptions } from './data'
+import { createColumns, createDifficultyLevelOptions, createQuestionTypeOptions } from './data'
 import QuestionEdit from './QuestionEdit2.vue'
 import QuestionCreate from './QuestionCreate.vue'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
@@ -21,9 +21,10 @@ const message = useMessage()
 
 const loading = ref(false)
 const model = ref<Question[]>([])
-const filter = reactive<QuestionFilter>({ questionType: 0 })
+const filter = reactive<QuestionFilter>({ questionType: 0, difficultyLevel: 0 })
 
 const questionTypeOptions = ref(createQuestionTypeOptions())
+const difficultyLevelOptions = ref(createDifficultyLevelOptions())
 
 const pagination = reactive({
   page: 1,
@@ -100,34 +101,39 @@ async function handleCreate() {
 
 <template>
   <div class="question-list m-3">
-    <div class="flex flex-row items-center justify-between pb-3">
-      <div class="flex flex-row items-center justify-start space-x-8">
-        <NInputGroup>
-          <NInputGroupLabel type="primary">题型</NInputGroupLabel>
-          <NSelect
-            v-model:value="filter.questionType"
-            :options="questionTypeOptions"
-            @update:value="handleSearch"
-          ></NSelect>
-        </NInputGroup>
-        <NInputGroup>
-          <NInputGroupLabel type="primary">搜索题目</NInputGroupLabel>
-          <NInput v-model:value="filter.questionText" @keydown="handleEnter" />
-          <NButton type="info" @click="handleSearch">
-            <NIcon><SearchOutline></SearchOutline></NIcon>
-          </NButton>
-        </NInputGroup>
-      </div>
-      <div class="flex flex-row justify-end space-x-4">
-        <NButtonGroup size="small">
-          <NButton type="default" circle @click="handleSearch">
-            <NIcon><RefreshOutline></RefreshOutline></NIcon>
-          </NButton>
-        </NButtonGroup>
-        <NButtonGroup size="small">
-          <NButton type="primary" @click="handleCreate">新建</NButton>
-        </NButtonGroup>
-      </div>
+    <div class="flex flex-row items-center justify-between space-x-8 pb-3">
+      <!-- <div class="flex flex-row items-center justify-start space-x-2"> -->
+      <NInputGroup>
+        <NInputGroupLabel type="primary">题型</NInputGroupLabel>
+        <NSelect
+          v-model:value="filter.questionType"
+          :options="questionTypeOptions"
+          @update:value="handleSearch"
+        ></NSelect>
+      </NInputGroup>
+      <NInputGroup>
+        <NInputGroupLabel type="primary">难度</NInputGroupLabel>
+        <NSelect
+          v-model:value="filter.difficultyLevel"
+          :options="difficultyLevelOptions"
+          @update:value="handleSearch"
+        ></NSelect>
+      </NInputGroup>
+      <NInputGroup>
+        <NInputGroupLabel type="primary">题目</NInputGroupLabel>
+        <NInput v-model:value="filter.questionText" @keydown="handleEnter" />
+        <NButton type="info" @click="handleSearch">
+          <NIcon><SearchOutline></SearchOutline></NIcon>
+        </NButton>
+      </NInputGroup>
+      <NButtonGroup size="small">
+        <NButton type="default" circle @click="handleSearch">
+          <NIcon><RefreshOutline></RefreshOutline></NIcon>
+        </NButton>
+      </NButtonGroup>
+      <NButtonGroup size="small">
+        <NButton type="primary" @click="handleCreate">新建</NButton>
+      </NButtonGroup>
     </div>
     <NDataTable
       remote

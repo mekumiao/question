@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 import type { ExaminationInput } from '@/api/examination'
-import type { FormRules, DataTableColumns } from 'naive-ui'
+import type { FormRules, DataTableColumns, DataTableRowKey } from 'naive-ui'
 import { create as fetchCreate } from '@/api/examination'
 import { list as fetchExamPaperList, count as fetchExamPaperCount } from '@/api/examPapers'
 import { NDataTable, NSpace, NTimePicker, NButtonGroup } from 'naive-ui'
@@ -144,6 +144,14 @@ async function handleEnter(e: KeyboardEvent) {
   }
 }
 
+function handleChecked(v: DataTableRowKey[], rows: any) {
+  if (data.model.examinationName) return
+  if (v.length) {
+    const items = rows as ExamPaper[]
+    data.model.examinationName = items[0].examPaperName
+  }
+}
+
 defineExpose({ open })
 
 const rules: FormRules = {
@@ -284,6 +292,7 @@ const columns: DataTableColumns<ExamPaper> = [
                 :row-key="(row: ExamPaper) => row.examPaperId"
                 :pagination="pagination"
                 @update:page="handlePageChange"
+                @update:checked-row-keys="handleChecked"
               ></NDataTable>
             </NSpace>
           </NFormItem>

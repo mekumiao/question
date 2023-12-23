@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { NIcon, NSelect, useMessage, type DataTableRowKey } from 'naive-ui'
+import { NIcon, NSelect, useMessage, type DataTableRowKey, NModal, NRate } from 'naive-ui'
 import { NDataTable, NInput, NButton, NButtonGroup, NInputGroup, NInputGroupLabel } from 'naive-ui'
 import {
   list as fetchExamList,
   count as fetchExamCount,
   remove as fetchExamDelete,
   exportToExcel,
+  random as fetchRandemGenExam,
 } from '@/api/examPapers'
 import type { ExamPaper, ExamPaperFilter } from '@/api/examPapers'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
@@ -22,6 +23,8 @@ const exportLoading = ref(false)
 const model = ref<ExamPaper[]>([])
 const checkedRowKeys = ref<DataTableRowKey[]>([])
 const filter = reactive<ExamPaperFilter>({ difficultyLevel: 0 })
+const showRandom = ref(false)
+const randomDifficultyLevel = ref(1)
 
 const pagination = reactive({
   page: 1,
@@ -113,6 +116,21 @@ async function handleExportClick() {
     message.warning('请至少选择一项')
   }
 }
+
+function handelRandomClick() {
+  showRandom.value = true
+}
+
+async function handleRandomConfirmClick() {
+  try {
+    await fetchRandemGenExam({ difficultyLevel: randomDifficultyLevel.value })
+    message.success('生成成功')
+    await handleSearch()
+  } catch (error) {
+    if (error instanceof Error) message.error(error.message)
+    console.error(error)
+  }
+}
 </script>
 
 <template>
@@ -142,7 +160,9 @@ async function handleExportClick() {
           </NButton>
         </NButtonGroup>
         <NButtonGroup size="small">
-          <!-- <NButton type="primary">新建</NButton> -->
+          <NButton type="default" @click="handelRandomClick">随机生成</NButton>
+        </NButtonGroup>
+        <NButtonGroup size="small">
           <NButton type="warning" @click="handleImportClick">导入</NButton>
           <NButton type="info" :loading="exportLoading" @click="handleExportClick">导出</NButton>
         </NButtonGroup>
@@ -163,6 +183,19 @@ async function handleExportClick() {
     <ExamPaperImport ref="importRef"></ExamPaperImport>
     <!-- <QuestionDetail ref="detailRef"></QuestionDetail> -->
   </div>
+  <NModal
+    v-model:show="showRandom"
+    preset="dialog"
+    title="随机生成试卷"
+    positive-text="确认"
+    negative-text="取消"
+    @positive-click="handleRandomConfirmClick"
+  >
+    <div class="m-10 flex w-full flex-row items-center justify-start gap-5">
+      <div>试卷难度:</div>
+      <NRate size="medium" v-model:value="randomDifficultyLevel" :count="3"></NRate>
+    </div>
+  </NModal>
 </template>
 
 <style lang="css" scoped></style>

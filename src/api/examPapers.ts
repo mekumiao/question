@@ -47,6 +47,10 @@ export interface ImportExamPaperFromExcelInput {
   file: File
 }
 
+export interface RandomGenerationInput {
+  difficultyLevel: number
+}
+
 export async function count(params?: ExamPaperFilter) {
   const response = await axios.get<number>(`/examPapers/count`, { params })
   return response.data
@@ -120,4 +124,9 @@ function downloadFile(blob: Blob, fileName?: string) {
 
   document.body.removeChild(link)
   window.URL.revokeObjectURL(link.href)
+}
+
+export async function random(input: RandomGenerationInput) {
+  const response = await axios.post<ExamPaper>(`/examPapers/random`, input)
+  return response.data
 }

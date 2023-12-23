@@ -75,7 +75,9 @@ async function fullData(answerBoard: AnswerBoard) {
 watch(
   () => data.question,
   (value) => {
+    console.log(value.questionType)
     if (value.questionType === 1) {
+      console.log(value.answer)
       data.select = { ...defaultSelect(), single: value.answer as string }
     } else if (value.questionType === 2) {
       data.select = { ...defaultSelect(), multiple: value.answer as string[] }
@@ -84,6 +86,9 @@ watch(
     } else if (value.questionType === 4) {
       data.select = { ...defaultSelect(), fillblank: value.answer as string }
     }
+  },
+  {
+    immediate: true,
   },
 )
 
@@ -150,12 +155,15 @@ function handleSheetSelect(value: AnswerBoardQuestionWithIndex) {
   if (value.questionId !== data.question.questionId) {
     const question = props.answerBoard.questions.find((v) => v.questionId === value.questionId)
     if (question) {
-      data.question = { ...question, number: value.number, answer: '', isAnswer: false }
+      data.question = {
+        ...question,
+        number: value.number,
+        answer: value.answer,
+        isAnswer: value.isAnswer,
+        correctAnswer: value.correctAnswer,
+      }
     }
   }
-  data.question.answer = value.answer
-  data.question.isAnswer = value.isAnswer
-  data.question.correctAnswer = value.correctAnswer
   // 填空题时，将textarea选中
   if (data.question.questionType === 4) {
     nextTick(() => {

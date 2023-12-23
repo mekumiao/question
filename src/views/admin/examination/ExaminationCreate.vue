@@ -145,11 +145,10 @@ async function handleEnter(e: KeyboardEvent) {
 }
 
 function handleChecked(v: DataTableRowKey[], rows: any) {
-  if (data.model.examinationName) return
-  if (v.length) {
-    const items = rows as ExamPaper[]
-    data.model.examinationName = items[0].examPaperName
-  }
+  if (!v.length) return
+  const items = rows as ExamPaper[]
+  data.model.examinationName = items[0].examPaperName
+  data.model.difficultyLevel = items[0].difficultyLevel
 }
 
 defineExpose({ open })
@@ -230,14 +229,8 @@ const columns: DataTableColumns<ExamPaper> = [
       <template #header>创建考试</template>
       <NSpin :show="loading">
         <NForm ref="formRef" :rules="rules" :model="data.model">
-          <NFormItem label="考试名称" path="examinationName">
-            <NInput v-model:value="data.model.examinationName" placeholder="请输入名称"></NInput>
-          </NFormItem>
           <NFormItem label="排序 (值越大越靠前)" path="order">
             <NInputNumber v-model:value="data.model.order" placeholder="请输入排序"></NInputNumber>
-          </NFormItem>
-          <NFormItem label="难度" path="difficultyLevel">
-            <NRate v-model:value="data.model.difficultyLevel" :count="3"></NRate>
           </NFormItem>
           <NFormItem label="考试类型" path="examinationType">
             <NRadioGroup class="pb-4" v-model:value="data.model.examinationType">
@@ -253,6 +246,12 @@ const columns: DataTableColumns<ExamPaper> = [
               :minutes="[0, 30]"
               :seconds="[0, 30]"
             />
+          </NFormItem>
+          <NFormItem label="难度" path="difficultyLevel">
+            <NRate v-model:value="data.model.difficultyLevel" :count="3"></NRate>
+          </NFormItem>
+          <NFormItem label="考试名称" path="examinationName">
+            <NInput v-model:value="data.model.examinationName" placeholder="请输入名称"></NInput>
           </NFormItem>
           <NFormItem label="选择试卷" path="examPaperId">
             <NSpace vertical class="w-full">

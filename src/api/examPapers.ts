@@ -42,6 +42,11 @@ export interface ExamPaperUpdate {
   questions?: ExamPaperQuestionInput[]
 }
 
+export interface ImportExamPaperFromExcelInput {
+  examPaperName?: string
+  file: File
+}
+
 export async function count(params?: ExamPaperFilter) {
   const response = await axios.get<number>(`/examPapers/count`, { params })
   return response.data
@@ -70,4 +75,38 @@ export async function update(examPaperId: number, examPaper: ExamPaperQuestionIn
 export async function remove(examPaperId: number) {
   const response = await axios.delete<void>(`/examPapers/${examPaperId}`)
   return response.data
+}
+
+export async function importFromExcel(input: ImportExamPaperFromExcelInput) {
+  const formData = new FormData()
+  input.examPaperName && formData.append('examPaperName', input.examPaperName)
+  formData.append('file', input.file)
+  const resp = await axios.post<ExamPaper>(`/examPapers/import`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+  return resp.data
+}
+
+/**
+ * 导出试卷为excel
+ * @param name 下载名称
+ * @param exampaperIds 试卷ID数组
+ * @returns excel下载链接
+ */
+export async function exportToExcel(fileName: string, exampaperIds: number[]): Promise<void> {
+  const resp = await axios.post<Blob>(`/examPapers/export`, exampaperIds, { responseType: 'blob' })
+  const blob = resp.data
+  console.log(blob)
+  console.log(resp)
+  const link = document.createElement('a')
+  link.href = window.URL.createObjectURL(blob)
+  link.download = fileName
+
+  document.body.appendChild(link)
+  link.click()
+
+  document.body.removeChild(link)
+  window.URL.revokeObjectURL(link.href)
 }

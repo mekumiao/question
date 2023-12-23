@@ -1,20 +1,25 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
+import { NIcon, NSelect, useMessage, type DataTableRowKey } from 'naive-ui'
 import { NDataTable, NInput, NButton, NButtonGroup, NInputGroup, NInputGroupLabel } from 'naive-ui'
-import { NIcon, NSelect } from 'naive-ui'
 import {
   list as fetchExamList,
   count as fetchExamCount,
   remove as fetchExamDelete,
+  exportToExcel,
 } from '@/api/examPapers'
 import type { ExamPaper, ExamPaperFilter } from '@/api/examPapers'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
 import { createColumns, createDifficultyLevelOptions } from './data'
+import ExamPaperImport from './ExamPaperImport.vue'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
+const importRef = ref<InstanceType<typeof ExamPaperImport>>()
+const message = useMessage()
 
 const loading = ref(false)
 const model = ref<ExamPaper[]>([])
+const checkedRowKeys = ref<DataTableRowKey[]>([])
 const filter = reactive<ExamPaperFilter>({ difficultyLevel: 0 })
 
 const pagination = reactive({
@@ -49,11 +54,12 @@ async function handlePageChange(currentPage: number) {
   if (!loading.value) {
     try {
       loading.value = true
-      model.value = await fetchExamList({
+      const items = await fetchExamList({
         offset: (currentPage - 1) * pagination.pageSize,
         limit: pagination.pageSize,
         ...filter,
       })
+      model.value = items.map((v) => ({ ...v, checked: false }))
       pagination.page = currentPage
     } finally {
       loading.value = false
@@ -62,8 +68,14 @@ async function handlePageChange(currentPage: number) {
 }
 
 async function handleSearch() {
-  await handlePageChange(1)
-  pagination.itemCount = await fetchExamCount(filter)
+  checkedRowKeys.value = []
+  await Promise.all([
+    handlePageChange(1),
+    fetchExamCount(filter).then((v) => {
+      pagination.itemCount = v
+      return v
+    }),
+  ])
 }
 
 async function handleEnter(e: KeyboardEvent) {
@@ -71,6 +83,30 @@ async function handleEnter(e: KeyboardEvent) {
     await handleSearch()
   }
 }
+
+function handleImportClick() {
+  importRef.value?.open(() => {
+    handleSearch()
+  })
+}
+
+async function handleExportClick() {
+  const items = checkedRowKeys.value
+  if (items.length > 0) {
+    const examPaper = model.value.find((v) => v.examPaperId == items[0])
+    if (examPaper) {
+      await exportToExcel(examPaper.examPaperName, items as number[])
+    } else {
+      message.warning('数据错误，请刷新页面')
+    }
+  } else {
+    message.warning('请至少选择一项')
+  }
+}
+
+// function handleCheck(rowKeys: DataTableRowKey[]) {
+//   checkedRowKeys.value = rowKeys
+// }
 </script>
 
 <template>
@@ -101,8 +137,8 @@ async function handleEnter(e: KeyboardEvent) {
         </NButtonGroup>
         <NButtonGroup size="small">
           <NButton type="primary">新建</NButton>
-          <NButton type="warning">导入</NButton>
-          <NButton type="info">导出</NButton>
+          <NButton type="warning" @click="handleImportClick">导入</NButton>
+          <NButton type="info" @click="handleExportClick">导出</NButton>
         </NButtonGroup>
       </div>
     </div>
@@ -115,10 +151,11 @@ async function handleEnter(e: KeyboardEvent) {
       :data="model"
       :pagination="pagination"
       :row-key="(row: ExamPaper) => row.examPaperId"
+      v-model:checked-row-keys="checkedRowKeys"
       @update:page="handlePageChange"
     />
-    <!-- <QuestionEdit ref="editRef"></QuestionEdit>
-    <QuestionDetail ref="detailRef"></QuestionDetail> -->
+    <ExamPaperImport ref="importRef"></ExamPaperImport>
+    <!-- <QuestionDetail ref="detailRef"></QuestionDetail> -->
   </div>
 </template>
 

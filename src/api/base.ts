@@ -1,6 +1,10 @@
 import axios from 'axios'
 
-export type TokenResult = {
+export interface PoDetail {
+  details: string[]
+}
+
+export interface TokenResult {
   tokenType: string
   accessToken: string
   expiresIn: number

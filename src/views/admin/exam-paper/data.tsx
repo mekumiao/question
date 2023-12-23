@@ -42,6 +42,9 @@ export function createColumns({
 }): DataTableColumns<ExamPaper> {
   return [
     {
+      type: 'selection',
+    },
+    {
       title: 'ID',
       key: 'examPaperId',
       width: 80,

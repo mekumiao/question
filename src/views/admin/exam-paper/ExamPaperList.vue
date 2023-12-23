@@ -227,7 +227,7 @@ const randomRules: FormRules = {
         <NFormItem label="试卷名称" path="examPaperName">
           <NInput v-model:value="randomGenerationData.model.examPaperName"></NInput>
         </NFormItem>
-        <NFormItem label="试卷难度" ignore-path-change>
+        <NFormItem label="允许出现低于或等于此难度级别的题目" ignore-path-change>
           <NRate
             size="medium"
             v-model:value="randomGenerationData.model.difficultyLevel"

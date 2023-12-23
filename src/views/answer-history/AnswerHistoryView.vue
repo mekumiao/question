@@ -129,6 +129,7 @@ const columns: DataTableColumns<AnswerHistory> = [
   {
     title: '操作',
     key: 'actions',
+    align: 'right',
     render(row) {
       return (
         <NButtonGroup>

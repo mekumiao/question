@@ -64,6 +64,7 @@ export function createColumns({
     {
       title: '操作',
       key: 'actions',
+      align: 'right',
       render(row) {
         return (
           <NButtonGroup>

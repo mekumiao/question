@@ -241,7 +241,14 @@ defineExpose({ toAnswerInputs })
         <template #icon>
           <NIcon><BookmarksOutline /></NIcon>
         </template>
-        <span>{{ data.question.correctAnswer }}</span>
+        <span v-if="data.question.questionType === 3">{{
+          data.question.correctAnswer === '0'
+            ? '×'
+            : data.question.correctAnswer === '1'
+              ? '√'
+              : data.question.correctAnswer
+        }}</span>
+        <span v-else>{{ data.question.correctAnswer }}</span>
       </NAlert>
       <div class="mt-3 flex flex-row justify-end gap-2">
         <NButton @click="handleBackClick">上一题</NButton>

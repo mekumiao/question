@@ -4,6 +4,7 @@ import type { PaginationParameters } from '/#/utils'
 export interface ExaminationFilter {
   examinationName?: string
   examinationType?: number
+  difficultyLevel?: number
 }
 
 export interface Examination {
@@ -13,11 +14,25 @@ export interface Examination {
   difficultyLevel: number
   examPaperId: number
   durationSeconds: number
+  order: number
 }
 
-export interface ExaminationInput {}
+export interface ExaminationInput {
+  examinationName: string
+  examinationType: number
+  difficultyLevel: number
+  examPaperId: number
+  durationSeconds: number
+  order: number
+}
 
-export interface ExaminationUpdate {}
+export interface ExaminationUpdate {
+  examinationName?: string
+  examinationType?: number
+  difficultyLevel?: number
+  durationSeconds?: number
+  order?: number
+}
 
 export async function count(params?: ExaminationFilter) {
   const response = await axios.get<number>(`/examination/count`, { params })

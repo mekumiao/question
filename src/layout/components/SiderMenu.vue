@@ -8,7 +8,7 @@ import {
   // People,
   PeopleOutline,
   RibbonOutline,
-  // SchoolOutline,
+  SchoolOutline,
   // Server,
   TimeOutline,
 } from '@vicons/ionicons5'
@@ -78,6 +78,11 @@ const menuOptions: MenuOption[] = [
     label: renderMenuLabel('试卷列表', { path: '/admin/exam-paper' }),
     key: '/admin/exam-paper',
     icon: renderIcon(RibbonOutline),
+  },
+  {
+    label: renderMenuLabel('考试列表', { path: '/admin/examination' }),
+    key: '/admin/examination',
+    icon: renderIcon(SchoolOutline),
   },
   {
     label: renderMenuLabel('答题历史', { path: '/admin/history' }),

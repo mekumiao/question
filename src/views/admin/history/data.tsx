@@ -59,7 +59,14 @@ export function createColumns({
         return <NRate readonly size="small" value={row.difficultyLevel} count={3}></NRate>
       },
     },
-
+    {
+      title: '题目总数',
+      key: 'totalQuestions',
+    },
+    {
+      title: '作答总数',
+      key: 'totalNumberAnswers',
+    },
     {
       title: '作答时间',
       key: 'difficultyLevel',

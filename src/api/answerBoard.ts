@@ -68,3 +68,8 @@ export async function update(answerBoardId: number, answers: AnswerInput[]) {
   const response = await axios.put<AnswerBoard>(`/answerBoard/${answerBoardId}`, answers)
   return response.data
 }
+
+export async function redoIncorrect(answerBoardId: number) {
+  const response = await axios.post<AnswerBoard>(`/answerBoard/${answerBoardId}/redo-incorrect`)
+  return response.data
+}

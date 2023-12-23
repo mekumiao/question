@@ -7,9 +7,11 @@ import type { AnswerHistory } from '@/api/answerHistory'
 import type { ExamPaperFilter } from '@/api/examPapers'
 import type { DataTableColumns } from 'naive-ui'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
+import { redoIncorrect as fetchRedoIncorrect } from '@/api/answerBoard'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
+const router = useRouter()
 
 const loading = ref(false)
 const model = ref<AnswerHistory[]>([])
@@ -194,9 +196,11 @@ async function handleEnter(e: KeyboardEvent) {
   }
 }
 
-function handleRedoIncorrectClick(item: AnswerHistory) {
-  console.log(item)
+async function handleRedoIncorrectClick(item: AnswerHistory) {
+  const answerBoard = await fetchRedoIncorrect(item.answerHistoryId)
+  router.push({ path: `/student/answer-detail/${answerBoard.answerBoardId}` })
 }
+
 function handleRemoveClick(item: AnswerHistory) {
   console.log(item)
 }

@@ -61,6 +61,10 @@ export function createColumns({
       },
     },
     {
+      title: '题目总数',
+      key: 'totalQuestions',
+    },
+    {
       title: '操作',
       key: 'actions',
       align: 'right',

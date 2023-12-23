@@ -20,6 +20,8 @@ export interface AnswerHistory {
   submissionTime: string
   isSubmission: boolean
   totalIncorrectAnswers: number
+  totalNumberAnswers: number
+  totalQuestions: number
   studentAnswers: StudentAnswer[]
 }
 

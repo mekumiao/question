@@ -110,7 +110,7 @@ async function handleExportClick() {
     if (examPaper) {
       try {
         exportLoading.value = true
-        await exportToExcel(examPaper.examPaperName, items as number[])
+        await exportToExcel(`${examPaper.examPaperName}.xlsx`, items as number[])
         message.success('导出成功')
       } catch (error) {
         if (error instanceof Error) message.error(error.message)

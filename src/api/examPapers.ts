@@ -6,6 +6,7 @@ export interface ExamPaper {
   examPaperId: number
   examPaperName: string
   difficultyLevel: number
+  totalQuestions: number
   questions: ExamPaperQuestion[]
 }
 
@@ -23,6 +24,7 @@ export interface ExamPaperQuestion {
 export interface ExamPaperFilter {
   examPaperName?: string
   difficultyLevel?: number
+  examPaperType?: number
 }
 
 export interface ExamPaperInput {
@@ -110,7 +112,7 @@ export async function exportToExcel(fileName: string, exampaperIds: number[]): P
  */
 export async function exportToExcelTemplate() {
   const resp = await axios.post<Blob>(`/examPapers/export/template`, null, { responseType: 'blob' })
-  downloadFile(resp.data, '试卷导入模板')
+  downloadFile(resp.data, '试卷导入模板.xlsx')
 }
 
 function downloadFile(blob: Blob, fileName?: string) {

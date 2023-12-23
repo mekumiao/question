@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
+import { NForm, NFormItem, type FormRules } from 'naive-ui'
 import { NIcon, NSelect, useMessage, type DataTableRowKey, NModal, NRate } from 'naive-ui'
 import { NDataTable, NInput, NButton, NButtonGroup, NInputGroup, NInputGroupLabel } from 'naive-ui'
 import {
@@ -9,13 +10,14 @@ import {
   exportToExcel,
   random as fetchRandemGenExam,
 } from '@/api/examPapers'
-import type { ExamPaper, ExamPaperFilter } from '@/api/examPapers'
+import type { ExamPaper, ExamPaperFilter, RandomGenerationInput } from '@/api/examPapers'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
 import { createColumns, createDifficultyLevelOptions } from './data'
 import ExamPaperImport from './ExamPaperImport.vue'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 const importRef = ref<InstanceType<typeof ExamPaperImport>>()
+const randomFormRef = ref<InstanceType<typeof NForm>>()
 const message = useMessage()
 
 const loading = ref(false)
@@ -23,8 +25,15 @@ const exportLoading = ref(false)
 const model = ref<ExamPaper[]>([])
 const checkedRowKeys = ref<DataTableRowKey[]>([])
 const filter = reactive<ExamPaperFilter>({ difficultyLevel: 0 })
-const showRandom = ref(false)
-const randomDifficultyLevel = ref(1)
+const randomGenerationData = reactive<{
+  model: RandomGenerationInput
+  showRandom: boolean
+  loading: boolean
+}>({
+  model: { difficultyLevel: 1 },
+  showRandom: false,
+  loading: false,
+})
 
 const pagination = reactive({
   page: 1,
@@ -118,18 +127,38 @@ async function handleExportClick() {
 }
 
 function handelRandomClick() {
-  showRandom.value = true
+  randomGenerationData.showRandom = true
+}
+
+function handleRandomAfterLeave() {
+  randomGenerationData.model = { difficultyLevel: 1 }
 }
 
 async function handleRandomConfirmClick() {
   try {
-    await fetchRandemGenExam({ difficultyLevel: randomDifficultyLevel.value })
+    randomGenerationData.loading = true
+    await randomFormRef.value?.validate()
+    await fetchRandemGenExam(randomGenerationData.model)
+    randomGenerationData.showRandom = false
     message.success('生成成功')
     await handleSearch()
   } catch (error) {
     if (error instanceof Error) message.error(error.message)
     console.error(error)
+    return false
+  } finally {
+    randomGenerationData.loading = false
   }
+}
+
+const randomRules: FormRules = {
+  examPaperName: [
+    {
+      required: true,
+      message: '请输入试卷名称',
+      trigger: ['input', 'blur'],
+    },
+  ],
 }
 </script>
 
@@ -184,16 +213,28 @@ async function handleRandomConfirmClick() {
     <!-- <QuestionDetail ref="detailRef"></QuestionDetail> -->
   </div>
   <NModal
-    v-model:show="showRandom"
+    v-model:show="randomGenerationData.showRandom"
     preset="dialog"
     title="随机生成试卷"
     positive-text="确认"
     negative-text="取消"
+    :loading="randomGenerationData.loading"
     @positive-click="handleRandomConfirmClick"
+    @after-leave="handleRandomAfterLeave"
   >
-    <div class="m-10 flex w-full flex-row items-center justify-start gap-5">
-      <div>试卷难度:</div>
-      <NRate size="medium" v-model:value="randomDifficultyLevel" :count="3"></NRate>
+    <div class="py-5">
+      <NForm ref="randomFormRef" :rules="randomRules" :model="randomGenerationData.model">
+        <NFormItem label="试卷名称" path="examPaperName">
+          <NInput v-model:value="randomGenerationData.model.examPaperName"></NInput>
+        </NFormItem>
+        <NFormItem label="试卷难度" ignore-path-change>
+          <NRate
+            size="medium"
+            v-model:value="randomGenerationData.model.difficultyLevel"
+            :count="3"
+          ></NRate>
+        </NFormItem>
+      </NForm>
     </div>
   </NModal>
 </template>

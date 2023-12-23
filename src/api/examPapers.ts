@@ -48,7 +48,8 @@ export interface ImportExamPaperFromExcelInput {
 }
 
 export interface RandomGenerationInput {
-  difficultyLevel: number
+  difficultyLevel?: number
+  examPaperName?: string
 }
 
 export async function count(params?: ExamPaperFilter) {

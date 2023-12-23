@@ -7,6 +7,7 @@ import type { AnswerHistory } from '@/api/answerHistory'
 import type { ExamPaperFilter } from '@/api/examPapers'
 import type { DataTableColumns } from 'naive-ui'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
+import { RouterLink } from 'vue-router'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 
@@ -133,6 +134,11 @@ const columns: DataTableColumns<AnswerHistory> = [
     render(row) {
       return (
         <NButtonGroup>
+          <RouterLink to={`/student/answer-detail/${row.answerHistoryId}`}>
+            <NButton ghost size="small" type="info">
+              查看详细
+            </NButton>
+          </RouterLink>
           <NButton type="primary" size="small" onClick={() => handleRedoIncorrectClick(row)}>
             错题重做
           </NButton>

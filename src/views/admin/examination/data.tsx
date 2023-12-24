@@ -1,6 +1,7 @@
 import type { Examination } from '@/api/examination'
 import type { DataTableColumns } from 'naive-ui'
 import { NRate, NButton, NButtonGroup, NPopconfirm, NTag } from 'naive-ui'
+import { formatSeconds } from '@/utils'
 
 export function createDifficultyLevelOptions() {
   return [
@@ -79,6 +80,17 @@ export function createColumns({
         ) : (
           <NTag size="small" type="default">
             默认
+          </NTag>
+        )
+      },
+    },
+    {
+      title: '时长',
+      key: 'DurationSeconds',
+      render(row) {
+        return (
+          <NTag size="small" type="default">
+            {formatSeconds(row.durationSeconds)}
           </NTag>
         )
       },

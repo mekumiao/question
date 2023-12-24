@@ -68,6 +68,9 @@ export function createColumns({
 }): DataTableColumns<Question> {
   return [
     {
+      type: 'selection',
+    },
+    {
       title: 'ID',
       key: 'questionId',
       width: 80,

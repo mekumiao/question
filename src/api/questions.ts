@@ -76,3 +76,8 @@ export async function remove(questionId: number) {
   const response = await axios.delete<void>(`/questions/${questionId}`)
   return response.data
 }
+
+export async function deleteQuestionItems(questionIds: number[]) {
+  const response = await axios.delete<void>(`/questions/`, { data: questionIds })
+  return response.data
+}

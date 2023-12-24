@@ -1,27 +1,38 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { onMounted, reactive, ref } from 'vue'
-import { NDataTable, NInput, NButton, NButtonGroup, NInputGroup, NInputGroupLabel } from 'naive-ui'
+import {
+  NDataTable,
+  NInput,
+  NButton,
+  NButtonGroup,
+  NInputGroup,
+  NInputGroupLabel,
+  useDialog,
+} from 'naive-ui'
 import { NIcon, NSelect, useMessage } from 'naive-ui'
 import {
   list as fetchQuestionList,
   count as fetchQuestionCount,
   remove as fetchQuestionDelete,
+  deleteQuestionItems,
 } from '@/api/questions'
 import type { Question, QuestionFilter } from '@/api/questions'
 import { createColumns, createDifficultyLevelOptions, createQuestionTypeOptions } from './data'
 import QuestionEdit from './QuestionEdit2.vue'
 import QuestionCreate from './QuestionCreate.vue'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
+import { ValidationProblemError } from '@/api/base'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 const editRef = ref<InstanceType<typeof QuestionEdit>>()
 const createRef = ref<InstanceType<typeof QuestionCreate>>()
-
+const dialog = useDialog()
 const message = useMessage()
 
 const loading = ref(false)
 const model = ref<Question[]>([])
 const filter = reactive<QuestionFilter>({ questionType: 0, difficultyLevel: 0 })
+const checkedRowKeys = ref<number[]>([])
 
 const questionTypeOptions = ref(createQuestionTypeOptions())
 const difficultyLevelOptions = ref(createDifficultyLevelOptions())
@@ -60,6 +71,7 @@ onMounted(async () => {
 })
 
 async function handlePageChange(currentPage: number) {
+  checkedRowKeys.value = []
   if (!loading.value) {
     try {
       loading.value = true
@@ -95,6 +107,43 @@ async function handleCreate() {
   createRef.value?.open(() => {
     message.success('保存成功')
     handlePageChange(1)
+  })
+}
+
+async function handleDeleteItems() {
+  if (!checkedRowKeys.value.length) {
+    return message.warning('请至少选择一项')
+  }
+  const errorDetail = ref('')
+  const d = dialog.warning({
+    title: '删除题目',
+    content: () => (
+      <div class="flex flex-col">
+        <span>{`您选中了${checkedRowKeys.value.length}项，删除后无法恢复`}</span>
+        <span class="text-red-500">{errorDetail.value}</span>
+      </div>
+    ),
+    negativeText: '取消',
+    positiveText: '确实',
+    async onPositiveClick() {
+      d.loading = true
+      try {
+        if (checkedRowKeys.value.length === 1) {
+          await fetchQuestionDelete(checkedRowKeys.value[0])
+        } else {
+          await deleteQuestionItems(checkedRowKeys.value)
+        }
+        await handlePageChange(pagination.page)
+      } catch (error) {
+        console.error(error)
+        if (error instanceof ValidationProblemError) {
+          errorDetail.value = error.message
+          return false
+        }
+      } finally {
+        d.loading = false
+      }
+    },
   })
 }
 </script>
@@ -133,6 +182,7 @@ async function handleCreate() {
       </NButtonGroup>
       <NButtonGroup size="small">
         <NButton type="primary" @click="handleCreate">新建</NButton>
+        <NButton type="warning" @click="handleDeleteItems">删除选中项</NButton>
       </NButtonGroup>
     </div>
     <NDataTable
@@ -144,6 +194,7 @@ async function handleCreate() {
       :data="model"
       :pagination="pagination"
       :row-key="(row: Question) => row.questionId"
+      v-model:checked-row-keys="checkedRowKeys"
       @update:page="handlePageChange"
     />
     <QuestionEdit ref="editRef"></QuestionEdit>

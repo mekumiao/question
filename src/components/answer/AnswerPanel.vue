@@ -67,8 +67,7 @@ async function fullSheet(answerBoard: AnswerBoard) {
         number: ++number,
         index: [i, n],
         isAnswer: false,
-        answer:
-          v.answerText === null ? '' : v.questionType === 2 ? v.answerText.split('') : v.answerText,
+        answer: v.answerText ?? '',
       }))
   }
 }
@@ -77,13 +76,13 @@ watch(
   () => data.question,
   (value) => {
     if (value.questionType === 1) {
-      data.select = { ...defaultSelect(), single: value.answer as string }
+      data.select = { ...defaultSelect(), single: value.answer }
     } else if (value.questionType === 2) {
-      data.select = { ...defaultSelect(), multiple: value.answer as string[] }
+      data.select = { ...defaultSelect(), multiple: value.answer.split('') }
     } else if (value.questionType === 3) {
-      data.select = { ...defaultSelect(), truefalse: value.answer as string }
+      data.select = { ...defaultSelect(), truefalse: value.answer }
     } else if (value.questionType === 4) {
-      data.select = { ...defaultSelect(), fillblank: value.answer as string }
+      data.select = { ...defaultSelect(), fillblank: value.answer }
     }
   },
   {
@@ -96,11 +95,11 @@ function toAnswer() {
   if (value.questionType === 1) {
     return data.select.single
   } else if (value.questionType === 2) {
-    return data.select.multiple
+    return data.select.multiple.sort().join('')
   } else if (value.questionType === 3) {
     return data.select.truefalse
   } else if (value.questionType === 4) {
-    return data.select.fillblank || ''
+    return data.select.fillblank
   } else {
     return ''
   }
@@ -112,7 +111,7 @@ function handleAnswer() {
   )
   if (item) {
     const answer = toAnswer()
-    if ((Array.isArray(answer) && answer.length > 0) || (typeof answer === 'string' && answer)) {
+    if (answer) {
       item.answer = answer
       item.isAnswer = true
     }
@@ -150,7 +149,7 @@ function nextAnswerOption([x, y]: [number, number]): AnswerBoardQuestionWithInde
 }
 
 function handleSheetSelect(value: AnswerBoardQuestionWithIndex) {
-  selected.value = value.questionId
+  selected.value = value.questionId // 用于设置sheet的选中项
   if (value.questionId !== data.question.questionId) {
     const question = props.answerBoard.questions.find((v) => v.questionId === value.questionId)
     if (question) {
@@ -177,7 +176,7 @@ function toAnswerInputs() {
     .filter((v) => v.isAnswer)
     .map<AnswerInput>((u) => ({
       questionId: u.questionId,
-      answerText: u.answer ? (Array.isArray(u.answer) ? u.answer.join('') : u.answer) : '',
+      answerText: u.answer,
     }))
   return inputAnswers
 }

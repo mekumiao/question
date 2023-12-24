@@ -18,20 +18,10 @@ const emit = defineEmits<{
 const selected = inject<Ref<number>>('selected')
 
 function renderAnswerText(item: AnswerBoardQuestionWithIndex) {
-  if (item.answer) {
-    if (item.questionType === 1) {
-      const option = item.options?.find((v) => v.optionCode === item.answer)
-      return option?.optionCode
-    } else if (item.questionType === 2) {
-      const option = item.options
-        ?.filter((v) => (item.answer as string[]).includes(v.optionCode))
-        .map((v) => v.optionCode)
-      return option?.join('')
-    } else if (item.questionType === 3) {
-      return item.answer === '1' ? '√' : '×'
-    } else if (item.questionType === 4) {
-      return item.answer
-    }
+  if (item.questionType === 3) {
+    return item.answer === '1' ? '√' : '×'
+  } else {
+    return item.answer
   }
 }
 

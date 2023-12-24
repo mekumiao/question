@@ -67,8 +67,8 @@ async function fullData(answerBoard: AnswerBoard) {
                 : v.answerText,
         }))
     }
-    const first = data.sheet[0][0]
-    first && handleSheetSelect(first)
+    const nextQuestion = nextAnswerOption([0, 0])
+    nextQuestion && handleSheetSelect(nextQuestion)
   }
 }
 

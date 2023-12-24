@@ -32,8 +32,13 @@ provide('selected', selected)
 
 watch(
   () => props.answerBoard,
-  () => {
-    fullData(props.answerBoard)
+  (board) => {
+    if (board.questions.length) {
+      data.question = {} as Omit<AnswerBoardQuestionWithIndex, 'index'>
+      fullSheet(board)
+      const nextQuestion = nextAnswerOption([0, -1]) // 获取第一题
+      nextQuestion && handleSheetSelect(nextQuestion) // 选中第一题
+    }
   },
   { immediate: true },
 )
@@ -47,37 +52,31 @@ function defaultSelect() {
   }
 }
 
-async function fullData(answerBoard: AnswerBoard) {
-  if (answerBoard.questions.length) {
-    // 目前仅有4种题型：单选、多选、判断、填空
-    let number = 0
-    for (let i = 0; i < 4; i++) {
-      data.sheet[i] = answerBoard.questions
-        .filter((v) => v.questionType === i + 1)
-        .map<AnswerBoardQuestionWithIndex>((v, n) => ({
-          ...v,
-          number: ++number,
-          index: [i, n],
-          isAnswer: false,
-          answer:
-            v.answerText === null
-              ? ''
-              : v.questionType === 2
-                ? v.answerText.split('')
-                : v.answerText,
-        }))
-    }
-    const nextQuestion = nextAnswerOption([0, -1])
-    nextQuestion && handleSheetSelect(nextQuestion)
+/**
+ * 填充侧边答题卡
+ * 目前仅有4种题型：单选、多选、判断、填空
+ * @param answerBoard 答题板数据
+ */
+async function fullSheet(answerBoard: AnswerBoard) {
+  let number = 0
+  for (let i = 0; i < 4; i++) {
+    data.sheet[i] = answerBoard.questions
+      .filter((v) => v.questionType === i + 1)
+      .map<AnswerBoardQuestionWithIndex>((v, n) => ({
+        ...v,
+        number: ++number,
+        index: [i, n],
+        isAnswer: false,
+        answer:
+          v.answerText === null ? '' : v.questionType === 2 ? v.answerText.split('') : v.answerText,
+      }))
   }
 }
 
 watch(
   () => data.question,
   (value) => {
-    console.log(value.questionType)
     if (value.questionType === 1) {
-      console.log(value.answer)
       data.select = { ...defaultSelect(), single: value.answer as string }
     } else if (value.questionType === 2) {
       data.select = { ...defaultSelect(), multiple: value.answer as string[] }

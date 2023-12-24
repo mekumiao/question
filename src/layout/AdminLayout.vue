@@ -13,7 +13,7 @@ import SiderMenu from './components/SiderMenu.vue'
       </div>
       <div class="col-span-8 overflow-auto" style="max-height: calc(100vh - var(--header-height))">
         <RouterView v-slot="{ Component }">
-          <KeepAlive>
+          <KeepAlive :exclude="[]">
             <component :is="Component" />
           </KeepAlive>
         </RouterView>

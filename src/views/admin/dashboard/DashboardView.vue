@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NStatistic, NIcon, NCard } from 'naive-ui'
 import { UserAddOutlined } from '@vicons/antd'
-import { ref } from 'vue'
+import { onActivated, ref } from 'vue'
 import VisualCharts from './VisualCharts.vue'
 import { summary as fetchSummaryData, type Summary } from '@/api/statistics'
 import { AnalyticsOutline, AtCircleOutline, AttachSharp, BalloonOutline } from '@vicons/ionicons5'
@@ -17,7 +17,9 @@ const data = ref<Summary>({
   examPaperCount: 0,
 })
 
-fullData()
+onActivated(() => {
+  fullData()
+})
 
 async function fullData() {
   try {
@@ -32,7 +34,7 @@ function convertToPercentage(decimalNumber: number) {
   const percentage = decimalNumber * 100
   const isInteger = percentage % 1 === 0
   const percentageString = isInteger ? percentage.toFixed(0) : percentage.toFixed(2)
-  return `${percentageString}%`
+  return percentageString
 }
 </script>
 
@@ -61,7 +63,7 @@ function convertToPercentage(decimalNumber: number) {
         <template #prefix>
           <NIcon><AtCircleOutline /></NIcon>
         </template>
-        {{ convertToPercentage(data.mistakeRate) }}
+        {{ convertToPercentage(data.mistakeRate) }}&nbsp;%
       </NStatistic>
       <NStatistic label="试卷总数" tabular-nums class="col-span-1 row-span-1 p-2 shadow">
         <template #prefix>
@@ -73,7 +75,7 @@ function convertToPercentage(decimalNumber: number) {
         <template #prefix>
           <NIcon><BalloonOutline /></NIcon>
         </template>
-        {{ convertToPercentage(data.answerRate) }}
+        {{ convertToPercentage(data.answerRate) }}&nbsp;%
       </NStatistic>
       <NStatistic label="考试总数" tabular-nums class="col-span-1 row-span-1 p-2 shadow">
         <template #prefix>

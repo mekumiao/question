@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import { NDataTable, NInput, NButton, NButtonGroup, NInputGroup, NInputGroupLabel } from 'naive-ui'
 import { NIcon, useMessage } from 'naive-ui'
-import { list as fetchUserList, count as fetchUserCount } from '@/api/users'
+import { list as fetchUserList, count as fetchUserCount, update as fetchUpdate } from '@/api/users'
 import type { User, UserFilter } from '@/api/users'
 import { createColumns } from './data'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
@@ -35,6 +35,10 @@ const columns = createColumns({
       message.success('保存成功')
       handlePageChange(pagination.page)
     })
+  },
+  async lock(row, lockoutEnabled) {
+    await fetchUpdate(row.userId, { lockoutEnabled })
+    await handlePageChange(pagination.page)
   },
 })
 

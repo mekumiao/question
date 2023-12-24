@@ -12,6 +12,7 @@ export function createDefaultModel(): User {
     avatar: null,
     createTime: null,
     roles: [],
+    lockoutEnabled: false,
   }
 }
 
@@ -20,7 +21,7 @@ export function createColumns({
   lock,
 }: {
   edit?: (rowData: User) => void
-  lock?: (rowData: User) => void
+  lock?: (rowData: User, lockoutEnabled: boolean) => void
 }): DataTableColumns<User> {
   return [
     {
@@ -71,9 +72,16 @@ export function createColumns({
             <NButton type="primary" size="small" onClick={() => edit?.(row)}>
               编辑
             </NButton>
-            <NButton type="warning" size="small" onClick={() => lock?.(row)}>
-              锁定
-            </NButton>
+
+            {row.lockoutEnabled ? (
+              <NButton type="info" size="small" onClick={() => lock?.(row, false)}>
+                解锁
+              </NButton>
+            ) : (
+              <NButton type="warning" size="small" onClick={() => lock?.(row, true)}>
+                锁定
+              </NButton>
+            )}
           </NButtonGroup>
         )
       },

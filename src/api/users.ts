@@ -47,11 +47,13 @@ export interface User {
   avatar: string | null
   createTime: string | null
   roles: string[]
+  lockoutEnabled: boolean
 }
 
 export interface UserUpdate {
-  nickName: string
-  roles: string[]
+  nickName?: string
+  roles?: string[]
+  lockoutEnabled?: boolean
 }
 
 export interface UserInput {

@@ -38,10 +38,12 @@ const router = createRouter({
           component: () => import('../views/answer-history/AnswerHistoryView.vue'),
         },
         {
-          path: 'answer/:examPaperId',
+          path: 'answer/:type',
           props: (route) => ({
-            examPaperId: Number(route.params['examPaperId']),
+            type: route.params.type,
+            examPaperId: Number(route.query.examPaperId),
             examinationId: Number(route.query.examinationId),
+            answerBoardId: Number(route.query.answerBoardId),
           }),
           component: () => import('../views/answer/AnswerView.vue'),
         },
@@ -70,7 +72,10 @@ const router = createRouter({
         { path: 'user', component: () => import('../views/admin/user/UserList.vue') },
         { path: 'role', component: () => import('../views/admin/role/RoleList.vue') },
         { path: 'history', component: () => import('../views/admin/history/HistoryList.vue') },
-        { path: 'examination', component: () => import('../views/admin/examination/ExaminationList.vue') },
+        {
+          path: 'examination',
+          component: () => import('../views/admin/examination/ExaminationList.vue'),
+        },
       ],
     },
     {

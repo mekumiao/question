@@ -18,7 +18,6 @@ import type { ExamPaperFilter } from '@/api/examPapers'
 import type { DataTableColumns } from 'naive-ui'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
 import { RouterLink, useRouter } from 'vue-router'
-import { redoIncorrect as fetchRedoIncorrect } from '@/api/answerBoard'
 
 const message = useMessage()
 const dialog = useDialog()
@@ -205,8 +204,10 @@ async function handleEnter(e: KeyboardEvent) {
 }
 
 async function handleRedoIncorrectClick(item: AnswerHistory) {
-  const answerBoard = await fetchRedoIncorrect(item.answerHistoryId)
-  router.push({ path: `/student/answer-detail/${answerBoard.answerBoardId}` })
+  router.push({
+    path: `/student/answer/redo-incorrect/`,
+    query: { answerBoardId: item.answerHistoryId },
+  })
 }
 
 function handleRemoveClick() {

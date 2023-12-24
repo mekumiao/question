@@ -25,8 +25,11 @@ async function fullData() {
 
 async function handleToAnswerView(item: Examination) {
   router.push({
-    path: `/student/answer/${item.examPaperId}`,
-    query: { examinationId: item.examinationId },
+    path: `/student/answer/exam/`,
+    query: {
+      examPaperId: item.examPaperId,
+      examinationId: item.examinationId,
+    },
   })
 }
 </script>

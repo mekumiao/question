@@ -39,6 +39,11 @@ export interface AnswerInput {
   answerText: string
 }
 
+export interface RandomGenerationInput {
+  examPaperName?: string
+  difficultyLevel?: number
+}
+
 /**
  * 获取答题板
  * @param answerBoardId 答题板ID
@@ -71,5 +76,10 @@ export async function update(answerBoardId: number, answers: AnswerInput[]) {
 
 export async function redoIncorrect(answerBoardId: number) {
   const response = await axios.post<AnswerBoard>(`/answerBoard/${answerBoardId}/redo-incorrect`)
+  return response.data
+}
+
+export async function random(input: RandomGenerationInput) {
+  const response = await axios.post<AnswerBoard>(`/answerBoard/random/`, input)
   return response.data
 }

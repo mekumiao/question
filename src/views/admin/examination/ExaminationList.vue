@@ -6,6 +6,7 @@ import type { Examination, ExaminationFilter } from '@/api/examination'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
 import { createColumns, createDifficultyLevelOptions } from './data'
 import ExaminationCreate from './ExaminationCreate.vue'
+import ExaminationEdit from './ExaminationEdit.vue'
 import {
   list as fetchExaminationList,
   count as fetchExaminationCount,
@@ -14,6 +15,7 @@ import {
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 const createRef = ref<InstanceType<typeof ExaminationCreate>>()
+const editRef = ref<InstanceType<typeof ExaminationEdit>>()
 
 const loading = ref(false)
 const model = ref<Examination[]>([])
@@ -33,11 +35,11 @@ const pagination = reactive({
 const difficultyLevelOptions = ref(createDifficultyLevelOptions())
 
 const columns = createColumns({
-  // edit(row) {
-  //   editRef.value?.open(row.questionId, () => {
-  //     handlePageChange(pagination.page)
-  //   })
-  // },
+  edit(row) {
+    editRef.value?.open(row.examinationId, () => {
+      handlePageChange(pagination.page)
+    })
+  },
   async remove(row) {
     await fetchRemoveExamination(row.examinationId)
     await handlePageChange(pagination.page)
@@ -132,6 +134,7 @@ function handleCreatedClick() {
       @update:page="handlePageChange"
     />
     <ExaminationCreate ref="createRef"></ExaminationCreate>
+    <ExaminationEdit ref="editRef"></ExaminationEdit>
   </div>
 </template>
 

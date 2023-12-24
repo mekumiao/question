@@ -45,3 +45,15 @@ export async function getMyAnswerHistoryById(answerHistoryId: number) {
   )
   return response.data
 }
+
+export async function deleteAnswerHistoryItem(answerHistoryId: number) {
+  const response = await axios.delete<void>(`/students/me/answer-history/${answerHistoryId}/`)
+  return response.data
+}
+
+export async function deleteAnswerHistoryItems(answerHistoryIds: number[]) {
+  const response = await axios.delete<void>(`/students/me/answer-history/`, {
+    data: answerHistoryIds,
+  })
+  return response.data
+}

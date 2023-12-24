@@ -174,10 +174,12 @@ function handleSheetSelect(value: AnswerBoardQuestionWithIndex) {
 
 function toAnswerInputs() {
   const answers = data.sheet.reduce((v, b) => v.concat(b), [])
-  const inputAnswers = answers.map<AnswerInput>((u) => ({
-    questionId: u.questionId,
-    answerText: u.answer ? (Array.isArray(u.answer) ? u.answer.join('') : u.answer) : '',
-  }))
+  const inputAnswers = answers
+    .filter((v) => v.isAnswer)
+    .map<AnswerInput>((u) => ({
+      questionId: u.questionId,
+      answerText: u.answer ? (Array.isArray(u.answer) ? u.answer.join('') : u.answer) : '',
+    }))
   return inputAnswers
 }
 

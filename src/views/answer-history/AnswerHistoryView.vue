@@ -1,8 +1,18 @@
 <script setup lang="tsx">
 import { onMounted, reactive, ref } from 'vue'
-import { NDataTable, NInput, NButton, NButtonGroup, NSpace, NTime } from 'naive-ui'
-import { NIcon, NSelect, NInputGroup, NInputGroupLabel, NRate, NPopconfirm, NTag } from 'naive-ui'
+import {
+  NDataTable,
+  NInput,
+  NButton,
+  NButtonGroup,
+  NSpace,
+  NTime,
+  useMessage,
+  useDialog,
+} from 'naive-ui'
+import { NIcon, NSelect, NInputGroup, NInputGroupLabel, NRate, NTag } from 'naive-ui'
 import { getMyAnswerHistories as fetchHistoryList, getMyAnswerHistoriesCount } from '@/api/students'
+import { deleteAnswerHistoryItems, deleteAnswerHistoryItem } from '@/api/students'
 import type { AnswerHistory } from '@/api/answerHistory'
 import type { ExamPaperFilter } from '@/api/examPapers'
 import type { DataTableColumns } from 'naive-ui'
@@ -10,6 +20,8 @@ import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
 import { RouterLink, useRouter } from 'vue-router'
 import { redoIncorrect as fetchRedoIncorrect } from '@/api/answerBoard'
 
+const message = useMessage()
+const dialog = useDialog()
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 const router = useRouter()
 
@@ -17,6 +29,7 @@ const loading = ref(false)
 const model = ref<AnswerHistory[]>([])
 const modelCache = ref<AnswerHistory[]>([])
 const filter = reactive<ExamPaperFilter>({ difficultyLevel: 0 })
+const checkedRowKeys = ref<number[]>([])
 
 const pagination = reactive({
   page: 1,
@@ -48,6 +61,9 @@ const difficultyLevelOptions = ref([
 ])
 
 const columns: DataTableColumns<AnswerHistory> = [
+  {
+    type: 'selection',
+  },
   {
     title: 'ID',
     key: 'answerHistoryId',
@@ -146,16 +162,6 @@ const columns: DataTableColumns<AnswerHistory> = [
               错题重做
             </NButton>
           )}
-          <NPopconfirm onPositiveClick={() => handleRemoveClick(row)}>
-            {{
-              trigger: () => (
-                <NButton type="warning" size="small">
-                  删除
-                </NButton>
-              ),
-              default: () => `确定删除ID为 "${row.examPaperId}" 的试卷吗？`,
-            }}
-          </NPopconfirm>
         </NButtonGroup>
       )
     },
@@ -203,8 +209,33 @@ async function handleRedoIncorrectClick(item: AnswerHistory) {
   router.push({ path: `/student/answer-detail/${answerBoard.answerBoardId}` })
 }
 
-function handleRemoveClick(item: AnswerHistory) {
-  console.log(item)
+function handleRemoveClick() {
+  if (!checkedRowKeys.value.length) {
+    return message.warning('请至少选择一项')
+  }
+  const d = dialog.warning({
+    title: '删除答题历史',
+    content: '删除后无法恢复',
+    negativeText: '取消',
+    positiveText: '确实',
+    async onPositiveClick() {
+      d.loading = true
+      try {
+        if (checkedRowKeys.value.length === 1) {
+          await deleteAnswerHistoryItem(checkedRowKeys.value[0])
+        } else {
+          await deleteAnswerHistoryItems(checkedRowKeys.value)
+        }
+        await handlePageChange(pagination.page)
+      } catch (error) {
+        if (error instanceof Error) message.error(error.message)
+        console.error(error)
+        return false
+      } finally {
+        d.loading = false
+      }
+    },
+  })
 }
 </script>
 
@@ -234,6 +265,9 @@ function handleRemoveClick(item: AnswerHistory) {
             <NIcon><RefreshOutline></RefreshOutline></NIcon>
           </NButton>
         </NButtonGroup>
+        <NButtonGroup size="small">
+          <NButton type="warning" @click="handleRemoveClick">删除选中项</NButton>
+        </NButtonGroup>
       </div>
     </div>
     <NDataTable
@@ -245,6 +279,7 @@ function handleRemoveClick(item: AnswerHistory) {
       :data="model"
       :pagination="pagination"
       :row-key="(row: AnswerHistory) => row.answerHistoryId"
+      v-model:checked-row-keys="checkedRowKeys"
       @update:page="handlePageChange"
     />
   </div>

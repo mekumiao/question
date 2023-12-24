@@ -36,9 +36,11 @@ async function fullData() {
 }
 
 async function handleSucmit() {
-  const inputAnswers = answerPanelRef.value?.toAnswerInputs()
-  if (!inputAnswers || !inputAnswers.length || !inputAnswers.every((v) => v.answerText)) {
-    message.warning('您有未作答的题目，请完成所有题目后继续')
+  const inputAnswers = answerPanelRef.value!.toAnswerInputs()
+  // if (inputAnswers.length === 0 || !inputAnswers.every((v) => v.answerText)) {
+  if (inputAnswers.length === 0) {
+    // message.warning('您有未作答的题目，请完成所有题目后继续')
+    message.warning('您至少需要答一题')
     return
   }
   const d = dialog.create({

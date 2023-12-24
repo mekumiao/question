@@ -1,7 +1,18 @@
 import axios from 'axios'
 
-export interface PoDetail {
-  details: string[]
+export class ValidationProblemError extends Error {
+  public type: string = ''
+  public title: string = ''
+  public status: number = 400
+  public readonly detail: string
+  public readonly errors: string[]
+  public traceId: string = ''
+
+  public constructor(detail: string, errors: string[]) {
+    super(detail)
+    this.detail = detail
+    this.errors = errors
+  }
 }
 
 export interface TokenResult {
@@ -56,6 +67,11 @@ axiosInstance.interceptors.response.use(
         console.error('Refresh token failed:', refreshError)
         return Promise.reject(refreshError)
       }
+    } else if (error.response.status === 400) {
+      const data = error.response.data
+      const problem = new ValidationProblemError(data.detail, data.errors)
+      Object.assign(problem, data)
+      return Promise.reject(problem)
     }
     return Promise.reject(error)
   },

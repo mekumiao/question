@@ -29,6 +29,7 @@ async function fullData() {
     isEditable.value = !answerBoard.value.isSubmission
     isClock.value = !answerBoard.value.isSubmission
   } catch (error) {
+    if (error instanceof Error) message.warning(error.message)
     console.error(error)
   } finally {
     loading.value = false
@@ -66,8 +67,10 @@ async function handleSucmit() {
   })
 }
 
-function renderCountdown({ minutes, seconds }: CountdownTimeInfo) {
-  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+function renderCountdown({ hours, minutes, seconds }: CountdownTimeInfo) {
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(
+    seconds,
+  ).padStart(2, '0')}`
 }
 </script>
 

@@ -38,12 +38,12 @@ const data = reactive({
       text: '模拟',
     },
     {
-      path: '/student/answer-history',
-      text: '记录',
-    },
-    {
       path: '/student/practice',
       text: '练习',
+    },
+    {
+      path: '/student/answer-history',
+      text: '记录',
     },
     // {
     //   path: '/student/4',

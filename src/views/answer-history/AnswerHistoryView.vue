@@ -153,14 +153,19 @@ const columns: DataTableColumns<AnswerHistory> = [
       return (
         <NButtonGroup>
           <NSpace>
-            {row.isSubmission && (
-              <NButton type="primary" size="small" onClick={() => handleRedoIncorrectClick(row)}>
+            {row.isSubmission && row.totalIncorrectAnswers > 0 && (
+              <NButton
+                type="primary"
+                size="small"
+                secondary
+                onClick={() => handleRedoIncorrectClick(row)}
+              >
                 错题重做
               </NButton>
             )}
             <RouterLink to={`/student/answer-detail/${row.answerHistoryId}`}>
               <NButton ghost size="small" type="info">
-                查看详细
+                点击查看
               </NButton>
             </RouterLink>
           </NSpace>

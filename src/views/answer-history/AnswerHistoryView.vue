@@ -181,6 +181,7 @@ onMounted(() => {
 async function handlePageChange(currentPage: number) {
   if (!loading.value) {
     try {
+      checkedRowKeys.value = []
       loading.value = true
       model.value = await fetchHistoryList({
         offset: (currentPage - 1) * pagination.pageSize,

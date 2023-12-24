@@ -18,6 +18,7 @@ import type { ExamPaperFilter } from '@/api/examPapers'
 import type { DataTableColumns } from 'naive-ui'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
 import { RouterLink, useRouter } from 'vue-router'
+import { ValidationProblemError } from '@/api/base'
 
 const message = useMessage()
 const dialog = useDialog()
@@ -216,9 +217,15 @@ function handleRemoveClick() {
   if (!checkedRowKeys.value.length) {
     return message.warning('请至少选择一项')
   }
+  const errorDetail = ref('')
   const d = dialog.warning({
     title: '删除答题历史',
-    content: '删除后无法恢复',
+    content: () => (
+      <div class="flex flex-col">
+        <span>删除后无法恢复</span>
+        <span class="text-red-500">{errorDetail.value}</span>
+      </div>
+    ),
     negativeText: '取消',
     positiveText: '确实',
     async onPositiveClick() {
@@ -231,9 +238,11 @@ function handleRemoveClick() {
         }
         await handlePageChange(pagination.page)
       } catch (error) {
-        if (error instanceof Error) message.error(error.message)
         console.error(error)
-        return false
+        if (error instanceof ValidationProblemError) {
+          errorDetail.value = error.message
+          return false
+        }
       } finally {
         d.loading = false
       }

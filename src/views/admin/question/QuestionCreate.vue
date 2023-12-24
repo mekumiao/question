@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { OptionCreate, QuestionCreate } from '@/api/questions'
 import { create as fetchCreate } from '@/api/questions'
-import { NCheckboxGroup, NCheckbox } from 'naive-ui'
+import { NCheckboxGroup, NCheckbox, type FormRules } from 'naive-ui'
 import { NDrawer, NDrawerContent, NButton, NSpin, NDynamicInput, NInput } from 'naive-ui'
 import { useMessage, NRadioGroup, NRadio, NFormItem, NForm, NRate, NSpace } from 'naive-ui'
 import { createQuestionTypeOptions } from './data'
@@ -18,12 +18,7 @@ const data = reactive<{
   current: { single: string; multiple: string[]; truefalse: string; fillblank: string }
 }>({
   model: defaultModel(),
-  current: {
-    single: '',
-    multiple: [],
-    truefalse: '',
-    fillblank: '',
-  },
+  current: defaultCurrent(),
 })
 
 const [, ...options] = createQuestionTypeOptions()
@@ -41,14 +36,28 @@ function defaultModel(): QuestionCreate {
     questionText: '',
     questionType: 1,
     correctAnswer: '',
-    difficultyLevel: 0,
-    options: [],
+    difficultyLevel: 1,
+    options: [
+      { optionCode: 'A', optionText: '' },
+      { optionCode: 'B', optionText: '' },
+      { optionCode: 'C', optionText: '' },
+      { optionCode: 'D', optionText: '' },
+    ],
+  }
+}
+function defaultCurrent() {
+  return {
+    single: '',
+    multiple: [],
+    truefalse: '',
+    fillblank: '',
   }
 }
 
 function handleAfterLeave() {
   loading.value = false
   data.model = defaultModel()
+  data.current = defaultCurrent()
 }
 
 function ensureCorrectAnswer() {
@@ -66,8 +75,8 @@ function ensureCorrectAnswer() {
 async function handleSaveClick() {
   try {
     loading.value = true
-    await formRef.value?.validate()
     ensureCorrectAnswer()
+    await formRef.value?.validate()
     await fetchCreate(data.model)
     active.value = false
     callback?.()
@@ -88,6 +97,40 @@ function handleUpdateOption() {
 }
 
 defineExpose({ open })
+
+const rules: FormRules = {
+  questionText: [
+    { required: true, message: '请输入题目' },
+    {
+      max: 256,
+      message: '题目最长支持256个字符',
+    },
+  ],
+  correctAnswer: [
+    {
+      required: true,
+      message: '请输入答案',
+    },
+    {
+      max: 256,
+      message: '答案最长支持256个字符',
+    },
+  ],
+  options: [
+    {
+      validator() {
+        if (data.model.questionType === 1 || data.model.questionType === 2) {
+          if (!data.model.options.every((v) => v.optionText)) {
+            return new Error('请填入选项值')
+          } else if (!data.model.correctAnswer) {
+            return new Error('请选择答案')
+          }
+        }
+        return true
+      },
+    },
+  ],
+}
 </script>
 
 <template>
@@ -95,7 +138,7 @@ defineExpose({ open })
     <NDrawerContent>
       <template #header>创建题目</template>
       <NSpin :show="loading">
-        <NForm ref="formRef">
+        <NForm ref="formRef" :rules="rules" :model="data.model">
           <NFormItem label="题目" path="questionText">
             <NInput
               v-model:value="data.model.questionText"
@@ -113,7 +156,7 @@ defineExpose({ open })
               </NRadio>
             </NRadioGroup>
           </NFormItem>
-          <NFormItem v-if="data.model.questionType === 1" label="选项">
+          <NFormItem v-if="data.model.questionType === 1" label="选项" path="options">
             <NRadioGroup v-model:value="data.current.single">
               <NDynamicInput
                 v-model:value="data.model.options"
@@ -130,10 +173,13 @@ defineExpose({ open })
                     <NInput v-model:value="value.optionText"></NInput>
                   </div>
                 </template>
+                <template #action>
+                  <span></span>
+                </template>
               </NDynamicInput>
             </NRadioGroup>
           </NFormItem>
-          <NFormItem v-if="data.model.questionType === 2" label="选项">
+          <NFormItem v-if="data.model.questionType === 2" label="选项" path="options">
             <NCheckboxGroup v-model:value="data.current.multiple">
               <NDynamicInput
                 v-model:value="data.model.options"
@@ -150,10 +196,13 @@ defineExpose({ open })
                     <NInput v-model:value="value.optionText"></NInput>
                   </div>
                 </template>
+                <template #action>
+                  <span></span>
+                </template>
               </NDynamicInput>
             </NCheckboxGroup>
           </NFormItem>
-          <NFormItem v-else-if="data.model.questionType === 3" label="答案">
+          <NFormItem v-else-if="data.model.questionType === 3" label="答案" path="correctAnswer">
             <NRadioGroup v-model:value="data.current.truefalse">
               <NSpace>
                 <NRadio :value="'1'">√</NRadio>
@@ -161,7 +210,7 @@ defineExpose({ open })
               </NSpace>
             </NRadioGroup>
           </NFormItem>
-          <NFormItem v-else-if="data.model.questionType === 4" label="答案">
+          <NFormItem v-else-if="data.model.questionType === 4" label="答案" path="correctAnswer">
             <NInput
               v-model:value="data.current.fillblank"
               type="textarea"

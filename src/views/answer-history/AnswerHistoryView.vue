@@ -141,9 +141,11 @@ const columns: DataTableColumns<AnswerHistory> = [
               查看详细
             </NButton>
           </RouterLink>
-          <NButton type="primary" size="small" onClick={() => handleRedoIncorrectClick(row)}>
-            错题重做
-          </NButton>
+          {row.isSubmission && (
+            <NButton type="primary" size="small" onClick={() => handleRedoIncorrectClick(row)}>
+              错题重做
+            </NButton>
+          )}
           <NPopconfirm onPositiveClick={() => handleRemoveClick(row)}>
             {{
               trigger: () => (

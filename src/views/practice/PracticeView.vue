@@ -71,13 +71,16 @@ const randomRules: FormRules = {
       >
         <NCard v-for="(item, key) in examPapers" :key="key" class="col-span-1 row-span-1">
           <div class="flex h-full flex-col justify-between">
-            <ul class="flex flex-col items-start justify-center">
+            <ul class="flex flex-col items-start justify-center space-y-2">
               <li class="flex flex-row items-center justify-start">
-                <span>试卷:&nbsp;</span><span>{{ item.examPaperName }}</span>
+                <span>试卷:&nbsp;</span><span class="font-bold">{{ item.examPaperName }}</span>
               </li>
               <li class="flex flex-row items-center justify-start">
                 <span>难度:&nbsp;</span>
                 <NRate readonly size="small" :value="item.difficultyLevel" :count="3"></NRate>
+              </li>
+              <li class="flex flex-row items-center justify-start">
+                <span>题目总数:&nbsp;</span><span class="font-bold">{{ item.totalQuestions }}&nbsp;题</span>
               </li>
             </ul>
             <div class="flex w-full flex-row justify-end">

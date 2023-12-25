@@ -72,6 +72,6 @@ export async function resetSummary(studentId: number) {
 }
 
 export async function getMeExamPaperList(params?: PaginationParameters & ExamPaperFilter) {
-  const response = await axios.get<ExamPaper[]>(`/examPapers/`, { params })
+  const response = await axios.get<ExamPaper[]>(`/students/me/exam-paper`, { params })
   return response.data
 }

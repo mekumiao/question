@@ -8,7 +8,7 @@ export interface Student {
   studentName: string
   userName: string | null
   email: string | null
-  userId: string | null
+  userId: number | null
   totalQuestions: number
   totalNumberAnswers: number
   answerRate: number

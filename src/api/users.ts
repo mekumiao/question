@@ -40,7 +40,7 @@ export interface UserFilter {
 }
 
 export interface User {
-  userId: string
+  userId: number
   userName: string
   nickName: string
   email: string
@@ -54,6 +54,7 @@ export interface UserUpdate {
   nickName?: string
   roles?: string[]
   lockoutEnabled?: boolean
+  password?: string
 }
 
 export interface UserInput {
@@ -73,12 +74,12 @@ export async function list(params?: PaginationParameters & UserFilter) {
   return response.data
 }
 
-export async function get(userId: string) {
+export async function get(userId: number) {
   const response = await axios.get<User>(`/users/${userId}`)
   return response.data
 }
 
-export async function update(userId: string, user: UserUpdate) {
+export async function update(userId: number, user: UserUpdate) {
   const response = await axios.put<User>(`/users/${userId}`, user)
   return response.data
 }

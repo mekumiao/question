@@ -6,7 +6,7 @@ import jdg from '@/assets/img/jdg.png'
 export function createDefaultModel(): User {
   return {
     email: '',
-    userId: '',
+    userId: 0,
     userName: '',
     nickName: '',
     avatar: null,

@@ -30,7 +30,7 @@ const randomGenerationData = reactive<{
   showRandom: boolean
   loading: boolean
 }>({
-  model: { difficultyLevel: 1 },
+  model: { difficultyLevel: 3 },
   showRandom: false,
   loading: false,
 })

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { NButton, NCard, NRate, NSpin } from 'naive-ui'
+import { NButton, NCard, NRate, NSpin, NEmpty } from 'naive-ui'
 import { list as fetchExaminationList, type Examination } from '@/api/examination'
 import { useRouter } from 'vue-router'
 import { formatSeconds } from '@/utils'
@@ -37,13 +37,15 @@ async function handleToAnswerView(item: Examination) {
 <template>
   <div class="mx-4">
     <NSpin :show="loading">
-      <div
+      <NEmpty
         v-if="examinations.length === 0"
-        style="min-height: 200px"
-        class="flex flex-row items-center justify-center"
+        :description="loading ? '加载中...' : '没有发布任何考试'"
+        class="mt-5 p-2"
       >
-        <span v-if="!loading">没有发布任何考试</span>
-      </div>
+        <template #extra>
+          <NButton size="small">尝试刷新</NButton>
+        </template>
+      </NEmpty>
       <div v-else class="grid grid-cols-3 gap-4">
         <NCard v-for="(item, key) in examinations" :key="key">
           <template #header>{{ item.examinationName }}</template>

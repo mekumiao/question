@@ -1,5 +1,6 @@
 import type { AnswerHistory } from './answerHistory'
 import axios from './base'
+import type { ExamPaper, ExamPaperFilter } from './examPapers'
 import type { PaginationParameters } from '/#/utils'
 
 export interface Student {
@@ -67,5 +68,10 @@ export async function deleteAnswerHistoryItems(answerHistoryIds: number[]) {
 
 export async function resetSummary(studentId: number) {
   const response = await axios.put<Student>(`/students/${studentId}/reset-summary/`)
+  return response.data
+}
+
+export async function getMeExamPaperList(params?: PaginationParameters & ExamPaperFilter) {
+  const response = await axios.get<ExamPaper[]>(`/examPapers/`, { params })
   return response.data
 }

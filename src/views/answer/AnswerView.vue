@@ -8,7 +8,6 @@ import {
 } from '@/api/answerBoard'
 import { NButton, NResult } from 'naive-ui'
 import { useRouter } from 'vue-router'
-import type { RandomGenerationInput } from '@/api/examPapers'
 
 export type AnswerType = 'exam' | 'redo-incorrect' | 'practice' | 'random'
 
@@ -17,12 +16,13 @@ const props = defineProps<{
   examPaperId?: number
   examinationId?: number
   answerBoardId?: number
+  examPaperName?: string
+  difficultyLevel?: number
 }>()
 const router = useRouter()
 
 const description = ref('创建答题板中...')
 const answerBoard = ref<AnswerBoard>()
-const randomModel = ref<RandomGenerationInput>({})
 
 const loading = ref(false)
 
@@ -63,7 +63,10 @@ async function createExamAnswerBorard() {
 async function createRandomAnswerBorard() {
   try {
     loading.value = true
-    answerBoard.value = await fetchRandom(randomModel.value)
+    answerBoard.value = await fetchRandom({
+      examPaperName: props.examPaperName,
+      difficultyLevel: props.difficultyLevel,
+    })
     await router.replace({ path: `/student/answer-detail/${answerBoard.value.answerBoardId}` })
   } catch (error) {
     console.error(error)

@@ -1,48 +1,120 @@
 <script setup lang="ts">
-import { NList, NListItem, NSpace, NTag, NThing, NCard } from 'naive-ui'
+import type { ExamPaper } from '@/api/examPapers'
+import { NForm, NFormItem, type FormRules, NInput } from 'naive-ui'
+import { NCard, NRate, NList, NListItem, NThing, NPagination, NButton } from 'naive-ui'
+import { getMeExamPaperList } from '@/api/students'
+import { onMounted, reactive, ref } from 'vue'
+import type { RandomGenerationInput } from '@/api/answerBoard'
+
+const examPapers = ref<ExamPaper[]>([])
+const randomGenerationData = ref<RandomGenerationInput>({ difficultyLevel: 3 })
+const pagination = reactive({
+  page: 1,
+  pageSize: 9,
+  itemCount: 0,
+  // @ts-ignore
+  prefix({ itemCount }) {
+    return `Total: ${itemCount}`
+  },
+})
+
+const menus = reactive({
+  list: [
+    {
+      key: 'practice',
+      title: '真题练习',
+      description:
+        '真题练习是提高考试准备水平的有效途径，通过熟悉考试格式、评估知识水平和强化记忆，帮助学习者提高应试技能。',
+    },
+    {
+      key: 'random',
+      title: '随机练习',
+      description:
+        '随机练习通过引入变化和多样性，促使学习者在不同主题间切换，提高全面理解、灵活性和适应能力。',
+    },
+  ],
+  selectKey: 'practice',
+})
+
+onMounted(async () => {
+  examPapers.value = await getMeExamPaperList()
+})
+
+const randomRules: FormRules = {
+  examPaperName: [
+    {
+      type: 'string',
+      max: 50,
+      message: '请输入试卷名称',
+      trigger: ['input', 'blur'],
+    },
+  ],
+}
 </script>
 
 <template>
   <div class="grid grid-cols-6 gap-2 px-2">
-    <NList hoverable clickable class="col-span-2">
-      <NListItem>
-        <NThing title="真题试卷" content-style="margin-top: 10px;">
-          <template #description>
-            <NSpace size="small" style="margin-top: 4px">
-              <NTag :bordered="false" type="info" size="small"> 暑夜 </NTag>
-              <NTag :bordered="false" type="info" size="small"> 晚春 </NTag>
-            </NSpace>
-          </template>
-          奋勇呀然后休息呀<br />
-          完成你伟大的人生
-        </NThing>
-      </NListItem>
-      <NListItem>
-        <NThing title="随机出题" content-style="margin-top: 10px;">
-          <template #description>
-            <NSpace size="small" style="margin-top: 4px">
-              <NTag :bordered="false" type="info" size="small"> 环形公路 </NTag>
-              <NTag :bordered="false" type="info" size="small"> 潜水艇司机 </NTag>
-            </NSpace>
-          </template>
-          最新的打印机<br />
-          让他带你去被工厂敲击
-        </NThing>
+    <NList class="col-span-2 h-fit" hoverable clickable bordered>
+      <NListItem
+        v-for="(item, key) in menus.list"
+        :key="key"
+        @click="() => (menus.selectKey = item.key)"
+        :class="{ 'border-4 border-solid border-blue-500': item.key === menus.selectKey }"
+      >
+        <NThing :title="item.title" :description="item.description"></NThing>
       </NListItem>
     </NList>
-
-    <div
-      class="col-span-4 grid grid-cols-3 gap-2 overflow-auto ps-4"
-      style="height: calc(100vh - var(--header-height) - 100px)"
-    >
-      <NCard v-for="(item, key) in 20" :key="key" class="col-span-1">
-        <ul>
-          <li>试卷：xxxxx</li>
-          <li>试卷：xxxxx</li>
-          <li>试卷：xxxxx</li>
-        </ul>
-      </NCard>
+    <div class="col-span-4" v-if="menus.selectKey === 'practice'">
+      <div
+        class="grid grid-cols-3 grid-rows-3 gap-2 ps-4"
+        style="height: calc(100vh - var(--header-height) - 50px)"
+      >
+        <NCard v-for="(item, key) in examPapers" :key="key" class="col-span-1 row-span-1">
+          <div class="flex h-full flex-col justify-between">
+            <ul class="flex flex-col items-start justify-center">
+              <li class="flex flex-row items-center justify-start">
+                <span>试卷:&nbsp;</span><span>{{ item.examPaperName }}</span>
+              </li>
+              <li class="flex flex-row items-center justify-start">
+                <span>难度:&nbsp;</span>
+                <NRate readonly size="small" :value="item.difficultyLevel" :count="3"></NRate>
+              </li>
+            </ul>
+            <div class="flex w-full flex-row justify-end">
+              <RouterLink
+                :to="{ path: `/student/answer/practice`, query: { examPaperId: item.examPaperId } }"
+              >
+                <NButton ghost type="primary" size="small">进入练习</NButton>
+              </RouterLink>
+            </div>
+          </div>
+        </NCard>
+      </div>
+      <div class="col-span-6 flex flex-row justify-end">
+        <NPagination v-model:page="pagination.page" :page-count="pagination.itemCount" simple />
+      </div>
     </div>
+    <NCard class="col-span-4 w-fit p-5" v-else-if="menus.selectKey === 'random'">
+      <NForm ref="randomFormRef" :rules="randomRules" :model="randomGenerationData">
+        <NFormItem label="给本次练习取个名吧" path="examPaperName">
+          <NInput v-model:value="randomGenerationData.examPaperName"></NInput>
+        </NFormItem>
+        <NFormItem label="允许出现低于或等于此难度级别的题目" ignore-path-change>
+          <NRate
+            size="medium"
+            v-model:value="randomGenerationData.difficultyLevel"
+            :count="3"
+          ></NRate>
+        </NFormItem>
+      </NForm>
+      <template #footer>
+        <div class="flex flex-row justify-end">
+          <RouterLink :to="{ path: '/student/answer/random', query: randomGenerationData }">
+            <NButton size="small" type="primary" ghost>进入练习</NButton>
+          </RouterLink>
+        </div>
+      </template>
+    </NCard>
   </div>
 </template>
 

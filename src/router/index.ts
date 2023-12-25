@@ -44,6 +44,8 @@ const router = createRouter({
             examPaperId: Number(route.query.examPaperId),
             examinationId: Number(route.query.examinationId),
             answerBoardId: Number(route.query.answerBoardId),
+            difficultyLevel: Number(route.query.difficultyLevel),
+            examPaperName: route.query.examPaperName,
           }),
           component: () => import('../views/answer/AnswerView.vue'),
         },

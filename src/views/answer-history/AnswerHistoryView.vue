@@ -132,9 +132,13 @@ const columns: DataTableColumns<AnswerHistory> = [
   },
   {
     title: '已交卷',
-    key: 'difficultyLevel',
+    key: 'isSubmission',
     render(row) {
-      return (
+      return row.isTimeout ? (
+        <NTag size="small" type="error">
+          超时
+        </NTag>
+      ) : (
         <NTag size="small" type={row.isSubmission ? 'success' : 'error'}>
           {row.isSubmission ? '是' : '否'}
         </NTag>

@@ -21,6 +21,7 @@ export interface AnswerHistory {
   isSubmission: boolean
   totalIncorrectAnswers: number
   totalNumberAnswers: number
+  isTimeout: boolean
   totalQuestions: number
   studentAnswers: StudentAnswer[]
 }

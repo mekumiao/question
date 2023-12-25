@@ -123,12 +123,13 @@ async function handleDeleteItems() {
 </script>
 
 <template>
-  <div class="history-list m-3">
+  <div class="m-3 flex flex-col space-y-2">
+    <div><NButton size="small" type="info" @click="() => $router.back()">返回上一级</NButton></div>
     <NAlert title="答题记录详细" type="info" :bordered="false">
       <span class="font-bold">{{ studentName }}</span>
       <span>&nbsp;的答题记录</span>
     </NAlert>
-    <div class="mt-2 grid grid-cols-8 gap-2 pb-3">
+    <div class="grid grid-cols-8 gap-2">
       <NInputGroup class="col-span-2">
         <NInputGroupLabel type="primary">难度</NInputGroupLabel>
         <NSelect

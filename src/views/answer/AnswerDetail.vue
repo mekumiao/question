@@ -114,10 +114,13 @@ function renderCountdown({ hours, minutes, seconds }: CountdownTimeInfo) {
         <ul class="flex flex-col items-center gap-2">
           <li v-if="answerBoard.totalIncorrectAnswers === 0">恭喜您，已全部答对！</li>
           <li v-else>
-            <span>总共{{ answerBoard.questions.length }}题，</span>
-            <span>错{{ answerBoard.totalIncorrectAnswers }}题，</span>
+            <span>总共&nbsp;{{ answerBoard.totalQuestions }}&nbsp;题，</span>
+            <span>作答&nbsp;{{ answerBoard.totalNumberAnswers }}&nbsp;题，</span>
+            <span>错&nbsp;{{ answerBoard.totalIncorrectAnswers }}&nbsp;题，</span>
             <span>
-              对{{ answerBoard.questions.length - answerBoard.totalIncorrectAnswers }}题。
+              对&nbsp;{{
+                answerBoard.totalNumberAnswers - answerBoard.totalIncorrectAnswers
+              }}&nbsp;题。
             </span>
           </li>
           <li>

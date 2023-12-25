@@ -9,6 +9,8 @@ export interface AnswerBoard {
   timeTakenSeconds: number
   isTimeout: number
   isSubmission: boolean
+  totalQuestions: number
+  totalNumberAnswers: number
   questions: AnswerBoardQuestion[]
 }
 

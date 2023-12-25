@@ -85,8 +85,8 @@ const menuOptions: MenuOption[] = [
     icon: renderIcon(SchoolOutline),
   },
   {
-    label: renderMenuLabel('答题历史', { path: '/admin/history' }),
-    key: '/admin/history',
+    label: renderMenuLabel('答题记录', { path: '/admin/student' }),
+    key: '/admin/student',
     icon: renderIcon(TimeOutline),
   },
   //   ],

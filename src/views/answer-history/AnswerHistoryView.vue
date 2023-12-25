@@ -229,7 +229,7 @@ function handleRemoveClick() {
   }
   const errorDetail = ref('')
   const d = dialog.warning({
-    title: '删除答题历史',
+    title: '删除答题记录',
     content: () => (
       <div class="flex flex-col">
         <span>删除后无法恢复</span>

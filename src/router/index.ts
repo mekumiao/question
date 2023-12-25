@@ -68,10 +68,10 @@ const router = createRouter({
           component: () => import('../views/admin/exam-paper/ExamPaperList.vue'),
         },
         { path: 'question', component: () => import('../views/admin/question/QuestionList.vue') },
-        { path: 'student', component: () => import('../views/admin/student/StudentList.vue') },
         { path: 'user', component: () => import('../views/admin/user/UserList.vue') },
         { path: 'role', component: () => import('../views/admin/role/RoleList.vue') },
-        { path: 'history', component: () => import('../views/admin/history/StudentList.vue') },
+        { path: 'student', component: () => import('../views/admin/history/StudentList.vue') },
+        { path: 'history', component: () => import('../views/admin/history/HistoryList.vue') },
         {
           path: 'examination',
           component: () => import('../views/admin/examination/ExaminationList.vue'),

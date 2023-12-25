@@ -2,7 +2,7 @@
 import type { ExamPaper } from '@/api/examPapers'
 import { NForm, NFormItem, type FormRules, NInput, NEmpty, NSpin, useMessage } from 'naive-ui'
 import { NCard, NRate, NList, NListItem, NThing, NPagination, NButton } from 'naive-ui'
-import { getMeExamPaperList } from '@/api/students'
+import { getMeExamPaperList, getMeExamPaperCount } from '@/api/students'
 import { onMounted, reactive, ref } from 'vue'
 import type { RandomGenerationInput } from '@/api/answerBoard'
 
@@ -40,13 +40,17 @@ const menus = reactive({
 })
 
 onMounted(() => {
-  fullData()
+  getMeExamPaperCount().then((v) => (pagination.itemCount = v))
+  handlePageChange(1)
 })
 
-async function fullData() {
+async function handlePageChange(page: number) {
   try {
     loading.value = true
-    examPapers.value = await getMeExamPaperList()
+    examPapers.value = await getMeExamPaperList({
+      offset: (page - 1) * pagination.pageSize,
+      limit: pagination.pageSize,
+    })
   } catch (error) {
     if (error instanceof Error) message.error(error.message)
     console.log(error)
@@ -85,7 +89,7 @@ const randomRules: FormRules = {
         v-if="examPapers.length === 0"
       >
         <template #extra>
-          <NButton size="small" @click="fullData">尝试刷新</NButton>
+          <NButton size="small" @click="handlePageChange(1)">尝试刷新</NButton>
         </template>
       </NEmpty>
       <template v-else>
@@ -122,7 +126,12 @@ const randomRules: FormRules = {
           </NCard>
         </div>
         <div class="col-span-6 flex flex-row justify-end">
-          <NPagination v-model:page="pagination.page" :page-count="pagination.itemCount" simple />
+          <NPagination
+            v-model:page="pagination.page"
+            :item-count="pagination.itemCount"
+            simple
+            @update:page="handlePageChange"
+          />
         </div>
       </template>
     </NSpin>

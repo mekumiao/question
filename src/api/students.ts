@@ -75,3 +75,8 @@ export async function getMeExamPaperList(params?: PaginationParameters & ExamPap
   const response = await axios.get<ExamPaper[]>(`/students/me/exam-paper`, { params })
   return response.data
 }
+
+export async function getMeExamPaperCount(params?: PaginationParameters) {
+  const response = await axios.get<number>(`/students/me/exam-paper/count`, { params })
+  return response.data
+}

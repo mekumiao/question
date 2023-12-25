@@ -6,9 +6,7 @@ import { RefreshOutline, SearchOutline } from '@vicons/ionicons5'
 import { createStudentColumns } from './data'
 import { list as fetchStudentList, count as fetchStudentCount, resetSummary } from '@/api/students'
 import type { Student, StudentFilter } from '@/api/students'
-import { useRouter } from 'vue-router'
 
-const router = useRouter()
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 const message = useMessage()
 
@@ -27,9 +25,6 @@ const pagination = reactive({
 })
 
 const columns = createStudentColumns({
-  async show(row) {
-    await router.push({ path: `/admin/history/${row.studentId}` })
-  },
   async reset(row) {
     try {
       await resetSummary(row.studentId)

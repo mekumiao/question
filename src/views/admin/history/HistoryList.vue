@@ -16,7 +16,7 @@ const dialog = useDialog()
 
 const loading = ref(false)
 const model = ref<AnswerHistory[]>([])
-const filter = reactive<AnswerHistoryFilter>({ studentId: props.studentId })
+const filter = reactive<AnswerHistoryFilter>({ studentId: props.studentId, difficultyLevel: 0 })
 const studentName = ref<string>('')
 const checkedRowKeys = ref<number[]>([])
 

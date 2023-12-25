@@ -4,6 +4,9 @@ import type { PaginationParameters } from '/#/utils'
 export interface AnswerHistoryFilter {
   studentId?: number
   examPaperId?: number
+  difficultyLevel?: number
+  examPaperName?: string
+  examinationType?: number
 }
 
 export interface AnswerHistory {
@@ -48,5 +51,17 @@ export async function list(params?: PaginationParameters & AnswerHistoryFilter) 
 
 export async function get(answerHistoryId: number) {
   const response = await axios.get<AnswerHistory>(`/answerHistories/${answerHistoryId}`)
+  return response.data
+}
+
+export async function deleteAnswerHistoryItem(answerHistoryId: number) {
+  const response = await axios.delete<void>(`/answerHistories/${answerHistoryId}/`)
+  return response.data
+}
+
+export async function deleteAnswerHistoryItems(answerHistoryIds: number[]) {
+  const response = await axios.delete<void>(`/answerHistories/`, {
+    data: answerHistoryIds,
+  })
   return response.data
 }

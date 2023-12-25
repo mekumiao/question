@@ -25,6 +25,10 @@ export function createColumns({
 }): DataTableColumns<User> {
   return [
     {
+      title: 'ID',
+      key: 'userId',
+    },
+    {
       title: '名称',
       key: 'nickName',
     },

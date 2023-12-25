@@ -6,7 +6,9 @@ import { RefreshOutline, SearchOutline } from '@vicons/ionicons5'
 import { createStudentColumns } from './data'
 import { list as fetchStudentList, count as fetchStudentCount } from '@/api/students'
 import type { Student, StudentFilter } from '@/api/students'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 
 const loading = ref(false)
@@ -23,14 +25,10 @@ const pagination = reactive({
   },
 })
 
-// const difficultyLevelOptions = ref(createDifficultyLevelOptions())
-
 const columns = createStudentColumns({
-  // show(row) {
-  //   editRef.value?.open(row.questionId, () => {
-  //     handlePageChange(pagination.page)
-  //   })
-  // },
+  async show(row) {
+    await router.push({ path: `/admin/history/${row.studentId}` })
+  },
 })
 
 onMounted(() => {

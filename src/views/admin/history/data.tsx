@@ -1,7 +1,8 @@
 import type { AnswerHistory } from '@/api/answerHistory'
 import type { Student } from '@/api/students'
 import type { DataTableColumns } from 'naive-ui'
-import { NRate, NButton, NButtonGroup, NTag, NTime, NSpace } from 'naive-ui'
+import { NRate, NButton, NButtonGroup, NTag } from 'naive-ui'
+import { RouterLink } from 'vue-router'
 
 export function createDifficultyLevelOptions() {
   return [
@@ -41,13 +42,12 @@ export function createColumns({
 }): DataTableColumns<AnswerHistory> {
   return [
     {
+      type: 'selection',
+    },
+    {
       title: 'ID',
       key: 'answerHistoryId',
       width: 80,
-    },
-    {
-      title: '学生',
-      key: 'studentName',
     },
     {
       title: '试卷名称',
@@ -69,34 +69,39 @@ export function createColumns({
       key: 'totalNumberAnswers',
     },
     {
-      title: '作答时间',
-      key: 'difficultyLevel',
+      title: '类别',
+      key: 'examinationType',
       render(row) {
-        return (
-          <NSpace>
-            {{
-              default: () => {
-                const min = new Date(2023)
-                const start = new Date(row.startTime)
-                const end = new Date(row.submissionTime)
-                return (
-                  <>
-                    {start > min ? <NTime time={start}></NTime> : '--'}
-                    <span>至</span>
-                    {end > min ? <NTime time={end}></NTime> : '--'}
-                  </>
-                )
-              },
-            }}
-          </NSpace>
-        )
+        if (row.examinationType === 1) {
+          return (
+            <NTag size="small" type="success">
+              考试
+            </NTag>
+          )
+        } else if (row.examinationType === 2) {
+          return (
+            <NTag size="small" type="info">
+              模拟
+            </NTag>
+          )
+        } else {
+          return (
+            <NTag size="small" type="warning">
+              练习
+            </NTag>
+          )
+        }
       },
     },
     {
       title: '已交卷',
-      key: 'difficultyLevel',
+      key: 'isSubmission',
       render(row) {
-        return (
+        return row.isTimeout ? (
+          <NTag size="small" type="error">
+            超时
+          </NTag>
+        ) : (
           <NTag size="small" type={row.isSubmission ? 'success' : 'error'}>
             {row.isSubmission ? '是' : '否'}
           </NTag>
@@ -114,9 +119,11 @@ export function createColumns({
       render(row) {
         return (
           <NButtonGroup>
-            <NButton type="primary" size="small" onClick={() => show?.(row)}>
-              查看
-            </NButton>
+            <RouterLink to={`/student/answer-detail/${row.answerHistoryId}`}>
+              <NButton ghost type="primary" size="small" onClick={() => show?.(row)}>
+                查看详细
+              </NButton>
+            </RouterLink>
           </NButtonGroup>
         )
       },
@@ -135,7 +142,7 @@ export function createStudentColumns({
 }): DataTableColumns<Student> {
   return [
     {
-      title: '用户ID',
+      title: 'ID',
       key: 'userId',
     },
     {

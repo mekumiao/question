@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { NInputGroup, NInput, NInputGroupLabel } from 'naive-ui'
+import { NInputGroup, NInput, NInputGroupLabel, useMessage } from 'naive-ui'
 import { NDataTable, NButton, NButtonGroup, NIcon } from 'naive-ui'
 import { RefreshOutline, SearchOutline } from '@vicons/ionicons5'
 import { createStudentColumns } from './data'
-import { list as fetchStudentList, count as fetchStudentCount } from '@/api/students'
+import { list as fetchStudentList, count as fetchStudentCount, resetSummary } from '@/api/students'
 import type { Student, StudentFilter } from '@/api/students'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const tableRef = ref<InstanceType<typeof NDataTable>>()
+const message = useMessage()
 
 const loading = ref(false)
 const model = ref<Student[]>([])
@@ -28,6 +29,16 @@ const pagination = reactive({
 const columns = createStudentColumns({
   async show(row) {
     await router.push({ path: `/admin/history/${row.studentId}` })
+  },
+  async reset(row) {
+    try {
+      await resetSummary(row.studentId)
+      await handlePageChange(pagination.page)
+      message.success('重置成功')
+    } catch (error) {
+      if (error instanceof Error) message.error(error.message)
+      console.log(error)
+    }
   },
 })
 

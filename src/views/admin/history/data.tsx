@@ -1,7 +1,7 @@
 import type { AnswerHistory } from '@/api/answerHistory'
 import type { Student } from '@/api/students'
 import type { DataTableColumns } from 'naive-ui'
-import { NRate, NButton, NButtonGroup, NTag } from 'naive-ui'
+import { NRate, NButton, NButtonGroup, NTag, NPopconfirm, NSpace } from 'naive-ui'
 import { RouterLink } from 'vue-router'
 
 export function createDifficultyLevelOptions() {
@@ -136,9 +136,9 @@ export function createColumns({
  * @returns
  */
 export function createStudentColumns({
-  show,
+  reset,
 }: {
-  show?: (rowData: Student) => void
+  reset?: (rowData: Student) => void
 }): DataTableColumns<Student> {
   return [
     {
@@ -185,10 +185,24 @@ export function createStudentColumns({
       align: 'right',
       render(row) {
         return (
-          <NButtonGroup>
-            <NButton ghost type="info" size="small" onClick={() => show?.(row)}>
-              查看详细
-            </NButton>
+          <NButtonGroup size="small">
+            <NSpace>
+              <NPopconfirm onPositiveClick={() => reset?.(row)}>
+                {{
+                  trigger: () => (
+                    <NButton ghost type="warning">
+                      重置
+                    </NButton>
+                  ),
+                  default: () => `确定重置用户 ${row.userId} 的答题汇总数据吗？`,
+                }}
+              </NPopconfirm>
+              <RouterLink to={`/admin/history/${row.studentId}`}>
+                <NButton ghost type="info">
+                  查看详细
+                </NButton>
+              </RouterLink>
+            </NSpace>
           </NButtonGroup>
         )
       },

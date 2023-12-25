@@ -64,3 +64,8 @@ export async function deleteAnswerHistoryItems(answerHistoryIds: number[]) {
   })
   return response.data
 }
+
+export async function resetSummary(studentId: number) {
+  const response = await axios.put<Student>(`/students/${studentId}/reset-summary/`)
+  return response.data
+}

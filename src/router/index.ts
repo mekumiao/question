@@ -71,7 +71,7 @@ const router = createRouter({
         { path: 'student', component: () => import('../views/admin/student/StudentList.vue') },
         { path: 'user', component: () => import('../views/admin/user/UserList.vue') },
         { path: 'role', component: () => import('../views/admin/role/RoleList.vue') },
-        { path: 'history', component: () => import('../views/admin/history/HistoryList.vue') },
+        { path: 'history', component: () => import('../views/admin/history/StudentList.vue') },
         {
           path: 'examination',
           component: () => import('../views/admin/examination/ExaminationList.vue'),

@@ -1,12 +1,12 @@
 import axios from './base'
 
 export interface Summary {
-  mistakeRate: number
+  incorrectRate: number
   answerRate: number
-  userCount: number
-  questionCount: number
-  examinationCount: number
-  examinationCountNumber: number
+  totalUsers: number
+  totalQuestions: number
+  totalExamSessions: number
+  totalExamParticipations: number
   examPaperCount: number
 }
 

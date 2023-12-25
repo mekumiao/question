@@ -1,4 +1,5 @@
 import type { AnswerHistory } from '@/api/answerHistory'
+import type { Student } from '@/api/students'
 import type { DataTableColumns } from 'naive-ui'
 import { NRate, NButton, NButtonGroup, NTag, NTime, NSpace } from 'naive-ui'
 
@@ -115,6 +116,71 @@ export function createColumns({
           <NButtonGroup>
             <NButton type="primary" size="small" onClick={() => show?.(row)}>
               查看
+            </NButton>
+          </NButtonGroup>
+        )
+      },
+    },
+  ]
+}
+
+/**
+ * 创建学生列
+ * @returns
+ */
+export function createStudentColumns({
+  show,
+}: {
+  show?: (rowData: Student) => void
+}): DataTableColumns<Student> {
+  return [
+    {
+      title: '用户ID',
+      key: 'userId',
+    },
+    {
+      title: '用户名',
+      key: 'studentName',
+    },
+    {
+      title: '答题率',
+      key: 'answerRate',
+      render(row) {
+        return (
+          <NTag size="small" type="info">
+            {Math.round(row.answerRate * 100)}%
+          </NTag>
+        )
+      },
+    },
+    {
+      title: '错题率',
+      key: 'incorrectRate',
+      render(row) {
+        return (
+          <NTag size="small" type="warning">
+            {Math.round(row.incorrectRate * 100)}%
+          </NTag>
+        )
+      },
+    },
+    {
+      title: '考试次数',
+      key: 'totalExamParticipations',
+    },
+    {
+      title: '练习次数',
+      key: 'totalPracticeSessions',
+    },
+    {
+      title: '操作',
+      key: 'actions',
+      align: 'right',
+      render(row) {
+        return (
+          <NButtonGroup>
+            <NButton ghost type="info" size="small" onClick={() => show?.(row)}>
+              查看详细
             </NButton>
           </NButtonGroup>
         )

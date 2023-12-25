@@ -8,12 +8,12 @@ import { AnalyticsOutline, AtCircleOutline, AttachSharp, BalloonOutline } from '
 import { BarChartOutline, BuildOutline } from '@vicons/ionicons5'
 
 const data = ref<Summary>({
-  mistakeRate: 0,
+  incorrectRate: 0,
   answerRate: 0,
-  userCount: 0,
-  questionCount: 0,
-  examinationCount: 0,
-  examinationCountNumber: 0,
+  totalUsers: 0,
+  totalQuestions: 0,
+  totalExamSessions: 0,
+  totalExamParticipations: 0,
   examPaperCount: 0,
 })
 
@@ -32,8 +32,9 @@ async function fullData() {
 
 function convertToPercentage(decimalNumber: number) {
   const percentage = decimalNumber * 100
-  const isInteger = percentage % 1 === 0
-  const percentageString = isInteger ? percentage.toFixed(0) : percentage.toFixed(2)
+  const percentageString = Math.round(percentage)
+  // const isInteger = percentage % 1 === 0
+  // const percentageString = isInteger ? percentage.toFixed(0) : percentage.toFixed(2)
   return percentageString
 }
 </script>
@@ -45,25 +46,29 @@ function convertToPercentage(decimalNumber: number) {
         <template #prefix>
           <NIcon><BuildOutline /></NIcon>
         </template>
-        {{ data.questionCount.toLocaleString() }}&nbsp;题
+        {{ data.totalQuestions.toLocaleString() }}&nbsp;题
       </NStatistic>
       <NStatistic label="活跃用户" tabular-nums class="col-span-1 row-span-1 p-2 shadow">
         <template #prefix>
           <NIcon><UserAddOutlined /></NIcon>
         </template>
-        {{ data.userCount.toLocaleString() }}&nbsp;个
+        {{ data.totalUsers.toLocaleString() }}&nbsp;个
       </NStatistic>
-      <NStatistic label="总参加考试次数" tabular-nums class="col-span-1 row-span-1 p-2 shadow">
+      <NStatistic
+        label="所有考试的总参与人数"
+        tabular-nums
+        class="col-span-1 row-span-1 p-2 shadow"
+      >
         <template #prefix>
           <NIcon><AnalyticsOutline /></NIcon>
         </template>
-        {{ data.examinationCountNumber.toLocaleString() }}&nbsp;次
+        {{ data.totalExamParticipations.toLocaleString() }}&nbsp;次
       </NStatistic>
       <NStatistic label="错题率" tabular-nums class="col-span-1 row-span-1 p-2 shadow">
         <template #prefix>
           <NIcon><AtCircleOutline /></NIcon>
         </template>
-        {{ convertToPercentage(data.mistakeRate) }}&nbsp;%
+        {{ convertToPercentage(data.incorrectRate) }}&nbsp;%
       </NStatistic>
       <NStatistic label="试卷总数" tabular-nums class="col-span-1 row-span-1 p-2 shadow">
         <template #prefix>
@@ -77,11 +82,11 @@ function convertToPercentage(decimalNumber: number) {
         </template>
         {{ convertToPercentage(data.answerRate) }}&nbsp;%
       </NStatistic>
-      <NStatistic label="考试总数" tabular-nums class="col-span-1 row-span-1 p-2 shadow">
+      <NStatistic label="发布的考试总场数" tabular-nums class="col-span-1 row-span-1 p-2 shadow">
         <template #prefix>
           <NIcon><BarChartOutline /></NIcon>
         </template>
-        {{ data.examinationCount.toLocaleString() }}&nbsp;条
+        {{ data.totalExamSessions.toLocaleString() }}&nbsp;条
       </NStatistic>
       <div class="col-span-4 row-span-2 shadow">
         <VisualCharts></VisualCharts>

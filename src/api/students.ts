@@ -4,14 +4,21 @@ import type { PaginationParameters } from '/#/utils'
 
 export interface Student {
   studentId: number
-  name: string
-  userName?: string
-  email?: string
-  userId?: string
+  studentName: string
+  userName: string | null
+  email: string | null
+  userId: string | null
+  totalQuestions: number
+  totalNumberAnswers: number
+  answerRate: number
+  totalIncorrectAnswers: number
+  incorrectRate: number
+  totalExamParticipations: number
+  totalPracticeSessions: number
 }
 
 export interface StudentFilter {
-  name?: string
+  studentNameOrUserId?: string
 }
 
 export async function count(params?: StudentFilter) {

@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import type { ExamPaper } from '@/api/examPapers'
-import { NForm, NFormItem, type FormRules, NInput } from 'naive-ui'
+import { NForm, NFormItem, type FormRules, NInput, NEmpty, NSpin, useMessage } from 'naive-ui'
 import { NCard, NRate, NList, NListItem, NThing, NPagination, NButton } from 'naive-ui'
 import { getMeExamPaperList } from '@/api/students'
 import { onMounted, reactive, ref } from 'vue'
 import type { RandomGenerationInput } from '@/api/answerBoard'
 
+const message = useMessage()
+
+const loading = ref(false)
 const examPapers = ref<ExamPaper[]>([])
 const randomGenerationData = ref<RandomGenerationInput>({ difficultyLevel: 3 })
 const pagination = reactive({
@@ -36,9 +39,21 @@ const menus = reactive({
   selectKey: 'practice',
 })
 
-onMounted(async () => {
-  examPapers.value = await getMeExamPaperList()
+onMounted(() => {
+  fullData()
 })
+
+async function fullData() {
+  try {
+    loading.value = true
+    examPapers.value = await getMeExamPaperList()
+  } catch (error) {
+    if (error instanceof Error) message.error(error.message)
+    console.log(error)
+  } finally {
+    loading.value = false
+  }
+}
 
 const randomRules: FormRules = {
   examPaperName: [
@@ -64,39 +79,53 @@ const randomRules: FormRules = {
         <NThing :title="item.title" :description="item.description"></NThing>
       </NListItem>
     </NList>
-    <div class="col-span-4" v-if="menus.selectKey === 'practice'">
-      <div
-        class="grid grid-cols-3 grid-rows-3 gap-2 ps-4"
-        style="height: calc(100vh - var(--header-height) - 50px)"
+    <NSpin :show="loading" class="col-span-4" v-if="menus.selectKey === 'practice'">
+      <NEmpty
+        :description="loading ? '加载中...' : '没有找到任何可用试卷'"
+        v-if="examPapers.length === 0"
       >
-        <NCard v-for="(item, key) in examPapers" :key="key" class="col-span-1 row-span-1">
-          <div class="flex h-full flex-col justify-between">
-            <ul class="flex flex-col items-start justify-center space-y-2">
-              <li class="flex flex-row items-center justify-start">
-                <span>试卷:&nbsp;</span><span class="font-bold">{{ item.examPaperName }}</span>
-              </li>
-              <li class="flex flex-row items-center justify-start">
-                <span>难度:&nbsp;</span>
-                <NRate readonly size="small" :value="item.difficultyLevel" :count="3"></NRate>
-              </li>
-              <li class="flex flex-row items-center justify-start">
-                <span>题目总数:&nbsp;</span><span class="font-bold">{{ item.totalQuestions }}&nbsp;题</span>
-              </li>
-            </ul>
-            <div class="flex w-full flex-row justify-end">
-              <RouterLink
-                :to="{ path: `/student/answer/practice`, query: { examPaperId: item.examPaperId } }"
-              >
-                <NButton ghost type="primary" size="small">进入练习</NButton>
-              </RouterLink>
+        <template #extra>
+          <NButton size="small" @click="fullData">尝试刷新</NButton>
+        </template>
+      </NEmpty>
+      <template v-else>
+        <div
+          class="grid grid-cols-3 grid-rows-3 gap-2 ps-4"
+          style="height: calc(100vh - var(--header-height) - 50px)"
+        >
+          <NCard v-for="(item, key) in examPapers" :key="key" class="col-span-1 row-span-1">
+            <div class="flex h-full flex-col justify-between">
+              <ul class="flex flex-col items-start justify-center space-y-2">
+                <li class="flex flex-row items-center justify-start">
+                  <span>试卷:&nbsp;</span><span class="font-bold">{{ item.examPaperName }}</span>
+                </li>
+                <li class="flex flex-row items-center justify-start">
+                  <span>难度:&nbsp;</span>
+                  <NRate readonly size="small" :value="item.difficultyLevel" :count="3"></NRate>
+                </li>
+                <li class="flex flex-row items-center justify-start">
+                  <span>题目总数:&nbsp;</span
+                  ><span class="font-bold">{{ item.totalQuestions }}&nbsp;题</span>
+                </li>
+              </ul>
+              <div class="flex w-full flex-row justify-end">
+                <RouterLink
+                  :to="{
+                    path: `/student/answer/practice`,
+                    query: { examPaperId: item.examPaperId },
+                  }"
+                >
+                  <NButton ghost type="primary" size="small">进入练习</NButton>
+                </RouterLink>
+              </div>
             </div>
-          </div>
-        </NCard>
-      </div>
-      <div class="col-span-6 flex flex-row justify-end">
-        <NPagination v-model:page="pagination.page" :page-count="pagination.itemCount" simple />
-      </div>
-    </div>
+          </NCard>
+        </div>
+        <div class="col-span-6 flex flex-row justify-end">
+          <NPagination v-model:page="pagination.page" :page-count="pagination.itemCount" simple />
+        </div>
+      </template>
+    </NSpin>
     <NCard class="col-span-4 w-fit p-5" v-else-if="menus.selectKey === 'random'">
       <NForm ref="randomFormRef" :rules="randomRules" :model="randomGenerationData">
         <NFormItem label="给本次练习取个名吧" path="examPaperName">

@@ -19,7 +19,14 @@ const router = createRouter({
       component: StudentLayout,
       children: [
         { path: '/home', name: 'home', component: HomeView },
-        { path: '/login', name: 'login', component: LoginView },
+        {
+          path: '/login',
+          name: 'login',
+          props: (route) => ({
+            redirect: route.query.redirect,
+          }),
+          component: LoginView,
+        },
       ],
     },
     {

@@ -138,7 +138,7 @@ const rules: FormRules = {
         >
           <NTabPane name="signin" tab="基本信息">
             <NForm ref="infoFormRef" :rules="rules" :model="model">
-              <NFormItemRow label="名称">
+              <NFormItemRow label="昵称">
                 <NInput v-model:value="model.nickName"></NInput>
               </NFormItemRow>
               <NFormItemRow label="角色">

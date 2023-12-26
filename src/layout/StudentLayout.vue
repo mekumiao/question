@@ -8,7 +8,7 @@ import NavHeader from './components/NavHeader.vue'
     <NavHeader></NavHeader>
     <main class="overflow-auto pt-2" style="max-height: calc(100vh - var(--header-height))">
       <RouterView v-slot="{ Component }">
-        <KeepAlive :exclude="['AnswerDetail', 'AnswerView']">
+        <KeepAlive :exclude="['AnswerDetail', 'AnswerView', 'LoginView']">
           <component :is="Component" />
         </KeepAlive>
       </RouterView>

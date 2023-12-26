@@ -13,6 +13,11 @@ export interface ChangePassword {
   newPassword: string
 }
 
+export async function register(email: string, password: string) {
+  const url = `${apiBaseUrl}/register`
+  await defaultAxios.post<void>(url, { email, password })
+}
+
 export async function login(email: string, password: string) {
   const url = `${apiBaseUrl}/login`
   const response = await defaultAxios.post<TokenResult>(

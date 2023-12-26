@@ -26,6 +26,7 @@ export interface AnswerHistory {
   totalNumberAnswers: number
   isTimeout: boolean
   totalQuestions: number
+  timeTakenSeconds: number
   studentAnswers: StudentAnswer[]
 }
 

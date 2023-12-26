@@ -11,6 +11,7 @@ import type { DataTableColumns } from 'naive-ui'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
 import { RouterLink, useRouter } from 'vue-router'
 import { ValidationProblemError } from '@/api/base'
+import { formatSeconds } from '@/utils'
 
 const message = useMessage()
 const dialog = useDialog()
@@ -83,12 +84,12 @@ const columns: DataTableColumns<AnswerHistory> = [
             default: () => {
               const min = new Date(2023)
               const start = new Date(row.startTime)
-              const end = new Date(row.submissionTime)
               return (
                 <>
+                  <span>开始于</span>
                   {start > min ? <NTime time={start}></NTime> : '--'}
-                  <span>至</span>
-                  {end > min ? <NTime time={end}></NTime> : '--'}
+                  <span>耗时</span>
+                  {row.isSubmission ? formatSeconds(row.timeTakenSeconds) : '--'}
                 </>
               )
             },
@@ -136,6 +137,14 @@ const columns: DataTableColumns<AnswerHistory> = [
         </NTag>
       )
     },
+  },
+  {
+    title: '题总数',
+    key: 'totalQuestions',
+  },
+  {
+    title: '作答数',
+    key: 'totalNumberAnswers',
   },
   {
     title: '错题数',

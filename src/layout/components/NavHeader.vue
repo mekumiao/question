@@ -17,7 +17,7 @@ import {
   SunnyOutline,
 } from '@vicons/ionicons5'
 import { logout } from '@/api/account'
-import jdg from '@/assets/img/jdg.png'
+import icon from '@/assets/img/icon.png'
 import { useCurrentUser } from '@/stores/user'
 
 const route = useRoute()
@@ -147,7 +147,7 @@ async function handleAvatarMenuSelect(key: string | number) {
           <div
             class="ms-5 flex cursor-pointer flex-col items-center justify-center rounded p-1 shadow hover:shadow-2xl"
           >
-            <NAvatar round size="medium" :src="currentUser.user?.avatar || jdg"></NAvatar>
+            <NAvatar round size="medium" :src="currentUser.user?.avatar || icon"></NAvatar>
             <div class="w-16 truncate text-center text-xs font-bold">
               {{ currentUser.user?.nickName }}
             </div>

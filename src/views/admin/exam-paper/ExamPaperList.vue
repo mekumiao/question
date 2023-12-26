@@ -125,7 +125,7 @@ function handelRandomClick() {
 }
 
 function handleRandomAfterLeave() {
-  randomGenerationData.model = { difficultyLevel: 1 }
+  randomGenerationData.model = { difficultyLevel: 3 }
 }
 
 async function handleRandomConfirmClick() {

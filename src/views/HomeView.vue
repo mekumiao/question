@@ -20,7 +20,7 @@ const imgList = computed<string[]>(() => (!isDark.value ? list : listDark))
 <template>
   <div class="grid grid-cols-5 gap-2 p-2">
     <div class="col-span-3">
-      <NCarousel autoplay show-arrow>
+      <NCarousel autoplay show-arrow :interval="3000">
         <img
           class="carousel-img rounded border-0"
           v-for="(item, key) in imgList"

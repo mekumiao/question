@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { onMounted, reactive, ref } from 'vue'
+import { onActivated, reactive, ref } from 'vue'
 import { useMessage, useDialog } from 'naive-ui'
 import { NDataTable, NInput, NButton, NButtonGroup, NSpace, NTime } from 'naive-ui'
 import { NIcon, NSelect, NInputGroup, NInputGroupLabel, NRate, NTag } from 'naive-ui'
@@ -180,7 +180,7 @@ const columns: DataTableColumns<AnswerHistory> = [
   },
 ]
 
-onMounted(() => {
+onActivated(() => {
   handlePageChange(1)
 })
 

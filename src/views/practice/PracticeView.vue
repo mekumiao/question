@@ -3,7 +3,7 @@ import type { ExamPaper } from '@/api/examPapers'
 import { NForm, NFormItem, type FormRules, NInput, NEmpty, NSpin, useMessage } from 'naive-ui'
 import { NCard, NRate, NList, NListItem, NThing, NPagination, NButton } from 'naive-ui'
 import { getMeExamPaperList } from '@/api/students'
-import { onMounted, reactive, ref } from 'vue'
+import { onActivated, reactive, ref } from 'vue'
 import type { RandomGenerationInput } from '@/api/answerBoard'
 
 const message = useMessage()
@@ -39,8 +39,9 @@ const menus = reactive({
   selectKey: 'practice',
 })
 
-onMounted(() => {
+onActivated(() => {
   handlePageChange(1)
+  menus.selectKey = 'practice'
 })
 
 async function handlePageChange(page: number) {

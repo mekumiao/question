@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onActivated, ref } from 'vue'
 import { NButton, NCard, NRate, NSpin, NEmpty } from 'naive-ui'
 import { list as fetchExaminationList, type Examination } from '@/api/examination'
 import { useRouter } from 'vue-router'
@@ -10,7 +10,9 @@ const router = useRouter()
 const loading = ref(false)
 const examinations = ref<Examination[]>([])
 
-fullData()
+onActivated(() => {
+  fullData()
+})
 
 async function fullData() {
   try {

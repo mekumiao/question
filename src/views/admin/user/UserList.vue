@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import { NDataTable, NInput, NButton, NButtonGroup, NInputGroup, NInputGroupLabel } from 'naive-ui'
 import { NIcon, useMessage } from 'naive-ui'
-import { list as fetchUserList, count as fetchUserCount, update as fetchUpdate } from '@/api/users'
+import { list as fetchUserList, update as fetchUpdate } from '@/api/users'
 import type { User, UserFilter } from '@/api/users'
 import { createColumns } from './data'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
@@ -50,11 +50,13 @@ async function handlePageChange(currentPage: number) {
   if (!loading.value) {
     try {
       loading.value = true
-      model.value = await fetchUserList({
+      const result = await fetchUserList({
         offset: (currentPage - 1) * pagination.pageSize,
         limit: pagination.pageSize,
         ...filter,
       })
+      model.value = result.items
+      pagination.itemCount = result.total
       pagination.page = currentPage
     } finally {
       loading.value = false
@@ -64,7 +66,6 @@ async function handlePageChange(currentPage: number) {
 
 async function handleSearch() {
   await handlePageChange(1)
-  pagination.itemCount = await fetchUserCount(filter)
 }
 
 async function handleEnter(e: KeyboardEvent) {

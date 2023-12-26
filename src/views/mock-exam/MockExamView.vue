@@ -15,7 +15,8 @@ fullData()
 async function fullData() {
   try {
     loading.value = true
-    examinations.value = await fetchExaminationList({ examinationType: 2 })
+    const result = await fetchExaminationList({ examinationType: 2, limit: 100 })
+    examinations.value = result.items
   } catch (error) {
     console.error(error)
   } finally {

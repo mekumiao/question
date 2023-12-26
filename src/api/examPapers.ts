@@ -1,6 +1,6 @@
 import axios from './base'
 import type { Option } from './questions'
-import type { PaginationParameters } from '/#/utils'
+import type { Paging, PagingResult } from '/#/paging'
 
 export interface ExamPaper {
   examPaperId: number
@@ -59,8 +59,8 @@ export async function count(params?: ExamPaperFilter) {
   return response.data
 }
 
-export async function list(params?: PaginationParameters & ExamPaperFilter) {
-  const response = await axios.get<ExamPaper[]>(`/examPapers/`, { params })
+export async function list(params?: Paging & ExamPaperFilter) {
+  const response = await axios.get<PagingResult<ExamPaper>>(`/examPapers/`, { params })
   return response.data
 }
 

@@ -1,5 +1,5 @@
 import axios from './base'
-import type { PaginationParameters } from '/#/utils'
+import type { Paging, PagingResult } from '/#/paging'
 
 export interface Question {
   questionId: number
@@ -52,8 +52,8 @@ export async function count(params?: QuestionFilter) {
   return response.data
 }
 
-export async function list(params?: PaginationParameters & QuestionFilter) {
-  const response = await axios.get<Question[]>(`/questions/`, { params })
+export async function list(params?: Paging & QuestionFilter) {
+  const response = await axios.get<PagingResult<Question>>(`/questions/`, { params })
   return response.data
 }
 

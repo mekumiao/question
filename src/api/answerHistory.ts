@@ -1,5 +1,5 @@
 import axios from './base'
-import type { PaginationParameters } from '/#/utils'
+import type { Paging, PagingResult } from '/#/paging'
 
 export interface AnswerHistoryFilter {
   studentId?: number
@@ -44,8 +44,8 @@ export async function count(params?: AnswerHistoryFilter) {
   return response.data
 }
 
-export async function list(params?: PaginationParameters & AnswerHistoryFilter) {
-  const response = await axios.get<AnswerHistory[]>(`/answerHistories/`, { params })
+export async function list(params?: Paging & AnswerHistoryFilter) {
+  const response = await axios.get<PagingResult<AnswerHistory>>(`/answerHistories/`, { params })
   return response.data
 }
 

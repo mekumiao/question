@@ -2,7 +2,7 @@
 import type { ExamPaper } from '@/api/examPapers'
 import { NForm, NFormItem, type FormRules, NInput, NEmpty, NSpin, useMessage } from 'naive-ui'
 import { NCard, NRate, NList, NListItem, NThing, NPagination, NButton } from 'naive-ui'
-import { getMeExamPaperList, getMeExamPaperCount } from '@/api/students'
+import { getMeExamPaperList } from '@/api/students'
 import { onMounted, reactive, ref } from 'vue'
 import type { RandomGenerationInput } from '@/api/answerBoard'
 
@@ -40,17 +40,18 @@ const menus = reactive({
 })
 
 onMounted(() => {
-  getMeExamPaperCount().then((v) => (pagination.itemCount = v))
   handlePageChange(1)
 })
 
 async function handlePageChange(page: number) {
   try {
     loading.value = true
-    examPapers.value = await getMeExamPaperList({
+    const result = await getMeExamPaperList({
       offset: (page - 1) * pagination.pageSize,
       limit: pagination.pageSize,
     })
+    examPapers.value = result.items
+    pagination.itemCount = result.total
   } catch (error) {
     if (error instanceof Error) message.error(error.message)
     console.log(error)

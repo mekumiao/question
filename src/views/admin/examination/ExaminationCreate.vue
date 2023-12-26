@@ -2,7 +2,7 @@
 import type { ExaminationInput } from '@/api/examination'
 import type { FormRules, DataTableColumns, DataTableRowKey } from 'naive-ui'
 import { create as fetchCreate } from '@/api/examination'
-import { list as fetchExamPaperList, count as fetchExamPaperCount } from '@/api/examPapers'
+import { list as fetchExamPaperList } from '@/api/examPapers'
 import { NDataTable, NSpace, NTimePicker, NButtonGroup } from 'naive-ui'
 import { NDrawer, NDrawerContent, NButton, NSpin, NInput, NInputNumber } from 'naive-ui'
 import { useMessage, NRadioGroup, NRadio, NFormItem, NForm, NRate } from 'naive-ui'
@@ -111,24 +111,20 @@ async function handleSaveClick() {
 
 async function loadExamPaperList() {
   checkedRowKeys.value = []
-  await Promise.all([
-    handlePageChange(1),
-    fetchExamPaperCount(filter).then((v) => {
-      pagination.itemCount = v
-      return v
-    }),
-  ])
+  await handlePageChange(1)
 }
 
 async function handlePageChange(currentPage: number) {
   if (dataLoading.value == true) return
   try {
     dataLoading.value = true
-    data.examPapers = await fetchExamPaperList({
+    const result = await fetchExamPaperList({
       offset: (currentPage - 1) * pagination.pageSize,
       limit: pagination.pageSize,
       ...filter,
     })
+    data.examPapers = result.items
+    pagination.itemCount = result.total
     pagination.page = currentPage
   } catch (error) {
     if (error instanceof Error) message.error(error.message)

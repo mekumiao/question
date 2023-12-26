@@ -2,7 +2,7 @@
 import { reactive, ref, watch } from 'vue'
 import { NInputGroupLabel, NInputGroup, useMessage, useDialog, NAlert } from 'naive-ui'
 import { NDataTable, NButton, NButtonGroup, NIcon, NInput, NSelect } from 'naive-ui'
-import { list as fetchHistoryList, count as fetchHistoryCount } from '@/api/answerHistory'
+import { list as fetchHistoryList } from '@/api/answerHistory'
 import { deleteAnswerHistoryItem, deleteAnswerHistoryItems } from '@/api/answerHistory'
 import type { AnswerHistory, AnswerHistoryFilter } from '@/api/answerHistory'
 import { RefreshOutline, SearchOutline } from '@vicons/ionicons5'
@@ -58,11 +58,13 @@ watch(
 async function handlePageChange(currentPage: number) {
   try {
     loading.value = true
-    model.value = await fetchHistoryList({
+    const result = await fetchHistoryList({
       ...filter,
       offset: (currentPage - 1) * pagination.pageSize,
       limit: pagination.pageSize,
     })
+    model.value = result.items
+    pagination.itemCount = result.total
     pagination.page = currentPage
   } finally {
     loading.value = false
@@ -70,12 +72,7 @@ async function handlePageChange(currentPage: number) {
 }
 
 async function handleSearch() {
-  await Promise.all([
-    handlePageChange(1),
-    fetchHistoryCount(filter).then((v) => {
-      pagination.itemCount = v
-    }),
-  ])
+  await handlePageChange(1)
 }
 
 async function handleEnter(e: KeyboardEvent) {

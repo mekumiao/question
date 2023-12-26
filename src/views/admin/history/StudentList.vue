@@ -4,7 +4,7 @@ import { NInputGroup, NInput, NInputGroupLabel, useMessage } from 'naive-ui'
 import { NDataTable, NButton, NButtonGroup, NIcon } from 'naive-ui'
 import { RefreshOutline, SearchOutline } from '@vicons/ionicons5'
 import { createStudentColumns } from './data'
-import { list as fetchStudentList, count as fetchStudentCount, resetSummary } from '@/api/students'
+import { list as fetchStudentList, resetSummary } from '@/api/students'
 import type { Student, StudentFilter } from '@/api/students'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
@@ -45,11 +45,13 @@ async function handlePageChange(currentPage: number) {
   if (!loading.value) {
     try {
       loading.value = true
-      model.value = await fetchStudentList({
+      const result = await fetchStudentList({
         ...filter,
         offset: (currentPage - 1) * pagination.pageSize,
         limit: pagination.pageSize,
       })
+      model.value = result.items
+      pagination.itemCount = result.total
       pagination.page = currentPage
     } finally {
       loading.value = false
@@ -58,13 +60,7 @@ async function handlePageChange(currentPage: number) {
 }
 
 async function handleSearch() {
-  await Promise.all([
-    handlePageChange(1),
-    fetchStudentCount().then((v) => {
-      pagination.itemCount = v
-      return v
-    }),
-  ])
+  await handlePageChange(1)
 }
 
 async function handleEnter(e: KeyboardEvent) {

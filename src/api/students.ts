@@ -1,7 +1,7 @@
 import type { AnswerHistory } from './answerHistory'
 import axios from './base'
 import type { ExamPaper, ExamPaperFilter } from './examPapers'
-import type { PaginationParameters } from '/#/utils'
+import type { Paging, PagingResult } from '/#/paging'
 
 export interface Student {
   studentId: number
@@ -27,8 +27,8 @@ export async function count(params?: StudentFilter) {
   return response.data
 }
 
-export async function list(params?: PaginationParameters & StudentFilter) {
-  const response = await axios.get<Student[]>(`/students/`, { params })
+export async function list(params?: Paging & StudentFilter) {
+  const response = await axios.get<PagingResult<Student>>(`/students/`, { params })
   return response.data
 }
 
@@ -42,8 +42,10 @@ export async function getMyAnswerHistoriesCount() {
   return response.data
 }
 
-export async function getMyAnswerHistories(params: PaginationParameters) {
-  const response = await axios.get<AnswerHistory[]>(`/students/me/answer-history/`, { params })
+export async function getMyAnswerHistories(params: Paging) {
+  const response = await axios.get<PagingResult<AnswerHistory>>(`/students/me/answer-history/`, {
+    params,
+  })
   return response.data
 }
 
@@ -71,12 +73,12 @@ export async function resetSummary(studentId: number) {
   return response.data
 }
 
-export async function getMeExamPaperList(params?: PaginationParameters & ExamPaperFilter) {
-  const response = await axios.get<ExamPaper[]>(`/students/me/exam-paper`, { params })
+export async function getMeExamPaperList(params?: Paging & ExamPaperFilter) {
+  const response = await axios.get<PagingResult<ExamPaper>>(`/students/me/exam-paper`, { params })
   return response.data
 }
 
-export async function getMeExamPaperCount(params?: PaginationParameters) {
-  const response = await axios.get<number>(`/students/me/exam-paper/count`, { params })
+export async function getMeExamPaperCount() {
+  const response = await axios.get<number>(`/students/me/exam-paper/count`)
   return response.data
 }

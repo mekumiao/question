@@ -1,17 +1,9 @@
 <script setup lang="tsx">
 import { onMounted, reactive, ref } from 'vue'
-import {
-  NDataTable,
-  NInput,
-  NButton,
-  NButtonGroup,
-  NSpace,
-  NTime,
-  useMessage,
-  useDialog,
-} from 'naive-ui'
+import { useMessage, useDialog } from 'naive-ui'
+import { NDataTable, NInput, NButton, NButtonGroup, NSpace, NTime } from 'naive-ui'
 import { NIcon, NSelect, NInputGroup, NInputGroupLabel, NRate, NTag } from 'naive-ui'
-import { getMyAnswerHistories as fetchHistoryList, getMyAnswerHistoriesCount } from '@/api/students'
+import { getMyAnswerHistories as fetchHistoryList } from '@/api/students'
 import { deleteAnswerHistoryItems, deleteAnswerHistoryItem } from '@/api/students'
 import type { AnswerHistory } from '@/api/answerHistory'
 import type { ExamPaperFilter } from '@/api/examPapers'
@@ -180,10 +172,6 @@ const columns: DataTableColumns<AnswerHistory> = [
 ]
 
 onMounted(() => {
-  getMyAnswerHistoriesCount().then((v) => {
-    pagination.itemCount = v
-    return v
-  })
   handlePageChange(1)
 })
 
@@ -192,11 +180,13 @@ async function handlePageChange(currentPage: number) {
     try {
       checkedRowKeys.value = []
       loading.value = true
-      model.value = await fetchHistoryList({
+      const result = await fetchHistoryList({
         offset: (currentPage - 1) * pagination.pageSize,
         limit: pagination.pageSize,
       })
-      modelCache.value = model.value
+      model.value = result.items
+      modelCache.value = result.items
+      pagination.itemCount = result.total
       pagination.page = currentPage
     } finally {
       loading.value = false

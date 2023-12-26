@@ -2,7 +2,7 @@ import axios from './base'
 import { default as defaultAxios } from 'axios'
 import type { TokenResult } from './base'
 import { apiBaseUrl, setAccessToken, setRefreshToken, clearToken, getRefreshToken } from './base'
-import type { PaginationParameters } from '/#/utils'
+import type { Paging, PagingResult } from '/#/paging'
 
 export async function login(email: string, password: string) {
   const url = `${apiBaseUrl}/login`
@@ -69,8 +69,8 @@ export async function count(params?: UserFilter) {
   return response.data
 }
 
-export async function list(params?: PaginationParameters & UserFilter) {
-  const response = await axios.get<User[]>(`/users/`, { params })
+export async function list(params?: Paging & UserFilter) {
+  const response = await axios.get<PagingResult<User>>(`/users/`, { params })
   return response.data
 }
 

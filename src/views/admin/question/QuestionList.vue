@@ -1,18 +1,10 @@
 <script setup lang="tsx">
 import { onMounted, reactive, ref } from 'vue'
-import {
-  NDataTable,
-  NInput,
-  NButton,
-  NButtonGroup,
-  NInputGroup,
-  NInputGroupLabel,
-  useDialog,
-} from 'naive-ui'
+import { useDialog } from 'naive-ui'
+import { NDataTable, NInput, NButton, NButtonGroup, NInputGroup, NInputGroupLabel } from 'naive-ui'
 import { NIcon, NSelect, useMessage } from 'naive-ui'
 import {
   list as fetchQuestionList,
-  count as fetchQuestionCount,
   remove as fetchQuestionDelete,
   deleteQuestionItems,
 } from '@/api/questions'
@@ -75,11 +67,13 @@ async function handlePageChange(currentPage: number) {
   if (!loading.value) {
     try {
       loading.value = true
-      model.value = await fetchQuestionList({
+      const result = await fetchQuestionList({
         offset: (currentPage - 1) * pagination.pageSize,
         limit: pagination.pageSize,
         ...filter,
       })
+      model.value = result.items
+      pagination.itemCount = result.total
       pagination.page = currentPage
     } finally {
       loading.value = false
@@ -87,14 +81,8 @@ async function handlePageChange(currentPage: number) {
   }
 }
 
-function handleSearch() {
-  return Promise.all([
-    handlePageChange(1),
-    fetchQuestionCount(filter).then((v) => {
-      pagination.itemCount = v
-      return v
-    }),
-  ])
+async function handleSearch() {
+  await handlePageChange(1)
 }
 
 async function handleEnter(e: KeyboardEvent) {

@@ -5,7 +5,6 @@ import { NIcon, NSelect, useMessage, type DataTableRowKey, NModal, NRate } from 
 import { NDataTable, NInput, NButton, NButtonGroup, NInputGroup, NInputGroupLabel } from 'naive-ui'
 import {
   list as fetchExamList,
-  count as fetchExamCount,
   remove as fetchExamDelete,
   exportToExcel,
   random as fetchRandemGenExam,
@@ -67,12 +66,13 @@ async function handlePageChange(currentPage: number) {
   if (!loading.value) {
     try {
       loading.value = true
-      const items = await fetchExamList({
+      const result = await fetchExamList({
         offset: (currentPage - 1) * pagination.pageSize,
         limit: pagination.pageSize,
         ...filter,
       })
-      model.value = items.map((v) => ({ ...v, checked: false }))
+      model.value = result.items.map((v) => ({ ...v, checked: false }))
+      pagination.itemCount = result.total
       pagination.page = currentPage
     } finally {
       loading.value = false
@@ -82,13 +82,7 @@ async function handlePageChange(currentPage: number) {
 
 async function handleSearch() {
   checkedRowKeys.value = []
-  await Promise.all([
-    handlePageChange(1),
-    fetchExamCount(filter).then((v) => {
-      pagination.itemCount = v
-      return v
-    }),
-  ])
+  await handlePageChange(1)
 }
 
 async function handleEnter(e: KeyboardEvent) {

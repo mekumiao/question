@@ -1,5 +1,5 @@
 import axios from './base'
-import type { PaginationParameters } from '/#/utils'
+import type { Paging, PagingResult } from '/#/paging'
 
 export interface ExaminationFilter {
   examinationName?: string
@@ -39,8 +39,8 @@ export async function count(params?: ExaminationFilter) {
   return response.data
 }
 
-export async function list(params?: PaginationParameters & ExaminationFilter) {
-  const response = await axios.get<Examination[]>(`/examination/`, { params })
+export async function list(params?: Paging & ExaminationFilter) {
+  const response = await axios.get<PagingResult<Examination>>(`/examination/`, { params })
   return response.data
 }
 

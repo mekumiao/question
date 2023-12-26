@@ -13,6 +13,7 @@ import type { ExamPaper, ExamPaperFilter, RandomGenerationInput } from '@/api/ex
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
 import { createColumns, createDifficultyLevelOptions } from './data'
 import ExamPaperImport from './ExamPaperImport.vue'
+import ExamPaperCreate from './ExamPaperCreate.vue'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 const importRef = ref<InstanceType<typeof ExamPaperImport>>()
@@ -24,6 +25,7 @@ const exportLoading = ref(false)
 const model = ref<ExamPaper[]>([])
 const checkedRowKeys = ref<DataTableRowKey[]>([])
 const filter = reactive<ExamPaperFilter>({ difficultyLevel: 0 })
+const createModel = reactive({ show: false })
 const randomGenerationData = reactive<{
   model: RandomGenerationInput
   showRandom: boolean
@@ -120,6 +122,10 @@ async function handleExportClick() {
   }
 }
 
+function handleCreateClick() {
+  createModel.show = true
+}
+
 function handelRandomClick() {
   randomGenerationData.showRandom = true
 }
@@ -186,6 +192,7 @@ const randomRules: FormRules = {
           <NButton type="default" @click="handelRandomClick">随机生成</NButton>
         </NButtonGroup>
         <NButtonGroup size="small">
+          <NButton type="primary" @click="handleCreateClick">新建</NButton>
           <NButton type="warning" @click="handleImportClick">导入</NButton>
           <NButton type="info" :loading="exportLoading" @click="handleExportClick">导出</NButton>
         </NButtonGroup>
@@ -230,6 +237,9 @@ const randomRules: FormRules = {
         </NFormItem>
       </NForm>
     </div>
+  </NModal>
+  <NModal v-model:show="createModel.show" preset="card" title="创建试卷">
+    <ExamPaperCreate></ExamPaperCreate>
   </NModal>
 </template>
 

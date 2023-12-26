@@ -3,7 +3,7 @@ import type { User } from '@/api/users'
 import type { FormItemRule, FormRules } from 'naive-ui'
 import type { ChangePassword, InfoUpdate } from '@/api/account'
 import { info as fetchInfo, changePassword, update as fetchUpdateInfo, logout } from '@/api/account'
-import { useMessage, NButton } from 'naive-ui'
+import { useMessage, NButton, NAlert } from 'naive-ui'
 import { NTabs, NTabPane, NForm, NFormItemRow, NInput } from 'naive-ui'
 import { onActivated, reactive, ref } from 'vue'
 import { useCurrentUser } from '@/stores/user'
@@ -134,6 +134,9 @@ const rules: FormRules = {
     <NTabs type="line" animated placement="left" size="large" style="height: 240px">
       <NTabPane name="signin" tab="基本信息">
         <NForm ref="infoFormRef" :rules="rules" :model="model.info">
+          <NFormItemRow label="邮箱(账号)">
+            <NAlert type="info">{{ user?.userName }}</NAlert>
+          </NFormItemRow>
           <NFormItemRow label="昵称" path="nickName">
             <NInput v-model:value="model.info.nickName"></NInput>
           </NFormItemRow>

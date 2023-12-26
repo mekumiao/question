@@ -13,7 +13,8 @@ import type { ExamPaper, ExamPaperFilter, RandomGenerationInput } from '@/api/ex
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
 import { createColumns, createDifficultyLevelOptions } from './data'
 import ExamPaperImport from './ExamPaperImport.vue'
-import ExamPaperCreate from './ExamPaperCreate.vue'
+// import ExamPaperCreate from './ExamPaperCreate.vue'
+import ExamPaperEdit from './ExamPaperEdit.vue'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 const importRef = ref<InstanceType<typeof ExamPaperImport>>()
@@ -25,7 +26,8 @@ const exportLoading = ref(false)
 const model = ref<ExamPaper[]>([])
 const checkedRowKeys = ref<DataTableRowKey[]>([])
 const filter = reactive<ExamPaperFilter>({ difficultyLevel: 0 })
-const createModel = reactive({ show: false })
+// const createModel = reactive({ show: false })
+const editModel = reactive({ show: false, examPaperId: 0 })
 const randomGenerationData = reactive<{
   model: RandomGenerationInput
   showRandom: boolean
@@ -49,11 +51,10 @@ const pagination = reactive({
 const difficultyLevelOptions = ref(createDifficultyLevelOptions())
 
 const columns = createColumns({
-  // edit(row) {
-  //   editRef.value?.open(row.questionId, () => {
-  //     handlePageChange(pagination.page)
-  //   })
-  // },
+  edit(row) {
+    editModel.examPaperId = row.examPaperId
+    editModel.show = true
+  },
   async remove(row) {
     await fetchExamDelete(row.examPaperId)
     await handlePageChange(pagination.page)
@@ -122,9 +123,9 @@ async function handleExportClick() {
   }
 }
 
-function handleCreateClick() {
-  createModel.show = true
-}
+// function handleCreateClick() {
+//   createModel.show = true
+// }
 
 function handelRandomClick() {
   randomGenerationData.showRandom = true
@@ -149,6 +150,11 @@ async function handleRandomConfirmClick() {
   } finally {
     randomGenerationData.loading = false
   }
+}
+
+async function handleEditExamPaperSaved() {
+  editModel.show = false
+  await handleSearch()
 }
 
 const randomRules: FormRules = {
@@ -192,7 +198,7 @@ const randomRules: FormRules = {
           <NButton type="default" @click="handelRandomClick">随机生成</NButton>
         </NButtonGroup>
         <NButtonGroup size="small">
-          <NButton type="primary" @click="handleCreateClick">新建</NButton>
+          <!-- <NButton type="primary" @click="handleCreateClick">新建</NButton> -->
           <NButton type="warning" @click="handleImportClick">导入</NButton>
           <NButton type="info" :loading="exportLoading" @click="handleExportClick">导出</NButton>
         </NButtonGroup>
@@ -238,8 +244,21 @@ const randomRules: FormRules = {
       </NForm>
     </div>
   </NModal>
-  <NModal v-model:show="createModel.show" preset="card" title="创建试卷">
+  <!-- <NModal v-model:show="createModel.show" preset="card" title="创建试卷">
     <ExamPaperCreate></ExamPaperCreate>
+  </NModal> -->
+  <NModal
+    v-model:show="editModel.show"
+    preset="card"
+    title="编辑试卷"
+    :bordered="false"
+    class="h-full w-full overflow-auto"
+    style="position: fixed; top: 0px; left: 0px"
+  >
+    <ExamPaperEdit
+      :exam-paper-id="editModel.examPaperId"
+      @saved="handleEditExamPaperSaved"
+    ></ExamPaperEdit>
   </NModal>
 </template>
 

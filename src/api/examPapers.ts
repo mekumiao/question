@@ -35,12 +35,13 @@ export interface ExamPaperInput {
 
 export interface ExamPaperQuestionInput {
   questionId: number
+  correctAnswer: string
   order: number
 }
 
 export interface ExamPaperUpdate {
-  ExamPaperName?: string
-  DifficultyLevel?: number
+  examPaperName?: string
+  difficultyLevel?: number
   questions?: ExamPaperQuestionInput[]
 }
 
@@ -74,7 +75,7 @@ export async function create(examPaper: ExamPaperInput) {
   return response.data
 }
 
-export async function update(examPaperId: number, examPaper: ExamPaperQuestionInput) {
+export async function update(examPaperId: number, examPaper: ExamPaperUpdate) {
   const response = await axios.put<ExamPaper>(`/examPapers/${examPaperId}`, examPaper)
   return response.data
 }

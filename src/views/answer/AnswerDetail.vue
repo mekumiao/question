@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { onMounted, ref } from 'vue'
 import AnswerPanel from '@/components/answer/AnswerPanel.vue'
 import { NTag } from 'naive-ui'
@@ -39,6 +39,8 @@ async function fullData() {
 }
 
 async function handleSucmit() {
+  if (!answerBoard.value) return message.error('页面数据错误，请刷新')
+
   const inputAnswers = answerPanelRef.value!.toAnswerInputs()
   // if (inputAnswers.length === 0 || !inputAnswers.every((v) => v.answerText)) {
   if (inputAnswers.length === 0) {
@@ -46,9 +48,19 @@ async function handleSucmit() {
     message.warning('您至少需要答一题')
     return
   }
+
   const d = dialog.create({
     title: '确认',
-    content: '提交之后不能修改，确定继续吗？',
+    content: () => (
+      <>
+        <span>
+          共{answerBoard.value!.totalQuestions}题，已作答{inputAnswers.length}，未作答
+          {answerBoard.value!.totalQuestions - inputAnswers.length}。
+        </span>
+        <br />
+        <span>提交之后不能修改，确定继续吗？</span>
+      </>
+    ),
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: async () => {

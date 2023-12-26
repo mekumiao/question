@@ -1,37 +1,5 @@
 import axios from './base'
-import { default as defaultAxios } from 'axios'
-import type { TokenResult } from './base'
-import { apiBaseUrl, setAccessToken, setRefreshToken, clearToken, getRefreshToken } from './base'
 import type { Paging, PagingResult } from '/#/paging'
-
-export async function login(email: string, password: string) {
-  const url = `${apiBaseUrl}/login`
-  const response = await defaultAxios.post<TokenResult>(
-    url,
-    { email, password },
-    { validateStatus: (status) => status === 200 },
-  )
-  setAccessToken(response.data.accessToken)
-  setRefreshToken(response.data.refreshToken)
-}
-
-export async function logout() {
-  clearToken()
-  return Promise.resolve()
-}
-
-export async function checkUserAuthentication() {
-  const islogin = !!getRefreshToken()
-  return Promise.resolve(islogin)
-}
-
-export async function info() {
-  return Promise.resolve({
-    username: 'mekumiao',
-    email: 'mekumiao@qq.com',
-    role: ['admin', 'student'],
-  })
-}
 
 export interface UserFilter {
   userName?: string

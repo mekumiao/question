@@ -16,7 +16,7 @@ import {
   MoonOutline,
   SunnyOutline,
 } from '@vicons/ionicons5'
-import { logout } from '@/api/users'
+import { logout } from '@/api/account'
 import jdg from '@/assets/img/jdg.png'
 import { useCurrentUser } from '@/stores/user'
 

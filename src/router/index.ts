@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import StudentLayout from '@/layout/StudentLayout.vue'
 import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/login/LoginView.vue'
-import { checkUserAuthentication, info as fetchInfo } from '@/api/users'
+import { checkUserAuthentication, info as fetchInfo } from '@/api/account'
 import { createDiscreteApi } from 'naive-ui'
 
 const { loadingBar } = createDiscreteApi(['loadingBar'])
@@ -116,7 +116,7 @@ router.beforeEach(async (to, from, next) => {
       return next('/login')
     }
     const info = await fetchInfo()
-    if (!info.role.includes('admin')) {
+    if (!info.roles.includes('admin')) {
       return next('/login')
     }
     next()

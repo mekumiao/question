@@ -2,7 +2,7 @@
 import type { FormInst, FormRules } from 'naive-ui'
 import { NButton, NForm, NFormItem, NInput, useMessage, NCard } from 'naive-ui'
 import { reactive, ref } from 'vue'
-import { login } from '@/api/users'
+import { login } from '@/api/account'
 import { info as fetchInfo } from '@/api/account'
 import { AxiosError } from 'axios'
 import { useRouter } from 'vue-router'
@@ -10,9 +10,14 @@ import { useCurrentUser } from '@/stores/user'
 
 const currentUser = useCurrentUser()
 
+const defaultAccount = {
+  email: import.meta.env.VITE_LOGIN_EMAIL ?? '',
+  password: import.meta.env.VITE_LOGIN_PASSWORD ?? '',
+}
+
 const loading = ref(false)
 const data = reactive({
-  model: { email: 'admin@qq.com', password: 'Az.123123!' },
+  model: defaultAccount,
 })
 const formRef = ref<FormInst>()
 const message = useMessage()

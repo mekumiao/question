@@ -1,8 +1,8 @@
 <script setup lang="tsx">
-import { reactive, inject } from 'vue'
+import { reactive, inject, computed } from 'vue'
 import type { Component, Ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { NDropdown, NIcon, NSwitch, NEl, NAvatar } from 'naive-ui'
+import { NDropdown, NIcon, NSwitch, NEl, NAvatar, NButton } from 'naive-ui'
 import type {
   DropdownOption,
   DropdownGroupOption,
@@ -18,9 +18,11 @@ import {
 } from '@vicons/ionicons5'
 import { logout } from '@/api/users'
 import jdg from '@/assets/img/jdg.png'
+import { useCurrentUser } from '@/stores/user'
 
 const route = useRoute()
 const router = useRouter()
+const currentUser = useCurrentUser()
 const isDark = inject<Ref<boolean>>('isDark')
 
 const data = reactive({
@@ -52,12 +54,12 @@ const data = reactive({
   ],
 })
 
-const menuList: (
+const menuListData: ((
   | DropdownOption
   | DropdownGroupOption
   | DropdownDividerOption
   | DropdownRenderOption
-)[] = [
+) & { isAdmin?: boolean })[] = [
   {
     label: '个人中心',
     key: 'personal center',
@@ -67,6 +69,7 @@ const menuList: (
     label: '控制面板',
     key: 'control panel',
     icon: renderIcon(ControlPanelIcon),
+    isAdmin: true,
   },
   {
     type: 'divider',
@@ -77,6 +80,12 @@ const menuList: (
     icon: renderIcon(LogoutIcon),
   },
 ]
+
+const menuList = computed(() => {
+  return menuListData.filter(
+    (v) => v.isAdmin !== true || currentUser.user?.roles.includes('admin') === true,
+  )
+})
 
 function renderIcon(icon: Component) {
   return () => <NIcon component={icon}></NIcon>
@@ -89,7 +98,8 @@ async function handleAvatarMenuSelect(key: string | number) {
     router.push({ path: '/admin' })
   } else if (key === 'logout') {
     await logout()
-    router.replace({ name: 'login' })
+    currentUser.setUser()
+    await router.replace({ name: 'login' })
   }
 }
 </script>
@@ -107,7 +117,7 @@ async function handleAvatarMenuSelect(key: string | number) {
       style="height: var(--header-height)"
     >
       <div class="icon ms-5 flex flex-row p-2"></div>
-      <nav class="flex flex-row items-center justify-center">
+      <nav class="flex flex-row items-center justify-center space-x-4">
         <ul role="list" class="flex flex-row items-center justify-start">
           <li
             class="mx-2 cursor-pointer text-lg font-bold"
@@ -130,12 +140,17 @@ async function handleAvatarMenuSelect(key: string | number) {
             </NIcon>
           </template>
         </NSwitch>
-        <NDropdown trigger="click" :options="menuList" @select="handleAvatarMenuSelect">
+        <RouterLink to="/login" v-if="!currentUser.user">
+          <NButton type="info" size="medium">登录</NButton>
+        </RouterLink>
+        <NDropdown v-else trigger="click" :options="menuList" @select="handleAvatarMenuSelect">
           <div
             class="ms-5 flex cursor-pointer flex-col items-center justify-center rounded p-1 shadow hover:shadow-2xl"
           >
-            <NAvatar round size="medium" :src="jdg"></NAvatar>
-            <div class="w-16 truncate text-xs font-bold">别听鬼故事</div>
+            <NAvatar round size="medium" :src="currentUser.user?.avatar || jdg"></NAvatar>
+            <div class="w-16 truncate text-center text-xs font-bold">
+              {{ currentUser.user?.nickName }}
+            </div>
           </div>
         </NDropdown>
       </nav>

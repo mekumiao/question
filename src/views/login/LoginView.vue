@@ -3,8 +3,12 @@ import type { FormInst, FormRules } from 'naive-ui'
 import { NButton, NForm, NFormItem, NInput, useMessage, NCard } from 'naive-ui'
 import { reactive, ref } from 'vue'
 import { login } from '@/api/users'
+import { info as fetchInfo } from '@/api/account'
 import { AxiosError } from 'axios'
 import { useRouter } from 'vue-router'
+import { useCurrentUser } from '@/stores/user'
+
+const currentUser = useCurrentUser()
 
 const loading = ref(false)
 const data = reactive({
@@ -20,6 +24,8 @@ async function handleLoginClick(e: MouseEvent) {
     loading.value = true
     await formRef.value?.validate()
     await login(data.model.email, data.model.password)
+    const info = await fetchInfo()
+    currentUser.setUser(info)
     message.success('登录成功！')
     router.replace({ name: 'home' })
   } catch (error) {

@@ -2,7 +2,7 @@
 import { NStatistic, NIcon, NCard } from 'naive-ui'
 import { UserAddOutlined } from '@vicons/antd'
 import { onActivated, ref } from 'vue'
-import VisualCharts from './VisualCharts.vue'
+// import VisualCharts from './VisualCharts.vue'
 import { summary as fetchSummaryData, type Summary } from '@/api/statistics'
 import { AnalyticsOutline, AtCircleOutline, AttachSharp, BalloonOutline } from '@vicons/ionicons5'
 import { BarChartOutline, BuildOutline } from '@vicons/ionicons5'
@@ -40,8 +40,8 @@ function convertToPercentage(decimalNumber: number) {
 </script>
 
 <template>
-  <NCard>
-    <div class="m-3 grid grid-cols-4 gap-4">
+  <NCard class="mt-3">
+    <div class="grid grid-cols-4 gap-4">
       <NStatistic tabularNums label="总题目数" class="col-span-1 row-span-1 p-2 shadow">
         <template #prefix>
           <NIcon><BuildOutline /></NIcon>
@@ -88,9 +88,9 @@ function convertToPercentage(decimalNumber: number) {
         </template>
         {{ data.totalExamSessions.toLocaleString() }}&nbsp;条
       </NStatistic>
-      <div class="col-span-4 row-span-2 shadow">
+      <!-- <div class="col-span-4 row-span-2 shadow">
         <VisualCharts></VisualCharts>
-      </div>
+      </div> -->
     </div>
   </NCard>
 </template>

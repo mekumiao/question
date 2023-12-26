@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 import { NMenu } from 'naive-ui'
-import { ref, type Component, onMounted } from 'vue'
+import { ref, type Component, watch } from 'vue'
 import { NIcon } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
 import {
@@ -13,16 +13,23 @@ import {
   TimeOutline,
 } from '@vicons/ionicons5'
 import { DashboardOutlined } from '@vicons/antd'
-import { RouterLink, type RouteLocationRaw, useRoute } from 'vue-router'
+import { RouterLink, type RouteLocationRaw, useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const collapsed = ref(false)
 const selectedKey = ref<string>()
 const menuInstRef = ref<InstanceType<typeof NMenu>>()
-const route = useRoute()
 
-onMounted(() => {
-  selectAndExpand(route.fullPath)
-})
+watch(
+  () => router.currentRoute.value,
+  (route) => {
+    selectAndExpand(route.fullPath)
+  },
+  {
+    immediate: true,
+  },
+)
 
 function renderMenuLabel(label: string, to?: RouteLocationRaw) {
   if (to) {

@@ -29,8 +29,8 @@ const imgList = computed<string[]>(() => (!isDark.value ? list : listDark))
         />
       </NCarousel>
     </div>
-    <NCard class="col-span-2" title="题库管理系统">
-      支持在线考试，题目导入，试卷导入，学生答题记录浏览等功能。
+    <NCard class="col-span-2" title="轻量级在线答题系统">
+      支持在线考试，题目导入，试卷导入，试卷编辑，学生答题记录浏览等功能。
     </NCard>
   </div>
 </template>

@@ -47,10 +47,15 @@ onMounted(async () => {
         </div>
       </template>
       <div class="flex flex-col gap-2">
-        <span class="font-bold">
+        <span v-if="cert.isSuccess" class="font-bold">
           恭喜&nbsp;
           <span class="text-lg font-bold">{{ cert.nickName || cert.userName }}</span>
           &nbsp;考试通过，获得荣誉证书！
+        </span>
+        <span v-else class="font-bold">
+          很遗憾&nbsp;
+          <span class="text-lg font-bold">{{ cert.nickName || cert.userName }}</span>
+          &nbsp;考试未通过，获得鼓励证书！
         </span>
         <NAlert type="info" class="relative">
           <ul class="flex flex-col gap-2 font-light">

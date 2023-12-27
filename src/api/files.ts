@@ -33,6 +33,7 @@ export async function getFile(fileId: number) {
   return resp.data
 }
 
-export function joinFileUrl(fileId: number) {
+export function joinFileUrl(fileId?: number | null) {
+  if (!fileId) return null
   return `${apiBaseUrl}/files/${fileId}/content`
 }

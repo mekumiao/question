@@ -55,6 +55,8 @@ export interface ExaminationUpdate {
 
 export interface Certificate {
   userId: number
+  avatar: string | null
+  avatarFileId: number | null
   userName: string
   nickName: string
   studentId: number

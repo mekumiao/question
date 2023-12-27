@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { onActivated, ref } from 'vue'
 import type { CountdownTimeInfo } from 'naive-ui'
-import { NButton, NCard, NRate, NSpin, NEmpty, NTag, NCountdown, NSpace } from 'naive-ui'
+import { NButton, NCard, NRate, NSpin, NEmpty, NTag, NCountdown, NSpace, NIcon } from 'naive-ui'
 import { listPublish as fetchExaminationList, type ExaminationPublish } from '@/api/examination'
 import { useRouter } from 'vue-router'
 import { formatSeconds } from '@/utils'
+import { useCurrentUser } from '@/stores/user'
+import { Certificate20Regular } from '@vicons/fluent'
 
 const router = useRouter()
+const currentUser = useCurrentUser()
 
 const loading = ref(false)
 const examinations = ref<ExaminationPublish[]>([])
@@ -58,7 +61,23 @@ function renderCountdown({ hours, minutes, seconds }: CountdownTimeInfo) {
       </NEmpty>
       <div v-else class="grid grid-cols-3 gap-4">
         <NCard v-for="(item, key) in examinations" :key="key">
-          <template #header>{{ item.examinationName }}</template>
+          <template #header>
+            <div class="relative">
+              <span>{{ item.examinationName }}</span>
+              <RouterLink
+                v-if="item.answerState === 3"
+                class="absolute"
+                style="top: 0px; right: 0px"
+                :to="`/certificate/${item.examinationId}/${currentUser.user!.userId}`"
+              >
+                <NButton type="info" size="small" quaternary>
+                  <template #icon>
+                    <NIcon><Certificate20Regular /></NIcon>
+                  </template>
+                </NButton>
+              </RouterLink>
+            </div>
+          </template>
           <ul role="list" class="flex flex-col justify-center gap-1">
             <li class="flex flex-row items-baseline">
               <span>考试时间：</span>
@@ -92,7 +111,7 @@ function renderCountdown({ hours, minutes, seconds }: CountdownTimeInfo) {
                 </NSpace>
               </div>
               <div v-else-if="item.answerState === 3">
-                <NTag size="small" type="primary">已完成</NTag>
+                <NTag size="small" type="primary">已交卷</NTag>
               </div>
               <div v-else-if="item.answerState === 4">
                 <NTag size="small" type="error">已超时</NTag>

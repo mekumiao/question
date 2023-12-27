@@ -1,25 +1,48 @@
 <script setup lang="ts">
-import { NAlert, NAvatar, NCard, NRate } from 'naive-ui'
-import jdg from '@/assets/img/jdg.png'
+import { NAlert, NAvatar, NCard, NRate, NResult, NButton } from 'naive-ui'
+import icon from '@/assets/img/icon.png'
 import { formatSeconds } from '@/utils'
 import { onMounted, ref } from 'vue'
 import { getCertificate, type Certificate } from '@/api/examination'
+import { joinFileUrl } from '@/api/files'
 
 const props = defineProps<{ examinationId: number; userId: number }>()
+
+const loading = ref(false)
 const cert = ref<Certificate>()
 
 onMounted(async () => {
-  cert.value = await getCertificate(props.examinationId, props.userId)
+  try {
+    loading.value = true
+    cert.value = await getCertificate(props.examinationId, props.userId)
+  } catch (error) {
+    console.error(error)
+  } finally {
+    loading.value = false
+  }
 })
 </script>
 
 <template>
   <div class="flex flex-row justify-center">
-    <div v-if="!cert">加载中...</div>
+    <div v-if="!cert">
+      <div v-if="loading">加载中...</div>
+      <div v-else>
+        <NResult status="404" title="404" description="生活总归带点荒谬">
+          <template #footer>
+            <NButton @click="$router.back()">返回上一页</NButton>
+          </template>
+        </NResult>
+      </div>
+    </div>
     <NCard v-else class="mt-10 w-fit px-10 py-5">
       <template #header>
         <div class="flex flex-col items-center gap-2">
-          <NAvatar round :src="jdg" style="width: 8rem; height: 8rem"></NAvatar>
+          <NAvatar
+            round
+            :src="cert.avatar || joinFileUrl(cert.avatarFileId) || icon"
+            style="width: 8rem; height: 8rem"
+          ></NAvatar>
           <h3>{{ cert.examinationName }}</h3>
         </div>
       </template>

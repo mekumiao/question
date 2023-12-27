@@ -35,11 +35,7 @@ export function createDefaultModel() {
   }
 }
 
-export function createColumns({
-  show,
-}: {
-  show?: (rowData: AnswerHistory) => void
-}): DataTableColumns<AnswerHistory> {
+export function createColumns(): DataTableColumns<AnswerHistory> {
   return [
     {
       type: 'selection',
@@ -120,7 +116,7 @@ export function createColumns({
         return (
           <NButtonGroup>
             <RouterLink to={`/student/answer-detail/${row.answerHistoryId}`}>
-              <NButton ghost type="primary" size="small" onClick={() => show?.(row)}>
+              <NButton ghost type="primary" size="small">
                 查看详细
               </NButton>
             </RouterLink>

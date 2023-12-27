@@ -8,6 +8,7 @@ import type { AnswerHistory, AnswerHistoryFilter } from '@/api/answerHistory'
 import { RefreshOutline, SearchOutline } from '@vicons/ionicons5'
 import { createColumns, createDifficultyLevelOptions } from './data'
 import { ValidationProblemError } from '@/api/base'
+import { get as fetchItem, type Student } from '@/api/students'
 
 const props = defineProps<{ studentId: number }>()
 const tableRef = ref<InstanceType<typeof NDataTable>>()
@@ -17,7 +18,7 @@ const dialog = useDialog()
 const loading = ref(false)
 const model = ref<AnswerHistory[]>([])
 const filter = reactive<AnswerHistoryFilter>({ studentId: props.studentId, difficultyLevel: 0 })
-const studentName = ref<string>('')
+const student = ref<Student>()
 const checkedRowKeys = ref<number[]>([])
 
 const pagination = reactive({
@@ -32,23 +33,19 @@ const pagination = reactive({
 
 const difficultyLevelOptions = ref(createDifficultyLevelOptions())
 
-const columns = createColumns({
-  // show(row) {
-  //   editRef.value?.open(row.questionId, () => {
-  //     handlePageChange(pagination.page)
-  //   })
-  // },
-})
+const columns = createColumns()
 
 watch(
   () => props.studentId,
   async (v) => {
     filter.studentId = v
-    Object.assign(filter, { studentId: v })
-    await handleSearch()
-    if (model.value.length) {
-      studentName.value = model.value[0].studentName
-    }
+    await Promise.all([
+      handleSearch(),
+      fetchItem(v).then((v) => {
+        student.value = v
+        return v
+      }),
+    ])
   },
   {
     immediate: true,
@@ -123,7 +120,7 @@ async function handleDeleteItems() {
   <div class="m-3 flex flex-col space-y-2">
     <div><NButton size="small" type="info" @click="() => $router.back()">返回上一级</NButton></div>
     <NAlert title="答题记录详细" type="info" :bordered="false">
-      <span class="font-bold">{{ studentName }}</span>
+      <span class="font-bold">{{ student?.studentName }}</span>
       <span>&nbsp;的答题记录</span>
     </NAlert>
     <div class="grid grid-cols-8 gap-2">

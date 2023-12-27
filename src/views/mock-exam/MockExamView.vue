@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { onActivated, ref } from 'vue'
-import { NButton, NCard, NEmpty, NRate, NSpin } from 'naive-ui'
-import { list as fetchExaminationList, type Examination } from '@/api/examination'
+import { NButton, NCard, NEmpty, NRate, NSpin, NTag, type CountdownTimeInfo, NSpace, NCountdown } from 'naive-ui'
+import { listPublish as fetchExaminationList, type ExaminationPublish } from '@/api/examination'
 import { useRouter } from 'vue-router'
 import { formatSeconds } from '@/utils'
 
 const router = useRouter()
 
 const loading = ref(false)
-const examinations = ref<Examination[]>([])
+const examinations = ref<ExaminationPublish[]>([])
 
 onActivated(() => {
   fullData()
@@ -26,7 +26,7 @@ async function fullData() {
   }
 }
 
-async function handleToAnswerView(item: Examination) {
+async function handleToAnswerView(item: ExaminationPublish) {
   router.push({
     path: `/student/answer/exam/`,
     query: {
@@ -34,6 +34,12 @@ async function handleToAnswerView(item: Examination) {
       examinationId: item.examinationId,
     },
   })
+}
+
+function renderCountdown({ hours, minutes, seconds }: CountdownTimeInfo) {
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(
+    seconds,
+  ).padStart(2, '0')}`
 }
 </script>
 
@@ -67,7 +73,33 @@ async function handleToAnswerView(item: Examination) {
             </li>
           </ul>
           <template #action>
-            <NButton @click="handleToAnswerView(item)" type="primary">进入考试</NButton>
+            <div class="flex flex-row items-center justify-between">
+              <NButton @click="handleToAnswerView(item)" type="primary">进入考试</NButton>
+              <div v-if="item.answerState === 1">
+                <NTag size="small" type="warning">未参加</NTag>
+              </div>
+              <div v-else-if="item.answerState === 2">
+                <NSpace>
+                  <NTag size="small" type="warning">答题中</NTag>
+                  <NTag size="small" type="info">
+                    <NCountdown
+                      :render="renderCountdown"
+                      :duration="item.remainingSeconds * 1000"
+                      :active="true"
+                    />
+                  </NTag>
+                </NSpace>
+              </div>
+              <div v-else-if="item.answerState === 3">
+                <NTag size="small" type="primary">已完成</NTag>
+              </div>
+              <div v-else-if="item.answerState === 4">
+                <NSpace>
+                  <NTag size="small" type="primary">已完成</NTag>
+                  <NTag size="small" type="error">已超时</NTag>
+                </NSpace>
+              </div>
+            </div>
           </template>
         </NCard>
       </div>

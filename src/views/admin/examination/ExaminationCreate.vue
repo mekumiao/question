@@ -3,7 +3,7 @@ import type { ExaminationInput } from '@/api/examination'
 import type { FormRules, DataTableColumns, DataTableRowKey } from 'naive-ui'
 import { create as fetchCreate } from '@/api/examination'
 import { list as fetchExamPaperList } from '@/api/examPapers'
-import { NDataTable, NSpace, NTimePicker, NButtonGroup } from 'naive-ui'
+import { NDataTable, NSpace, NTimePicker, NButtonGroup, NCheckbox } from 'naive-ui'
 import { NDrawer, NDrawerContent, NButton, NSpin, NInput, NInputNumber } from 'naive-ui'
 import { useMessage, NRadioGroup, NRadio, NFormItem, NForm, NRate } from 'naive-ui'
 import { NIcon, NSelect, NInputGroupLabel, NInputGroup } from 'naive-ui'
@@ -85,6 +85,7 @@ function defaultModel(): ExaminationInput {
     examPaperId: 0,
     durationSeconds: 1800,
     order: 0,
+    isPublish: false,
   }
 }
 
@@ -227,6 +228,9 @@ const columns: DataTableColumns<ExamPaper> = [
         <NForm ref="formRef" :rules="rules" :model="data.model">
           <NFormItem label="排序 (值越大越靠前)" path="order">
             <NInputNumber v-model:value="data.model.order" placeholder="请输入排序"></NInputNumber>
+          </NFormItem>
+          <NFormItem label="是否发布" path="isPublish" label-placement="left">
+            <NCheckbox v-model:checked="data.model.isPublish"></NCheckbox>
           </NFormItem>
           <NFormItem label="考试类型" path="examinationType">
             <NRadioGroup class="pb-4" v-model:value="data.model.examinationType">

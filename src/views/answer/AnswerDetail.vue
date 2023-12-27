@@ -90,7 +90,8 @@ function renderCountdown({ hours, minutes, seconds }: CountdownTimeInfo) {
 
 <template>
   <div class="mx-4">
-    <div v-if="answerBoard">
+    <div v-if="!answerBoard">加载中...</div>
+    <div v-else>
       <div class="mb-2 flex flex-row items-center justify-between">
         <div class="flex flex-row items-center gap-2">
           <div

@@ -82,3 +82,13 @@ export async function getMeExamPaperCount() {
   const response = await axios.get<number>(`/students/me/exam-paper/count`)
   return response.data
 }
+
+export async function deleteItem(studentId: number) {
+  const response = await axios.delete<void>(`/students/${studentId}/`)
+  return response.data
+}
+
+export async function deleteItems(studentIds: number[]) {
+  const response = await axios.delete<void>(`/students/`, { data: studentIds })
+  return response.data
+}

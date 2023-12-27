@@ -66,6 +66,21 @@ export function createColumns({
       key: 'examPaperName',
     },
     {
+      title: '发布',
+      key: 'isPublish',
+      render(row) {
+        return row.isPublish ? (
+          <NTag size="small" type="primary">
+            已发布
+          </NTag>
+        ) : (
+          <NTag size="small" type="info">
+            未发布
+          </NTag>
+        )
+      },
+    },
+    {
       title: '类型',
       key: 'examinationType',
       render(row) {

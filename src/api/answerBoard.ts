@@ -32,7 +32,7 @@ export interface AnswerBoardQuestionOption {
 }
 
 export interface AnswerBoardInput {
-  examPaperId: number
+  examPaperId?: number
   examinationId?: number
 }
 

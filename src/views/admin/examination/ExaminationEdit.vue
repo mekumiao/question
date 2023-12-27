@@ -2,7 +2,7 @@
 import type { ExaminationUpdate } from '@/api/examination'
 import type { FormRules } from 'naive-ui'
 import { update as fetchUpdate, get as fetchItem } from '@/api/examination'
-import { NTimePicker } from 'naive-ui'
+import { NCheckbox, NTimePicker } from 'naive-ui'
 import { NDrawer, NDrawerContent, NButton, NSpin, NInput, NInputNumber } from 'naive-ui'
 import { useMessage, NRadioGroup, NRadio, NFormItem, NForm, NRate } from 'naive-ui'
 import { createExaminationTypeOptions } from './data'
@@ -117,13 +117,16 @@ const rules: FormRules = {
 </script>
 
 <template>
-  <NDrawer v-model:show="active" width="60%" @after-leave="handleAfterLeave">
+  <NDrawer v-model:show="active" width="40%" @after-leave="handleAfterLeave">
     <NDrawerContent>
       <template #header>编辑考试</template>
       <NSpin :show="loading">
         <NForm ref="formRef" :rules="rules" :model="data.model">
           <NFormItem label="排序 (值越大越靠前)" path="order">
             <NInputNumber v-model:value="data.model.order" placeholder="请输入排序"></NInputNumber>
+          </NFormItem>
+          <NFormItem label="是否发布" path="isPublish" label-placement="left">
+            <NCheckbox v-model:checked="data.model.isPublish"></NCheckbox>
           </NFormItem>
           <NFormItem label="考试类型" path="examinationType">
             <NRadioGroup class="pb-4" v-model:value="data.model.examinationType">

@@ -49,7 +49,6 @@ async function createExamAnswerBorard() {
   try {
     loading.value = true
     answerBoard.value = await fetchCreateAnswerBorard({
-      examPaperId: props.examPaperId,
       examinationId: props.examinationId,
     })
     await router.replace({ path: `/student/answer-detail/${answerBoard.value.answerBoardId}` })

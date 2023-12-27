@@ -16,6 +16,22 @@ export interface Examination {
   durationSeconds: number
   examParticipantCount: number
   order: number
+  isPublish: boolean
+}
+
+export interface ExaminationPublish {
+  examinationId: number
+  examinationName: string
+  examinationType: number
+  difficultyLevel: number
+  examPaperId: number
+  durationSeconds: number
+  examParticipantCount: number
+  order: number
+  isSubmission: boolean
+  remainingSeconds: number
+  timeTakenSeconds: number
+  answerState: number
 }
 
 export interface ExaminationInput {
@@ -25,6 +41,7 @@ export interface ExaminationInput {
   examPaperId: number
   durationSeconds: number
   order: number
+  isPublish: boolean
 }
 
 export interface ExaminationUpdate {
@@ -33,6 +50,7 @@ export interface ExaminationUpdate {
   difficultyLevel?: number
   durationSeconds?: number
   order?: number
+  isPublish?: boolean
 }
 
 export async function count(params?: ExaminationFilter) {
@@ -62,5 +80,10 @@ export async function update(examinationId: number, examination: ExaminationUpda
 
 export async function remove(examinationId: number) {
   const response = await axios.delete<void>(`/examination/${examinationId}`)
+  return response.data
+}
+
+export async function listPublish(params?: Paging & ExaminationFilter) {
+  const response = await axios.get<PagingResult<ExaminationPublish>>(`/examination/publish`, { params })
   return response.data
 }

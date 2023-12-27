@@ -1,19 +1,20 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { onMounted, reactive, ref } from 'vue'
-import { NInputGroup, NInput, NInputGroupLabel, useMessage } from 'naive-ui'
+import { NInputGroup, NInput, NInputGroupLabel, useMessage, useDialog } from 'naive-ui'
 import { NDataTable, NButton, NButtonGroup, NIcon } from 'naive-ui'
 import { RefreshOutline, SearchOutline } from '@vicons/ionicons5'
 import { createStudentColumns } from './data'
-import { list as fetchStudentList, resetSummary } from '@/api/students'
+import { list as fetchStudentList, resetSummary, deleteItem, deleteItems } from '@/api/students'
 import type { Student, StudentFilter } from '@/api/students'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 const message = useMessage()
+const dialog = useDialog()
 
 const loading = ref(false)
 const model = ref<Student[]>([])
 const filter = reactive<StudentFilter>({})
-
+const checkedRowKeys = ref<number[]>([])
 const pagination = reactive({
   page: 1,
   pageSize: 10,
@@ -60,6 +61,7 @@ async function handlePageChange(currentPage: number) {
 }
 
 async function handleSearch() {
+  checkedRowKeys.value = []
   await handlePageChange(1)
 }
 
@@ -67,6 +69,44 @@ async function handleEnter(e: KeyboardEvent) {
   if (e.key === 'Enter') {
     await handleSearch()
   }
+}
+
+async function handleDeleteItems() {
+  if (!checkedRowKeys.value.length) {
+    return message.warning('请至少选择一项')
+  }
+  const errorDetail = ref('')
+  const d = dialog.warning({
+    title: '删除学生',
+    content: () => (
+      <div class="flex flex-col">
+        <span>{`您选中了${checkedRowKeys.value.length}项，删除后无法恢复`}</span>
+        <span class="text-red-500">{errorDetail.value}</span>
+      </div>
+    ),
+    negativeText: '取消',
+    positiveText: '确实',
+    async onPositiveClick() {
+      d.loading = true
+      try {
+        if (checkedRowKeys.value.length === 1) {
+          await deleteItem(checkedRowKeys.value[0])
+        } else {
+          await deleteItems(checkedRowKeys.value)
+        }
+        checkedRowKeys.value = []
+        await handlePageChange(pagination.page)
+      } catch (error) {
+        console.error(error)
+        if (error instanceof Error) {
+          errorDetail.value = error.message
+          return false
+        }
+      } finally {
+        d.loading = false
+      }
+    },
+  })
 }
 </script>
 
@@ -92,6 +132,9 @@ async function handleEnter(e: KeyboardEvent) {
             <NIcon><RefreshOutline></RefreshOutline></NIcon>
           </NButton>
         </NButtonGroup>
+        <NButtonGroup size="small">
+          <NButton type="warning" @click="handleDeleteItems">删除选中项</NButton>
+        </NButtonGroup>
       </div>
     </div>
     <NDataTable
@@ -102,6 +145,7 @@ async function handleEnter(e: KeyboardEvent) {
       :columns="columns"
       :data="model"
       :pagination="pagination"
+      v-model:checked-row-keys="checkedRowKeys"
       :row-key="(row: Student) => row.studentId"
       @update:page="handlePageChange"
     />

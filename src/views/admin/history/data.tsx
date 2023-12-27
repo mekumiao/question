@@ -138,6 +138,9 @@ export function createStudentColumns({
 }): DataTableColumns<Student> {
   return [
     {
+      type: 'selection',
+    },
+    {
       title: 'ID',
       key: 'userId',
     },

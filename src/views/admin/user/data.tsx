@@ -1,7 +1,8 @@
 import type { User } from '@/api/users'
 import { NTag, NButton, NButtonGroup, NSpace, NAvatar } from 'naive-ui'
 import { type DataTableColumns } from 'naive-ui'
-import jdg from '@/assets/img/jdg.png'
+import icon from '@/assets/img/icon.png'
+import { joinFileUrl } from '@/api/files'
 
 export function createDefaultModel(): User {
   return {
@@ -10,6 +11,7 @@ export function createDefaultModel(): User {
     userName: '',
     nickName: '',
     avatar: null,
+    avatarFileId: null,
     createTime: null,
     roles: [],
     lockoutEnabled: false,
@@ -42,7 +44,11 @@ export function createColumns({
       key: 'roles',
       render(row) {
         return (
-          <NAvatar round size="small" src={row.avatar || jdg}>
+          <NAvatar
+            round
+            size="small"
+            src={row.avatar || (row.avatarFileId && joinFileUrl(row.avatarFileId)) || icon}
+          >
             {{
               placeholder: () => 'xxxxx',
               fallback: () => 'tttttt',

@@ -112,6 +112,16 @@ export function createColumns({
           </NTag>
         )
       },
+    },{
+      title: '考试人数',
+      key: 'order',
+      render(row) {
+        return (
+          <NTag size="small" type="info">
+            {row.order}
+          </NTag>
+        )
+      },
     },
     {
       title: '操作',

@@ -6,6 +6,8 @@ import { apiBaseUrl, setAccessToken, setRefreshToken, clearToken, getRefreshToke
 
 export interface InfoUpdate {
   nickName: string
+  avatar?: string
+  avatarFileId?: number
 }
 
 export interface ChangePassword {

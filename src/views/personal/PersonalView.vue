@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import type { User } from '@/api/users'
-import type { FormItemRule, FormRules } from 'naive-ui'
+import type { FormItemRule, FormRules, UploadFileInfo } from 'naive-ui'
 import type { ChangePassword, InfoUpdate } from '@/api/account'
 import { info as fetchInfo, changePassword, update as fetchUpdateInfo, logout } from '@/api/account'
-import { useMessage, NButton, NAlert } from 'naive-ui'
+import { useMessage, NButton, NAlert, NUpload } from 'naive-ui'
 import { NTabs, NTabPane, NForm, NFormItemRow, NInput } from 'naive-ui'
-import { onActivated, reactive, ref } from 'vue'
+import { onActivated, reactive, ref, shallowRef } from 'vue'
 import { useCurrentUser } from '@/stores/user'
 import { useRouter } from 'vue-router'
+import { joinFileUrl, upload as uploadFile } from '@/api/files'
 
 const router = useRouter()
 const currentUser = useCurrentUser()
@@ -27,12 +28,22 @@ const model = reactive<{ info: InfoUpdate; secure: ChangePassword & { confirmPas
   },
 })
 const user = ref<User>()
+const avatarFile = shallowRef<UploadFileInfo>()
+const previewFileList = ref<UploadFileInfo[]>([])
 
 onActivated(async () => {
   const result = await fetchInfo()
   user.value = result
   model.info = { nickName: result.nickName }
   model.secure = { oldPassword: '', newPassword: '', confirmPassword: '' }
+  if (result.avatarFileId) {
+    previewFileList.value[0] = {
+      id: result.avatarFileId.toString(),
+      name: '.png',
+      status: 'finished',
+      url: joinFileUrl(result.avatarFileId),
+    }
+  }
 })
 
 async function handleSaveClick() {
@@ -41,6 +52,14 @@ async function handleSaveClick() {
     loading.value = true
     if (infoFormRef.value) {
       await infoFormRef.value.validate()
+      if (avatarFile.value && avatarFile.value.file) {
+        // 上传头像
+        const fileInfo = await uploadFile({
+          fileName: avatarFile.value.file.name,
+          file: avatarFile.value.file,
+        })
+        model.info.avatarFileId = fileInfo.fileId
+      }
       user.value = await fetchUpdateInfo(model.info)
       currentUser.setUser(user.value)
     } else if (passwordFormRef.value) {
@@ -56,6 +75,19 @@ async function handleSaveClick() {
     console.error(error)
   } finally {
     loading.value = false
+  }
+}
+
+function handleAvatarChange(options: {
+  file: UploadFileInfo
+  fileList: Array<UploadFileInfo>
+  event?: Event
+}) {
+  if (options.file.status === 'pending') {
+    avatarFile.value = options.file
+  } else if (options.file.status === 'removed') {
+    // 设置为0表示删除头像
+    model.info.avatarFileId = 0
   }
 }
 
@@ -131,7 +163,7 @@ const rules: FormRules = {
 
 <template>
   <div class="mx-auto flex flex-col items-center px-5 pt-5" style="width: 500px">
-    <NTabs type="line" animated placement="left" size="large" style="height: 240px">
+    <NTabs type="line" animated placement="left" size="large">
       <NTabPane name="signin" tab="基本信息">
         <NForm ref="infoFormRef" :rules="rules" :model="model.info">
           <NFormItemRow label="邮箱(账号)">
@@ -139,6 +171,16 @@ const rules: FormRules = {
           </NFormItemRow>
           <NFormItemRow label="昵称" path="nickName">
             <NInput v-model:value="model.info.nickName"></NInput>
+          </NFormItemRow>
+          <NFormItemRow label="头像" ignore-path-change>
+            <NUpload
+              :default-upload="false"
+              :multiple="false"
+              :max="1"
+              list-type="image-card"
+              :default-file-list="previewFileList"
+              @change="handleAvatarChange"
+            />
           </NFormItemRow>
         </NForm>
       </NTabPane>

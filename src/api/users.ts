@@ -13,6 +13,7 @@ export interface User {
   nickName: string
   email: string
   avatar: string | null
+  avatarFileId: number | null
   createTime: string | null
   roles: string[]
   lockoutEnabled: boolean

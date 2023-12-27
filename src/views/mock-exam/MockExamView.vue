@@ -53,13 +53,17 @@ async function handleToAnswerView(item: Examination) {
         <NCard v-for="(item, key) in examinations" :key="key">
           <template #header>{{ item.examinationName }}</template>
           <ul role="list" class="flex flex-col justify-center gap-1">
-            <li>
+            <li class="flex flex-row items-baseline">
               <span>考试时间：</span>
-              <span>{{ formatSeconds(item.durationSeconds) }}</span>
+              <NTag size="small" type="primary">{{ formatSeconds(item.durationSeconds) }}</NTag>
             </li>
-            <li>
+            <li class="flex flex-row items-center">
               <span>难度：</span>
               <NRate :value="item.difficultyLevel" readonly :count="3"></NRate>
+            </li>
+            <li class="flex flex-row items-baseline">
+              <span>已参加人数：</span>
+              <NTag size="small" round type="info">{{ item.examParticipantCount }}</NTag>
             </li>
           </ul>
           <template #action>

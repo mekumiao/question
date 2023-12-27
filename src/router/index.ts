@@ -15,6 +15,14 @@ const router = createRouter({
       redirect: '/home',
     },
     {
+      path: '/certificate/:examinationId/:userId',
+      props: (route) => ({
+        examinationId: Number(route.params.examinationId),
+        userId: Number(route.params.userId),
+      }),
+      component: () => import('../views/CertificateView.vue'),
+    },
+    {
       path: '/open',
       component: StudentLayout,
       children: [

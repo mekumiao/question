@@ -19,6 +19,7 @@ import {
 import { logout } from '@/api/account'
 import icon from '@/assets/img/icon.png'
 import { useCurrentUser } from '@/stores/user'
+import { joinFileUrl } from '@/api/files'
 
 const route = useRoute()
 const router = useRouter()
@@ -147,7 +148,15 @@ async function handleAvatarMenuSelect(key: string | number) {
           <div
             class="ms-5 flex cursor-pointer flex-col items-center justify-center rounded p-1 shadow hover:shadow-2xl"
           >
-            <NAvatar round size="medium" :src="currentUser.user?.avatar || icon"></NAvatar>
+            <NAvatar
+              round
+              size="medium"
+              :src="
+                currentUser.user.avatar ||
+                (currentUser.user.avatarFileId && joinFileUrl(currentUser.user.avatarFileId)) ||
+                icon
+              "
+            ></NAvatar>
             <div class="w-16 truncate text-center text-xs font-bold">
               {{ currentUser.user?.nickName }}
             </div>

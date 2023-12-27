@@ -5,7 +5,7 @@ import type { ChangePassword, InfoUpdate } from '@/api/account'
 import { info as fetchInfo, changePassword, update as fetchUpdateInfo, logout } from '@/api/account'
 import { useMessage, NButton, NAlert, NUpload } from 'naive-ui'
 import { NTabs, NTabPane, NForm, NFormItemRow, NInput } from 'naive-ui'
-import { onActivated, reactive, ref, shallowRef } from 'vue'
+import { onActivated, reactive, ref, shallowRef, watch } from 'vue'
 import { useCurrentUser } from '@/stores/user'
 import { useRouter } from 'vue-router'
 import { joinFileUrl, upload as uploadFile } from '@/api/files'
@@ -31,19 +31,25 @@ const user = ref<User>()
 const avatarFile = shallowRef<UploadFileInfo>()
 const previewFileList = ref<UploadFileInfo[]>([])
 
+watch(
+  () => model.info.avatarFileId,
+  (v) => {
+    if (v && v > 0) {
+      previewFileList.value[0] = {
+        id: v.toString(),
+        name: '.png',
+        status: 'finished',
+        url: joinFileUrl(v),
+      }
+    }
+  },
+)
+
 onActivated(async () => {
   const result = await fetchInfo()
   user.value = result
-  model.info = { nickName: result.nickName }
+  model.info = { nickName: result.nickName, avatarFileId: result.avatarFileId ?? undefined }
   model.secure = { oldPassword: '', newPassword: '', confirmPassword: '' }
-  if (result.avatarFileId) {
-    previewFileList.value[0] = {
-      id: result.avatarFileId.toString(),
-      name: '.png',
-      status: 'finished',
-      url: joinFileUrl(result.avatarFileId),
-    }
-  }
 })
 
 async function handleSaveClick() {

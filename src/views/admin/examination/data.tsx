@@ -112,13 +112,14 @@ export function createColumns({
           </NTag>
         )
       },
-    },{
+    },
+    {
       title: '考试人数',
-      key: 'order',
+      key: 'examParticipantCount',
       render(row) {
         return (
           <NTag size="small" type="info">
-            {row.order}
+            {row.examParticipantCount}
           </NTag>
         )
       },

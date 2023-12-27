@@ -14,6 +14,7 @@ export interface Examination {
   difficultyLevel: number
   examPaperId: number
   durationSeconds: number
+  examParticipantCount: number
   order: number
 }
 

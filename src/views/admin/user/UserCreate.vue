@@ -34,6 +34,11 @@ function validatePasswordSame(rule: FormItemRule, value: string): boolean {
 const rules: FormRules = {
   nickName: [
     {
+      required: true,
+      message: '请输入昵称',
+      trigger: ['input', 'blur'],
+    },
+    {
       max: 10,
       message: '昵称最多支持10个字符',
       trigger: ['input', 'blur'],
@@ -143,11 +148,7 @@ defineExpose({ open })
             <NInput v-model:value="model.nickName"></NInput>
           </NFormItem>
           <NFormItem label="邮箱" path="email">
-            <NAutoComplete
-              v-model:value="model.email"
-              :options="autoCompleteOptions"
-              placeholder="Email"
-            />
+            <NAutoComplete v-model:value="model.email" :options="autoCompleteOptions" />
           </NFormItem>
           <NFormItem label="密码" path="password">
             <NInput

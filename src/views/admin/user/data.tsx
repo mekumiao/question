@@ -27,6 +27,9 @@ export function createColumns({
 }): DataTableColumns<User> {
   return [
     {
+      type: 'selection',
+    },
+    {
       title: 'ID',
       key: 'userId',
     },
@@ -48,12 +51,7 @@ export function createColumns({
             round
             size="small"
             src={row.avatar || (row.avatarFileId && joinFileUrl(row.avatarFileId)) || icon}
-          >
-            {{
-              placeholder: () => 'xxxxx',
-              fallback: () => 'tttttt',
-            }}
-          </NAvatar>
+          ></NAvatar>
         )
       },
     },

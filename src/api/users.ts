@@ -57,3 +57,13 @@ export async function create(user: UserInput) {
   const response = await axios.post<User>(`/users/`, user)
   return response.data
 }
+
+export async function deleteItem(userId: number) {
+  const response = await axios.delete<User>(`/users/${userId}`)
+  return response.data
+}
+
+export async function deleteItems(userIds: number[]) {
+  const response = await axios.delete<User>(`/users/`, { data: userIds })
+  return response.data
+}

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onActivated, ref } from 'vue'
-import { NButton, NCard, NEmpty, NRate, NSpin, NTag, type CountdownTimeInfo, NSpace, NCountdown } from 'naive-ui'
+import type { CountdownTimeInfo } from 'naive-ui'
+import { NButton, NCard, NEmpty, NRate, NSpin, NTag, NSpace, NCountdown } from 'naive-ui'
 import { listPublish as fetchExaminationList, type ExaminationPublish } from '@/api/examination'
 import { useRouter } from 'vue-router'
 import { formatSeconds } from '@/utils'
@@ -94,10 +95,7 @@ function renderCountdown({ hours, minutes, seconds }: CountdownTimeInfo) {
                 <NTag size="small" type="primary">已完成</NTag>
               </div>
               <div v-else-if="item.answerState === 4">
-                <NSpace>
-                  <NTag size="small" type="primary">已完成</NTag>
-                  <NTag size="small" type="error">已超时</NTag>
-                </NSpace>
+                <NTag size="small" type="error">已超时</NTag>
               </div>
             </div>
           </template>

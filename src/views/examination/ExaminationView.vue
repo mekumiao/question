@@ -95,10 +95,7 @@ function renderCountdown({ hours, minutes, seconds }: CountdownTimeInfo) {
                 <NTag size="small" type="primary">已完成</NTag>
               </div>
               <div v-else-if="item.answerState === 4">
-                <NSpace>
-                  <NTag size="small" type="primary">已完成</NTag>
-                  <NTag size="small" type="error">已超时</NTag>
-                </NSpace>
+                <NTag size="small" type="error">已超时</NTag>
               </div>
             </div>
           </template>

@@ -180,6 +180,7 @@ const autoCompleteOptions = computed(() => {
                 v-model:value="data.model.password"
                 type="password"
                 placeholder="请输入密码"
+                show-password-on="click"
               />
             </NFormItemRow>
           </NForm>
@@ -188,12 +189,13 @@ const autoCompleteOptions = computed(() => {
           </NButton>
         </NTabPane>
         <NTabPane name="signup" tab="注册">
-          <NForm ref="registerFormRef" :model="data.register" :rules="rules">
+          <NForm ref="registerFormRef" :model="data.register" :rules="rules" autocomplete="off">
             <NFormItemRow label="邮箱" path="email">
               <NAutoComplete
                 v-model:value="data.register.email"
                 :options="autoCompleteOptions"
-                placeholder="Email"
+                placeholder="请输入邮箱"
+                :input-props="{ name: 'new-account', autocomplete: 'off' }"
               />
             </NFormItemRow>
             <NFormItemRow label="密码" path="password">
@@ -201,6 +203,8 @@ const autoCompleteOptions = computed(() => {
                 v-model:value="data.register.password"
                 type="password"
                 show-password-on="click"
+                placeholder="请输入密码"
+                :input-props="{ name: 'new-password', autocomplete: 'new-password' }"
               ></NInput>
             </NFormItemRow>
             <NFormItemRow label="重复密码" path="confirmPassword">
@@ -208,6 +212,8 @@ const autoCompleteOptions = computed(() => {
                 v-model:value="data.register.confirmPassword"
                 type="password"
                 show-password-on="click"
+                placeholder="请输入密码"
+                :input-props="{ name: 'confirm-password', autocomplete: 'new-password' }"
               ></NInput>
             </NFormItemRow>
           </NForm>

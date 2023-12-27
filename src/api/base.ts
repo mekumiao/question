@@ -27,6 +27,7 @@ export const apiBaseUrl = `${import.meta.env.VITE_GLOB_API_HOST}${
 }`
 
 const axiosInstance = axios.create({
+  timeout: import.meta.env.VITE_GLOB_AXIOS_TIMEOUT || undefined,
   baseURL: apiBaseUrl,
   headers: {
     'Content-Type': 'application/json',

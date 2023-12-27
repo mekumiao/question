@@ -2,8 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import StudentLayout from '@/layout/StudentLayout.vue'
 import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/login/LoginView.vue'
-import { checkUserAuthentication, info as fetchInfo } from '@/api/account'
 import { createDiscreteApi } from 'naive-ui'
+import { useCurrentUser } from '@/stores/user'
 
 const { loadingBar } = createDiscreteApi(['loadingBar'])
 
@@ -110,20 +110,21 @@ router.afterEach(() => {
   loadingBar.finish()
 })
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach((to, from, next) => {
   if (to.matched.some((v) => v.path === '/student')) {
-    const isAuthenticated = await checkUserAuthentication()
+    const isAuthenticated = checkUserAuthentication()
     if (!isAuthenticated) {
       return next('/login')
     }
     next()
   } else if (to.matched.some((v) => v.path === '/admin')) {
-    const isAuthenticated = await checkUserAuthentication()
+    const isAuthenticated = checkUserAuthentication()
     if (!isAuthenticated) {
       return next('/login')
     }
-    const info = await fetchInfo()
-    if (!info.roles.includes('admin')) {
+    const currentUser = useCurrentUser()
+    const roles = currentUser.user?.roles
+    if (!roles || !roles.includes('admin')) {
       return next('/login')
     }
     next()
@@ -131,5 +132,13 @@ router.beforeEach(async (to, from, next) => {
     next()
   }
 })
+
+/**
+ * 检查是否登录
+ */
+function checkUserAuthentication() {
+  const currentUser = useCurrentUser()
+  return !!currentUser.user
+}
 
 export default router

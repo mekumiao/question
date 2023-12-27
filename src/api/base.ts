@@ -1,4 +1,6 @@
 import axios from 'axios'
+import router from '@/router'
+import { useCurrentUser } from '@/stores/user'
 
 export class ValidationProblemError extends Error {
   public type: string = ''
@@ -37,7 +39,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const accessToken = getAccessToken()
+    const accessToken = getToken().accessToken
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`
     }
@@ -58,15 +60,10 @@ axiosInstance.interceptors.response.use(
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true
 
-      try {
-        const newAccessToken = await refreshAccessToken()
-        if (newAccessToken) {
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
-          return axiosInstance(originalRequest)
-        }
-      } catch (refreshError) {
-        console.error('Refresh token failed:', refreshError)
-        return Promise.reject(refreshError)
+      const newAccessToken = await refreshAccessTokenAndStore()
+      if (newAccessToken) {
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
+        return axiosInstance(originalRequest)
       }
     } else if (error.response.status === 400) {
       const data = error.response.data
@@ -78,44 +75,62 @@ axiosInstance.interceptors.response.use(
   },
 )
 
-export function getAccessToken() {
-  return localStorage.getItem('access_token')
-}
-
-export function setAccessToken(token: string) {
-  localStorage.setItem('access_token', token)
-}
-
-export function getRefreshToken() {
-  return localStorage.getItem('refresh_token')
-}
-
-export function setRefreshToken(token: string) {
-  return localStorage.setItem('refresh_token', token)
-}
-
-export function clearToken() {
-  localStorage.removeItem('access_token')
-  localStorage.removeItem('refresh_token')
-}
-
-async function refreshAccessToken() {
-  const refresh_token = getRefreshToken()
-  if (refresh_token) {
-    try {
-      const response = await axios.post<TokenResult>(`${apiBaseUrl}/refresh`, {
-        refreshToken: refresh_token,
-      })
-      if (response.status === 200) {
-        setRefreshToken(response.data.refreshToken)
-        setAccessToken(response.data.accessToken)
-        return response.data.accessToken
-      }
-    } catch (error) {
-      console.error(error)
+axiosInstance.interceptors.response.use(
+  (response) => {
+    return response
+  },
+  (error) => {
+    const originalRequest = error.config
+    if (error.response.status === 401 && originalRequest._retry) {
+      setToken()
+      useCurrentUser().setUser()
+      router.push({ name: 'login' })
+      return Promise.reject(error)
     }
+  },
+)
+
+/**
+ * 刷新和存储token
+ * @returns accessToken
+ */
+async function refreshAccessTokenAndStore() {
+  const refresh_token = getToken().refreshToken
+  if (!refresh_token) {
+    return setToken()
   }
-  return clearToken()
+  try {
+    const response = await axios.post<TokenResult>(`${apiBaseUrl}/refresh`, {
+      refreshToken: refresh_token,
+    })
+    if (response.status === 200) {
+      setToken({
+        accessToken: response.data.accessToken,
+        refreshToken: response.data.refreshToken,
+      })
+      return response.data.accessToken
+    }
+    return setToken()
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+export function setToken(token?: { accessToken: string; refreshToken: string }) {
+  if (token) {
+    window.localStorage.setItem('access_token', token.accessToken)
+    window.localStorage.setItem('refresh_token', token.refreshToken)
+  } else {
+    window.localStorage.removeItem('access_token')
+    window.localStorage.removeItem('refresh_token')
+  }
+}
+
+export function getToken() {
+  return {
+    accessToken: window.localStorage.getItem('access_token'),
+    refreshToken: window.localStorage.getItem('refresh_token'),
+  }
 }
 
 export default axiosInstance

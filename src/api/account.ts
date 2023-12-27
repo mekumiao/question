@@ -1,8 +1,8 @@
-import axios from './base'
+import axios, { setToken } from './base'
 import type { User } from './users'
 import type { TokenResult } from './base'
 import { default as defaultAxios } from 'axios'
-import { apiBaseUrl, setAccessToken, setRefreshToken, clearToken, getRefreshToken } from './base'
+import { apiBaseUrl } from './base'
 
 export interface InfoUpdate {
   nickName: string
@@ -27,18 +27,15 @@ export async function login(email: string, password: string) {
     { email, password },
     { validateStatus: (status) => status === 200 },
   )
-  setAccessToken(response.data.accessToken)
-  setRefreshToken(response.data.refreshToken)
+  setToken({
+    accessToken: response.data.accessToken,
+    refreshToken: response.data.refreshToken,
+  })
 }
 
 export async function logout() {
-  clearToken()
+  setToken()
   return Promise.resolve()
-}
-
-export async function checkUserAuthentication() {
-  const islogin = !!getRefreshToken()
-  return Promise.resolve(islogin)
 }
 
 export async function info() {

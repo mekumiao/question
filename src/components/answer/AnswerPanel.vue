@@ -256,13 +256,15 @@ defineExpose({ toAnswerInputs })
       </div>
     </NCard>
     <NCard class="col-span-2 rounded">
-      <SheetList
-        v-for="(item, key) in data.sheet"
-        :title="['一、单选题', '二、多选题', '三、判断题', '四、填空题'][key]"
-        :options="item"
-        :key="key"
-        @select="handleSheetSelect"
-      ></SheetList>
+      <template v-for="(item, key) in data.sheet">
+        <SheetList
+          v-if="item.length > 0"
+          :title="['一、单选题', '二、多选题', '三、判断题', '四、填空题'][key]"
+          :options="item"
+          :key="key"
+          @select="handleSheetSelect"
+        ></SheetList>
+      </template>
     </NCard>
   </div>
 </template>

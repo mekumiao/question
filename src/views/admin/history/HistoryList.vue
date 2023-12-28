@@ -84,7 +84,7 @@ async function handleDeleteItems() {
   }
   const errorDetail = ref('')
   const d = dialog.warning({
-    title: '删除题目',
+    title: '删除记录',
     content: () => (
       <div class="flex flex-col">
         <span>{`您选中了${checkedRowKeys.value.length}项，删除后无法恢复`}</span>
@@ -101,6 +101,7 @@ async function handleDeleteItems() {
         } else {
           await deleteAnswerHistoryItems(checkedRowKeys.value)
         }
+        checkedRowKeys.value = []
         await handlePageChange(pagination.page)
       } catch (error) {
         console.error(error)

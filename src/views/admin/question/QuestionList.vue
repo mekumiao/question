@@ -15,7 +15,6 @@ import QuestionEdit from './QuestionEdit2.vue'
 import QuestionCreate from './QuestionCreate.vue'
 import QuestionImport from './QuestionImport.vue'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
-import { ValidationProblemError } from '@/api/base'
 import { getTimestamp } from '@/utils'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
@@ -68,7 +67,6 @@ onMounted(async () => {
 })
 
 async function handlePageChange(currentPage: number) {
-  checkedRowKeys.value = []
   if (!loading.value) {
     try {
       loading.value = true
@@ -87,6 +85,7 @@ async function handlePageChange(currentPage: number) {
 }
 
 async function handleSearch() {
+  checkedRowKeys.value = []
   await handlePageChange(1)
 }
 
@@ -126,10 +125,11 @@ async function handleDeleteItems() {
         } else {
           await deleteQuestionItems(checkedRowKeys.value)
         }
+        checkedRowKeys.value = []
         await handlePageChange(pagination.page)
       } catch (error) {
         console.error(error)
-        if (error instanceof ValidationProblemError) {
+        if (error instanceof Error) {
           errorDetail.value = error.message
           return false
         }
@@ -190,7 +190,7 @@ async function handleExportClick() {
         <NInput
           v-model:value="filter.questionTextOrId"
           @keydown="handleEnter"
-          placeholder="请输入题目或ID"
+          placeholder="题目或ID"
         />
         <NButton type="info" @click="handleSearch">
           <NIcon><SearchOutline></SearchOutline></NIcon>

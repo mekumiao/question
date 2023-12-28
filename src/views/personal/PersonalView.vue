@@ -116,8 +116,8 @@ const rules: FormRules = {
       message: '请输入昵称',
     },
     {
-      max: 10,
-      message: '昵称最多支持10个字符',
+      max: 20,
+      message: '昵称最多支持20个字符',
       trigger: ['input', 'blur'],
     },
   ],

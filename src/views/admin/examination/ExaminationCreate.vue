@@ -8,7 +8,7 @@ import { NDrawer, NDrawerContent, NButton, NSpin, NInput, NInputNumber } from 'n
 import { useMessage, NRadioGroup, NRadio, NFormItem, NForm, NRate } from 'naive-ui'
 import { NIcon, NSelect, NInputGroupLabel, NInputGroup } from 'naive-ui'
 import { createDifficultyLevelOptions, createExaminationTypeOptions } from './data'
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
 import type { ExamPaper, ExamPaperFilter } from '@/api/examPapers'
 
@@ -60,21 +60,12 @@ const checkedRowKeys = computed({
   },
 })
 
-// 只加载一次
-let isLoadExamPaperList = false
-watch(active, (v) => {
-  if (isLoadExamPaperList == false && v === true) {
-    loadExamPaperList().then(() => {
-      isLoadExamPaperList = true
-    })
-  }
-})
-
 let callback: VoidFunction
 
 async function open(cb: VoidFunction) {
   callback = cb
   active.value = true
+  handleSearch()
 }
 
 function defaultModel(): ExaminationInput {
@@ -110,7 +101,7 @@ async function handleSaveClick() {
   }
 }
 
-async function loadExamPaperList() {
+async function handleSearch() {
   checkedRowKeys.value = []
   await handlePageChange(1)
 }
@@ -137,7 +128,7 @@ async function handlePageChange(currentPage: number) {
 
 async function handleEnter(e: KeyboardEvent) {
   if (e.key === 'Enter') {
-    await loadExamPaperList()
+    await handleSearch()
   }
 }
 
@@ -262,20 +253,20 @@ const columns: DataTableColumns<ExamPaper> = [
                     <NSelect
                       v-model:value="filter.difficultyLevel"
                       :options="difficultyLevelOptions"
-                      @update:value="loadExamPaperList"
+                      @update:value="handleSearch"
                     ></NSelect>
                   </NInputGroup>
                   <NInputGroup>
                     <NInputGroupLabel type="primary">搜索试卷</NInputGroupLabel>
                     <NInput v-model:value="filter.examPaperName" @keydown="handleEnter" />
-                    <NButton type="info" @click="loadExamPaperList">
+                    <NButton type="info" @click="handleSearch">
                       <NIcon><SearchOutline></SearchOutline></NIcon>
                     </NButton>
                   </NInputGroup>
                 </div>
                 <div class="flex flex-row justify-end space-x-4">
                   <NButtonGroup size="small">
-                    <NButton type="default" circle @click="loadExamPaperList">
+                    <NButton type="default" circle @click="handleSearch">
                       <NIcon><RefreshOutline></RefreshOutline></NIcon>
                     </NButton>
                   </NButtonGroup>

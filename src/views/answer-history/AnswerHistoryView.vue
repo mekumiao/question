@@ -188,9 +188,9 @@ onActivated(() => {
 async function handlePageChange(currentPage: number) {
   if (!loading.value) {
     try {
-      checkedRowKeys.value = []
       loading.value = true
       const result = await fetchHistoryList({
+        ...filter,
         offset: (currentPage - 1) * pagination.pageSize,
         limit: pagination.pageSize,
       })
@@ -205,9 +205,8 @@ async function handlePageChange(currentPage: number) {
 }
 
 async function handleSearch() {
-  model.value = modelCache.value
-    .filter((v) => (filter.difficultyLevel ? v.difficultyLevel === filter.difficultyLevel : true))
-    .filter((v) => (filter.examPaperName ? v.examPaperName.includes(filter.examPaperName) : true))
+  checkedRowKeys.value = []
+  handlePageChange(1)
 }
 
 async function handleEnter(e: KeyboardEvent) {
@@ -246,6 +245,7 @@ function handleRemoveClick() {
         } else {
           await deleteAnswerHistoryItems(checkedRowKeys.value)
         }
+        checkedRowKeys.value = []
         await handlePageChange(pagination.page)
       } catch (error) {
         console.error(error)

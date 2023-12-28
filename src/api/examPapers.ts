@@ -86,6 +86,11 @@ export async function remove(examPaperId: number) {
   return response.data
 }
 
+export async function deleteItems(examPaperIds: number[]) {
+  const response = await axios.delete<void>(`/examPapers/`, { data: examPaperIds })
+  return response.data
+}
+
 export async function importFromExcel(input: ImportExamPaperFromExcelInput) {
   const formData = new FormData()
   input.examPaperName && formData.append('examPaperName', input.examPaperName)

@@ -1,11 +1,12 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { onMounted, reactive, ref } from 'vue'
-import { NForm, NFormItem, type FormRules } from 'naive-ui'
-import { NIcon, NSelect, useMessage, type DataTableRowKey, NModal, NRate } from 'naive-ui'
+import { NForm, NFormItem, type FormRules, useDialog } from 'naive-ui'
+import { NIcon, NSelect, useMessage, NModal, NRate } from 'naive-ui'
 import { NDataTable, NInput, NButton, NButtonGroup, NInputGroup, NInputGroupLabel } from 'naive-ui'
 import {
   list as fetchExamList,
   remove as fetchExamDelete,
+  deleteItems as fetchExamDeleteItems,
   exportToExcel,
   random as fetchRandemGenExam,
   create as fetchCreate,
@@ -21,11 +22,12 @@ const importRef = ref<InstanceType<typeof ExamPaperImport>>()
 const randomFormRef = ref<InstanceType<typeof NForm>>()
 const createFormRef = ref<InstanceType<typeof NForm>>()
 const message = useMessage()
+const dialog = useDialog()
 
 const loading = ref(false)
 const exportLoading = ref(false)
 const model = ref<ExamPaper[]>([])
-const checkedRowKeys = ref<DataTableRowKey[]>([])
+const checkedRowKeys = ref<number[]>([])
 const filter = reactive<ExamPaperFilter>({ difficultyLevel: 0 })
 const createModel = reactive({
   show: false,
@@ -192,6 +194,44 @@ function handleCreateAfterLeave() {
   createModel.data = { examPaperName: '', difficultyLevel: 3 }
 }
 
+async function handleDeleteItems() {
+  if (!checkedRowKeys.value.length) {
+    return message.warning('请至少选择一项')
+  }
+  const errorDetail = ref('')
+  const d = dialog.warning({
+    title: '删除试卷',
+    content: () => (
+      <div class="flex flex-col">
+        <span>{`您选中了${checkedRowKeys.value.length}项，删除后无法恢复`}</span>
+        <span class="text-red-500">{errorDetail.value}</span>
+      </div>
+    ),
+    negativeText: '取消',
+    positiveText: '确实',
+    async onPositiveClick() {
+      d.loading = true
+      try {
+        if (checkedRowKeys.value.length === 1) {
+          await fetchExamDelete(checkedRowKeys.value[0])
+        } else {
+          await fetchExamDeleteItems(checkedRowKeys.value)
+        }
+        checkedRowKeys.value = []
+        await handlePageChange(pagination.page)
+      } catch (error) {
+        console.error(error)
+        if (error instanceof Error) {
+          errorDetail.value = error.message
+          return false
+        }
+      } finally {
+        d.loading = false
+      }
+    },
+  })
+}
+
 const randomRules: FormRules = {
   examPaperName: [
     {
@@ -234,8 +274,9 @@ const randomRules: FormRules = {
         </NButtonGroup>
         <NButtonGroup size="small">
           <NButton type="primary" @click="handleCreateClick">新建</NButton>
-          <NButton type="warning" @click="handleImportClick">导入</NButton>
-          <NButton type="info" :loading="exportLoading" @click="handleExportClick">导出</NButton>
+          <NButton type="warning" @click="handleDeleteItems">删除选中项</NButton>
+          <NButton type="info" @click="handleImportClick">导入</NButton>
+          <NButton type="success" :loading="exportLoading" @click="handleExportClick">导出</NButton>
         </NButtonGroup>
       </div>
     </div>

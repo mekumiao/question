@@ -60,10 +60,13 @@ axiosInstance.interceptors.response.use(
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true
 
-      const newAccessToken = await refreshAccessTokenAndStore()
-      if (newAccessToken) {
+      try {
+        const newAccessToken = await refreshAccessTokenAndStore()
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
         return axiosInstance(originalRequest)
+      } catch (error) {
+        logout()
+        return Promise.reject(error)
       }
     } else if (error.response.status === 400) {
       const data = error.response.data
@@ -75,20 +78,11 @@ axiosInstance.interceptors.response.use(
   },
 )
 
-axiosInstance.interceptors.response.use(
-  (response) => {
-    return response
-  },
-  (error) => {
-    const originalRequest = error.config
-    if (error.response.status === 401 && originalRequest._retry) {
-      setToken()
-      useCurrentUser().setUser()
-      router.push({ name: 'login' })
-      return Promise.reject(error)
-    }
-  },
-)
+function logout() {
+  setToken()
+  useCurrentUser().setUser()
+  router.push({ name: 'login' })
+}
 
 /**
  * 刷新和存储token
@@ -97,20 +91,24 @@ axiosInstance.interceptors.response.use(
 async function refreshAccessTokenAndStore() {
   const refresh_token = getToken().refreshToken
   if (!refresh_token) {
-    return setToken()
+    setToken()
+    return Promise.reject(new Error('refresh_token is null'))
   }
   try {
-    const response = await axios.post<TokenResult>(`${apiBaseUrl}/refresh`, {
-      refreshToken: refresh_token,
+    const response = await axios.post<TokenResult>(
+      `${apiBaseUrl}/refresh`,
+      {
+        refreshToken: refresh_token,
+      },
+      {
+        validateStatus: (status) => status === 200,
+      },
+    )
+    setToken({
+      accessToken: response.data.accessToken,
+      refreshToken: response.data.refreshToken,
     })
-    if (response.status === 200) {
-      setToken({
-        accessToken: response.data.accessToken,
-        refreshToken: response.data.refreshToken,
-      })
-      return response.data.accessToken
-    }
-    return setToken()
+    return response.data.accessToken
   } catch (error) {
     return Promise.reject(error)
   }

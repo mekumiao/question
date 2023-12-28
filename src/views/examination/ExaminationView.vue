@@ -65,10 +65,10 @@ function renderCountdown({ hours, minutes, seconds }: CountdownTimeInfo) {
             <div class="relative">
               <span>{{ item.examinationName }}</span>
               <RouterLink
-                v-if="item.answerState === 3"
+                v-if="item.answerState === 3 && currentUser.user"
                 class="absolute"
                 style="top: 0px; right: 0px"
-                :to="`/certificate/${item.examinationId}/${currentUser.user!.userId}`"
+                :to="`/certificate/${item.examinationId}/${currentUser.user.userId}`"
               >
                 <NButton type="info" size="small" quaternary>
                   <template #icon>

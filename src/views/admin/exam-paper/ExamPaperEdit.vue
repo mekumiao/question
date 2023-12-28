@@ -278,6 +278,7 @@ const rules: FormRules = {
           ghostClass="shadow-xl"
           :animation="150"
           class="flex flex-col space-y-2"
+          @update="handleOrderUpdate"
         >
           <NCard
             v-for="(item, key) in model.single"
@@ -310,6 +311,7 @@ const rules: FormRules = {
           ghostClass="shadow-xl"
           :animation="150"
           class="flex flex-col space-y-2"
+          @update="handleOrderUpdate"
         >
           <NCard
             v-for="(item, key) in model.multiple"
@@ -372,6 +374,7 @@ const rules: FormRules = {
           ghostClass="shadow-xl"
           :animation="150"
           class="flex flex-col space-y-2"
+          @update="handleOrderUpdate"
         >
           <NCard
             v-for="(item, key) in model.fillblank"

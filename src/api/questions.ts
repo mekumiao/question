@@ -38,7 +38,7 @@ export interface OptionCreate {
 }
 
 export interface QuestionFilter {
-  questionText?: string
+  questionTextOrId?: string
   questionType?: number
   difficultyLevel?: number
 }

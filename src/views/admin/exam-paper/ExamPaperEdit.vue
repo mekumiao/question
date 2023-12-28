@@ -432,7 +432,11 @@ const rules: FormRules = {
         </NInputGroup>
         <NInputGroup>
           <NInputGroupLabel type="primary">题目</NInputGroupLabel>
-          <NInput v-model:value="filter.questionText" @keydown="handleEnter" />
+          <NInput
+            v-model:value="filter.questionTextOrId"
+            @keydown="handleEnter"
+            placeholder="请输入题目或ID"
+          />
           <NButton type="info" @click="handleSearch">
             <NIcon><SearchOutline></SearchOutline></NIcon>
           </NButton>

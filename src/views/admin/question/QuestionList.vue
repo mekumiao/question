@@ -7,21 +7,26 @@ import {
   list as fetchQuestionList,
   remove as fetchQuestionDelete,
   deleteQuestionItems,
+  exportToExcel,
 } from '@/api/questions'
 import type { Question, QuestionFilter } from '@/api/questions'
 import { createColumns, createDifficultyLevelOptions, createQuestionTypeOptions } from './data'
 import QuestionEdit from './QuestionEdit2.vue'
 import QuestionCreate from './QuestionCreate.vue'
+import QuestionImport from './QuestionImport.vue'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
 import { ValidationProblemError } from '@/api/base'
+import { getTimestamp } from '@/utils'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 const editRef = ref<InstanceType<typeof QuestionEdit>>()
 const createRef = ref<InstanceType<typeof QuestionCreate>>()
+const importRef = ref<InstanceType<typeof QuestionImport>>()
 const dialog = useDialog()
 const message = useMessage()
 
 const loading = ref(false)
+const exportLoading = ref(false)
 const model = ref<Question[]>([])
 const filter = reactive<QuestionFilter>({ questionType: 0, difficultyLevel: 0 })
 const checkedRowKeys = ref<number[]>([])
@@ -134,6 +139,30 @@ async function handleDeleteItems() {
     },
   })
 }
+
+function handleImportClick() {
+  importRef.value?.open(() => {
+    handleSearch()
+  })
+}
+
+async function handleExportClick() {
+  const items = checkedRowKeys.value
+  if (items.length > 0) {
+    try {
+      exportLoading.value = true
+      await exportToExcel(`导出题目-${getTimestamp()}.xlsx`, items as number[])
+      message.success('导出成功')
+    } catch (error) {
+      if (error instanceof Error) message.error(error.message)
+      console.error(error)
+    } finally {
+      exportLoading.value = false
+    }
+  } else {
+    message.warning('请至少选择一项')
+  }
+}
 </script>
 
 <template>
@@ -175,6 +204,8 @@ async function handleDeleteItems() {
       <NButtonGroup size="small">
         <NButton type="primary" @click="handleCreate">新建</NButton>
         <NButton type="warning" @click="handleDeleteItems">删除选中项</NButton>
+        <NButton type="info" @click="handleImportClick">导入</NButton>
+        <NButton type="primary" :loading="exportLoading" @click="handleExportClick">导出</NButton>
       </NButtonGroup>
     </div>
     <NDataTable
@@ -191,6 +222,7 @@ async function handleDeleteItems() {
     />
     <QuestionEdit ref="editRef"></QuestionEdit>
     <QuestionCreate ref="createRef"></QuestionCreate>
+    <QuestionImport ref="importRef"></QuestionImport>
   </div>
 </template>
 

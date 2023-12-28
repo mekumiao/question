@@ -1,3 +1,4 @@
+import { downloadFile } from '@/utils'
 import axios from './base'
 import type { Option } from './questions'
 import type { Paging, PagingResult } from '/#/paging'
@@ -89,7 +90,7 @@ export async function importFromExcel(input: ImportExamPaperFromExcelInput) {
   const formData = new FormData()
   input.examPaperName && formData.append('examPaperName', input.examPaperName)
   formData.append('file', input.file)
-  const resp = await axios.post<ExamPaper>(`/examPapers/import`, formData, {
+  const resp = await axios.post<ExamPaper[]>(`/examPapers/import`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -114,20 +115,6 @@ export async function exportToExcel(fileName: string, exampaperIds: number[]): P
 export async function exportToExcelTemplate() {
   const resp = await axios.post<Blob>(`/examPapers/export/template`, null, { responseType: 'blob' })
   downloadFile(resp.data, '试卷导入模板.xlsx')
-}
-
-function downloadFile(blob: Blob, fileName?: string) {
-  const link = document.createElement('a')
-  link.href = window.URL.createObjectURL(blob)
-  if (fileName) {
-    link.download = fileName
-  }
-
-  document.body.appendChild(link)
-  link.click()
-
-  document.body.removeChild(link)
-  window.URL.revokeObjectURL(link.href)
 }
 
 export async function random(input: RandomGenerationInput) {

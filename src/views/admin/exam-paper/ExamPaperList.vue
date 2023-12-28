@@ -8,12 +8,12 @@ import {
   remove as fetchExamDelete,
   exportToExcel,
   random as fetchRandemGenExam,
+  create as fetchCreate,
 } from '@/api/examPapers'
 import type { ExamPaper, ExamPaperFilter, RandomGenerationInput } from '@/api/examPapers'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
 import { createColumns, createDifficultyLevelOptions } from './data'
 import ExamPaperImport from './ExamPaperImport.vue'
-// import ExamPaperCreate from './ExamPaperCreate.vue'
 import ExamPaperEdit from './ExamPaperEdit.vue'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
@@ -26,7 +26,11 @@ const exportLoading = ref(false)
 const model = ref<ExamPaper[]>([])
 const checkedRowKeys = ref<DataTableRowKey[]>([])
 const filter = reactive<ExamPaperFilter>({ difficultyLevel: 0 })
-// const createModel = reactive({ show: false })
+const createModel = reactive({
+  show: false,
+  loading: false,
+  data: { examPaperName: '', difficultyLevel: 3 },
+})
 const editModel = reactive({ show: false, examPaperId: 0 })
 const randomGenerationData = reactive<{
   model: RandomGenerationInput
@@ -123,9 +127,9 @@ async function handleExportClick() {
   }
 }
 
-// function handleCreateClick() {
-//   createModel.show = true
-// }
+function handleCreateClick() {
+  createModel.show = true
+}
 
 function handelRandomClick() {
   randomGenerationData.showRandom = true
@@ -155,6 +159,35 @@ async function handleRandomConfirmClick() {
 async function handleEditExamPaperSaved() {
   editModel.show = false
   await handleSearch()
+}
+
+async function handleCreateConfirmClick() {
+  try {
+    createModel.loading = true
+    const data = createModel.data
+    await fetchCreate({
+      examPaperName: data.examPaperName,
+      difficultyLevel: data.difficultyLevel,
+      questions: [],
+    })
+    createModel.show = false
+    message.success('生成成功')
+    await handleSearch()
+  } catch (error) {
+    if (error instanceof Error) {
+      message.error(error.message)
+    }
+    console.error(error)
+    return false
+  } finally {
+    createModel.loading = false
+  }
+}
+
+function handleCreateAfterLeave() {
+  createModel.show = false
+  createModel.loading = false
+  createModel.data = { examPaperName: '', difficultyLevel: 3 }
 }
 
 const randomRules: FormRules = {
@@ -198,7 +231,7 @@ const randomRules: FormRules = {
           <NButton type="default" @click="handelRandomClick">随机生成</NButton>
         </NButtonGroup>
         <NButtonGroup size="small">
-          <!-- <NButton type="primary" @click="handleCreateClick">新建</NButton> -->
+          <NButton type="primary" @click="handleCreateClick">新建</NButton>
           <NButton type="warning" @click="handleImportClick">导入</NButton>
           <NButton type="info" :loading="exportLoading" @click="handleExportClick">导出</NButton>
         </NButtonGroup>
@@ -244,9 +277,27 @@ const randomRules: FormRules = {
       </NForm>
     </div>
   </NModal>
-  <!-- <NModal v-model:show="createModel.show" preset="card" title="创建试卷">
-    <ExamPaperCreate></ExamPaperCreate>
-  </NModal> -->
+  <NModal
+    v-model:show="createModel.show"
+    preset="dialog"
+    title="创建试卷"
+    positive-text="确认"
+    negative-text="取消"
+    :loading="createModel.loading"
+    @positive-click="handleCreateConfirmClick"
+    @after-leave="handleCreateAfterLeave"
+  >
+    <div class="py-5">
+      <NForm ref="randomFormRef" :rules="randomRules" :model="createModel.data">
+        <NFormItem label="试卷名称" path="examPaperName">
+          <NInput v-model:value="createModel.data.examPaperName"></NInput>
+        </NFormItem>
+        <NFormItem label="允许出现低于或等于此难度级别的题目" ignore-path-change>
+          <NRate size="medium" v-model:value="createModel.data.difficultyLevel" :count="3"></NRate>
+        </NFormItem>
+      </NForm>
+    </div>
+  </NModal>
   <NModal
     v-model:show="editModel.show"
     preset="card"

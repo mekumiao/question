@@ -1,18 +1,21 @@
 <script setup lang="tsx">
 import { onMounted, ref } from 'vue'
 import AnswerPanel from '@/components/answer/AnswerPanel.vue'
-import { NTag } from 'naive-ui'
+import { NButtonGroup, NSpace, NTag } from 'naive-ui'
 import { NButton, useDialog, NResult, NModal, NCountdown, NIcon, NCard, useMessage } from 'naive-ui'
 import { update as submitAnswerBoard, get as fetchAnswerBord } from '@/api/answerBoard'
 import { TimeOutline } from '@vicons/ionicons5'
+import { Certificate20Regular } from '@vicons/fluent'
 import type { AnswerBoard } from '@/api/answerBoard'
 import type { CountdownTimeInfo } from 'naive-ui'
 import { formatSeconds } from '@/utils'
+import { useCurrentUser } from '@/stores/user'
 
 const props = defineProps<{ answerBoardId: number }>()
 const dialog = useDialog()
 const message = useMessage()
 const answerPanelRef = ref<InstanceType<typeof AnswerPanel>>()
+const currentUser = useCurrentUser()
 
 const showResultDialog = ref(false)
 const isEditable = ref(true)
@@ -111,6 +114,16 @@ function renderCountdown({ hours, minutes, seconds }: CountdownTimeInfo) {
           <NButton v-if="!answerBoard.isSubmission" type="success" @click="handleSucmit">
             交卷
           </NButton>
+          <RouterLink
+            v-else-if="answerBoard.examinationId && currentUser.user"
+            :to="`/certificate/${answerBoard.examinationId}/${currentUser.user.userId}`"
+          >
+            <NButton type="info" size="small" quaternary>
+              <template #icon>
+                <NIcon><Certificate20Regular /></NIcon>
+              </template>
+            </NButton>
+          </RouterLink>
         </div>
       </div>
       <AnswerPanel
@@ -151,7 +164,25 @@ function renderCountdown({ hours, minutes, seconds }: CountdownTimeInfo) {
           </li>
         </ul>
         <template #footer>
-          <NButton type="primary" size="small" @click="showResultDialog = false">朕已阅</NButton>
+          <NButtonGroup>
+            <NSpace>
+              <RouterLink
+                v-if="answerBoard.examinationId && currentUser.user"
+                if="answerBoard.examinationId && currentUser.user"
+                :to="`/certificate/${answerBoard.examinationId}/${currentUser.user.userId}`"
+              >
+                <NButton type="info" size="small" quaternary>
+                  <template #icon>
+                    <NIcon><Certificate20Regular /></NIcon>
+                  </template>
+                  查看证书
+                </NButton>
+              </RouterLink>
+              <NButton type="primary" size="small" @click="showResultDialog = false">
+                朕已阅
+              </NButton>
+            </NSpace>
+          </NButtonGroup>
         </template>
       </NResult>
     </NCard>

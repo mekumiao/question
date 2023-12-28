@@ -12,6 +12,7 @@ export interface AnswerBoard {
   totalQuestions: number
   totalNumberAnswers: number
   questions: AnswerBoardQuestion[]
+  examinationId: number | null
 }
 
 export interface AnswerBoardQuestion {

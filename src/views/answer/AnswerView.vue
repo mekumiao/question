@@ -8,8 +8,7 @@ import {
 } from '@/api/answerBoard'
 import { NButton, NResult } from 'naive-ui'
 import { useRouter } from 'vue-router'
-
-export type AnswerType = 'exam' | 'redo-incorrect' | 'practice' | 'random'
+import type { AnswerType } from './data'
 
 const props = defineProps<{
   type: AnswerType

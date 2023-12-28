@@ -19,6 +19,7 @@ import ExamPaperEdit from './ExamPaperEdit.vue'
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 const importRef = ref<InstanceType<typeof ExamPaperImport>>()
 const randomFormRef = ref<InstanceType<typeof NForm>>()
+const createFormRef = ref<InstanceType<typeof NForm>>()
 const message = useMessage()
 
 const loading = ref(false)
@@ -142,7 +143,7 @@ function handleRandomAfterLeave() {
 async function handleRandomConfirmClick() {
   try {
     randomGenerationData.loading = true
-    await randomFormRef.value?.validate()
+    await randomFormRef.value!.validate()
     await fetchRandemGenExam(randomGenerationData.model)
     randomGenerationData.showRandom = false
     message.success('生成成功')
@@ -165,6 +166,7 @@ async function handleCreateConfirmClick() {
   try {
     createModel.loading = true
     const data = createModel.data
+    await createFormRef.value!.validate()
     await fetchCreate({
       examPaperName: data.examPaperName,
       difficultyLevel: data.difficultyLevel,
@@ -288,7 +290,7 @@ const randomRules: FormRules = {
     @after-leave="handleCreateAfterLeave"
   >
     <div class="py-5">
-      <NForm ref="randomFormRef" :rules="randomRules" :model="createModel.data">
+      <NForm ref="createFormRef" :rules="randomRules" :model="createModel.data">
         <NFormItem label="试卷名称" path="examPaperName">
           <NInput v-model:value="createModel.data.examPaperName"></NInput>
         </NFormItem>

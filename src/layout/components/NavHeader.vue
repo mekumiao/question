@@ -100,7 +100,7 @@ async function handleAvatarMenuSelect(key: string | number) {
   } else if (key === 'logout') {
     await logout()
     currentUser.setUser()
-    await router.replace({ name: 'login' })
+    await router.push({ name: 'login' })
   }
 }
 </script>

@@ -42,7 +42,7 @@ async function handleLoginClick(e: MouseEvent) {
     const info = await fetchInfo()
     currentUser.setUser(info)
     message.success('登录成功！')
-    if (props.redirect) {
+    if (props.redirect && props.redirect.startsWith('/login') === false) {
       router.replace({ path: props.redirect })
     } else {
       router.replace({ name: 'home' })

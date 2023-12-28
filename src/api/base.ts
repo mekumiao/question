@@ -81,7 +81,7 @@ axiosInstance.interceptors.response.use(
 function logout() {
   setToken()
   useCurrentUser().setUser()
-  router.push({ name: 'login' })
+  router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } })
 }
 
 /**

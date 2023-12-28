@@ -301,7 +301,7 @@ const randomRules: FormRules = {
   <NModal
     v-model:show="editModel.show"
     preset="card"
-    title="编辑试卷"
+    title="编辑试卷（可添加、移除、排序题目。如果需要修改题目答案，请到题目管理）"
     :bordered="false"
     class="h-full w-full overflow-auto"
     style="position: fixed; top: 0px; left: 0px"

@@ -289,7 +289,7 @@ const rules: FormRules = {
             <!-- <div class="py-2">
               <span>{{ item.index }}.&nbsp;{{ item.questionText }}</span>
             </div> -->
-            <NRadioGroup class="space-x-5" v-model:value="item.correctAnswer">
+            <NRadioGroup class="space-x-5" :value="item.correctAnswer">
               <NRadio v-for="(sub, key) in item.options" :key="key" :value="sub.optionCode">
                 {{ sub.optionCode }}.&nbsp;{{ sub.optionText }}
               </NRadio>
@@ -321,7 +321,7 @@ const rules: FormRules = {
             <!-- <div class="py-2">
               <span>{{ item.index }}.&nbsp;{{ item.questionText }}</span>
             </div> -->
-            <NCheckboxGroup class="space-x-5" v-model:value="item.correctAnswerList">
+            <NCheckboxGroup class="space-x-5" :value="item.correctAnswerList">
               <NCheckbox v-for="(sub, key) in item.options" :key="key" :value="sub.optionCode">
                 {{ sub.optionCode }}.&nbsp;{{ sub.optionText }}
               </NCheckbox>
@@ -352,7 +352,7 @@ const rules: FormRules = {
             <!-- <div class="py-2">
               <span>{{ item.index }}.&nbsp;{{ item.questionText }}</span>
             </div> -->
-            <NRadioGroup class="space-x-5" v-model:value="item.correctAnswer">
+            <NRadioGroup class="space-x-5" :value="item.correctAnswer">
               <NRadio value="1">对</NRadio>
               <NRadio value="0">错</NRadio>
             </NRadioGroup>
@@ -383,7 +383,7 @@ const rules: FormRules = {
             <!-- <div class="py-2">
               <span>{{ item.index }}.&nbsp;{{ item.questionText }}</span>
             </div> -->
-            <NInput type="textarea" v-model:value="item.correctAnswer" />
+            <NInput type="textarea" :value="item.correctAnswer" />
             <NTag size="small" type="info" class="mt-4" @click="handleCopyText(item.questionId)">
               ID:&nbsp;{{ item.questionId }}
             </NTag>

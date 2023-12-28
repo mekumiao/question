@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { reactive, ref, watch } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { NInputGroupLabel, NInputGroup, useMessage, useDialog, NAlert } from 'naive-ui'
 import { NDataTable, NButton, NButtonGroup, NIcon, NInput, NSelect } from 'naive-ui'
 import { list as fetchHistoryList } from '@/api/answerHistory'
@@ -8,17 +8,24 @@ import type { AnswerHistory, AnswerHistoryFilter } from '@/api/answerHistory'
 import { RefreshOutline, SearchOutline } from '@vicons/ionicons5'
 import { createColumns, createDifficultyLevelOptions } from './data'
 import { ValidationProblemError } from '@/api/base'
-import { get as fetchItem, type Student } from '@/api/students'
 
-const props = defineProps<{ studentId: number }>()
+const props = defineProps<{
+  studentId?: number
+  studentName?: string
+  examinationId?: number
+  examinationName?: string
+}>()
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 const message = useMessage()
 const dialog = useDialog()
 
 const loading = ref(false)
 const model = ref<AnswerHistory[]>([])
-const filter = reactive<AnswerHistoryFilter>({ studentId: props.studentId, difficultyLevel: 0 })
-const student = ref<Student>()
+const filter = reactive<AnswerHistoryFilter>({
+  studentId: props.studentId,
+  examinationId: props.examinationId,
+  difficultyLevel: 0,
+})
 const checkedRowKeys = ref<number[]>([])
 
 const pagination = reactive({
@@ -35,22 +42,9 @@ const difficultyLevelOptions = ref(createDifficultyLevelOptions())
 
 const columns = createColumns()
 
-watch(
-  () => props.studentId,
-  async (v) => {
-    filter.studentId = v
-    await Promise.all([
-      handleSearch(),
-      fetchItem(v).then((v) => {
-        student.value = v
-        return v
-      }),
-    ])
-  },
-  {
-    immediate: true,
-  },
-)
+onMounted(() => {
+  handleSearch()
+})
 
 async function handlePageChange(currentPage: number) {
   try {
@@ -69,6 +63,7 @@ async function handlePageChange(currentPage: number) {
 }
 
 async function handleSearch() {
+  checkedRowKeys.value = []
   await handlePageChange(1)
 }
 
@@ -121,8 +116,16 @@ async function handleDeleteItems() {
   <div class="m-3 flex flex-col space-y-2">
     <div><NButton size="small" type="info" @click="() => $router.back()">返回上一级</NButton></div>
     <NAlert title="答题记录详细" type="info" :bordered="false">
-      <span class="font-bold">{{ student?.studentName }}</span>
-      <span>&nbsp;的答题记录</span>
+      <ul class="flex flex-row space-x-2">
+        <li v-if="studentName">
+          <span>学生名称:&nbsp;</span>
+          <span class="font-bold">{{ studentName }}</span>
+        </li>
+        <li v-if="examinationName">
+          <span>考试名称:&nbsp;</span>
+          <span class="font-bold">{{ examinationName }}</span>
+        </li>
+      </ul>
     </NAlert>
     <div class="grid grid-cols-8 gap-2">
       <NInputGroup class="col-span-2">

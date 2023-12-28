@@ -2,6 +2,7 @@ import type { Examination } from '@/api/examination'
 import type { DataTableColumns } from 'naive-ui'
 import { NRate, NButton, NButtonGroup, NPopconfirm, NTag } from 'naive-ui'
 import { formatSeconds } from '@/utils'
+import { RouterLink } from 'vue-router'
 
 export function createDifficultyLevelOptions() {
   return [
@@ -133,9 +134,19 @@ export function createColumns({
       key: 'examParticipantCount',
       render(row) {
         return (
-          <NTag size="small" type="info">
-            {row.examParticipantCount}
-          </NTag>
+          <RouterLink
+            to={{
+              path: `/admin/history/`,
+              query: {
+                examinationId: row.examinationId,
+                examinationName: row.examinationName,
+              },
+            }}
+          >
+            <NButton size="small" dashed type="info">
+              {row.examParticipantCount}
+            </NButton>
+          </RouterLink>
         )
       },
     },

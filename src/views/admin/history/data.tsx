@@ -46,6 +46,10 @@ export function createColumns(): DataTableColumns<AnswerHistory> {
       width: 80,
     },
     {
+      title: '学生名称',
+      key: 'studentName',
+    },
+    {
       title: '考试名称',
       key: 'examinationName',
     },
@@ -200,7 +204,15 @@ export function createStudentColumns({
                   default: () => `确定重置用户 ${row.userId} 的答题汇总数据吗？`,
                 }}
               </NPopconfirm>
-              <RouterLink to={`/admin/history/${row.studentId}`}>
+              <RouterLink
+                to={{
+                  path: `/admin/history/`,
+                  query: {
+                    studentId: row.studentId,
+                    studentName: row.studentName,
+                  },
+                }}
+              >
                 <NButton ghost type="info">
                   查看详细
                 </NButton>

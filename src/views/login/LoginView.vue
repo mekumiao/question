@@ -43,9 +43,9 @@ async function handleLoginClick(e: MouseEvent) {
     currentUser.setUser(info)
     message.success('登录成功！')
     if (props.redirect && props.redirect.startsWith('/login') === false) {
-      router.replace({ path: props.redirect })
+      await router.replace({ path: props.redirect })
     } else {
-      router.replace({ name: 'home' })
+      await router.replace({ name: 'home' })
     }
   } catch (error) {
     console.error(error)

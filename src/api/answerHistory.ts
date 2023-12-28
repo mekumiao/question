@@ -3,6 +3,7 @@ import type { Paging, PagingResult } from '/#/paging'
 
 export interface AnswerHistoryFilter {
   studentId?: number
+  examinationId?: number
   examPaperId?: number
   difficultyLevel?: number
   examPaperName?: string

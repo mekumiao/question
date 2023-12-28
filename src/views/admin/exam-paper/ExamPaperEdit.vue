@@ -13,6 +13,7 @@ import { createQuestionColumns } from './data'
 import { createDifficultyLevelOptions, createQuestionTypeOptions } from './data'
 import { list as fetchQuestionList } from '@/api/questions'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
+import { VueDraggable } from 'vue-draggable-plus'
 
 type ExamPaperQuestionWithIndex = ExamPaperQuestion & { index: number }
 
@@ -146,14 +147,20 @@ function appendToModelQuestionList(
   )
 }
 
+function getQuestionsAndSetOrder() {
+  const items = model.single.concat(model.multiple).concat(model.truefalse).concat(model.fillblank)
+  items.forEach((item, i) => {
+    item.index = i + 1
+    item.order = i + 1
+  })
+  return items
+}
+
 async function handleSaveClick() {
   try {
     loading.value = true
     model.multiple.forEach((v) => (v.correctAnswer = v.correctAnswerList.join('')))
-    model.update.questions = model.single
-      .concat(model.multiple)
-      .concat(model.truefalse)
-      .concat(model.fillblank)
+    model.update.questions = getQuestionsAndSetOrder()
     const paper = await fetchUpdateExamPaper(props.examPaperId, model.update)
     examPaper.value = paper
     emit('saved', paper)
@@ -229,6 +236,12 @@ function handleQuestionClose(question: ExamPaperQuestionWithIndex) {
   } else if (question.questionType === 4) {
     removeFromQuestions(model.fillblank)
   }
+
+  getQuestionsAndSetOrder()
+}
+
+function handleOrderUpdate() {
+  getQuestionsAndSetOrder()
 }
 
 const rules: FormRules = {
@@ -255,7 +268,12 @@ const rules: FormRules = {
       <!-- 单选题 -->
       <div class="p-2">
         <h3 class="py-2">一、单选题</h3>
-        <div class="flex flex-col space-y-2">
+        <VueDraggable
+          v-model="model.single"
+          ghostClass="shadow-xl"
+          :animation="150"
+          class="flex flex-col space-y-2"
+        >
           <NCard
             v-for="(item, key) in model.single"
             :key="key"
@@ -272,12 +290,17 @@ const rules: FormRules = {
               </NRadio>
             </NRadioGroup>
           </NCard>
-        </div>
+        </VueDraggable>
       </div>
       <!-- 多选题 -->
       <div class="p-2">
         <h3 class="py-2">二、多选题</h3>
-        <div class="flex flex-col space-y-2">
+        <VueDraggable
+          v-model="model.multiple"
+          ghostClass="shadow-xl"
+          :animation="150"
+          class="flex flex-col space-y-2"
+        >
           <NCard
             v-for="(item, key) in model.multiple"
             :key="key"
@@ -294,12 +317,18 @@ const rules: FormRules = {
               </NCheckbox>
             </NCheckboxGroup>
           </NCard>
-        </div>
+        </VueDraggable>
       </div>
       <!-- 判断题 -->
       <div class="p-2">
         <h3 class="py-2">三、判断题</h3>
-        <div class="flex flex-col space-y-2">
+        <VueDraggable
+          v-model="model.truefalse"
+          ghostClass="shadow-xl"
+          :animation="150"
+          class="flex flex-col space-y-2"
+          @update="handleOrderUpdate"
+        >
           <NCard
             v-for="(item, key) in model.truefalse"
             :key="key"
@@ -315,12 +344,17 @@ const rules: FormRules = {
               <NRadio value="0">错</NRadio>
             </NRadioGroup>
           </NCard>
-        </div>
+        </VueDraggable>
       </div>
       <!-- 填空题 -->
       <div class="p-2">
         <h3 class="py-2">四、填空题</h3>
-        <div class="flex flex-col space-y-2">
+        <VueDraggable
+          v-model="model.fillblank"
+          ghostClass="shadow-xl"
+          :animation="150"
+          class="flex flex-col space-y-2"
+        >
           <NCard
             v-for="(item, key) in model.fillblank"
             :key="key"
@@ -333,7 +367,7 @@ const rules: FormRules = {
             </div> -->
             <NInput type="textarea" v-model:value="item.correctAnswer" />
           </NCard>
-        </div>
+        </VueDraggable>
       </div>
     </NCard>
     <NCard class="sticky top-0 z-10 col-span-2" style="height: 400px">

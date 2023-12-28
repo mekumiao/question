@@ -1,7 +1,7 @@
 <script setup lang="tsx">
 import { reactive, watch, ref } from 'vue'
 import type { FormRules } from 'naive-ui'
-import { NDrawer, NSpace, NDrawerContent, NDataTable } from 'naive-ui'
+import { NDrawer, NSpace, NDrawerContent, NDataTable, NTag } from 'naive-ui'
 import { NSelect, NInputGroupLabel, NInputGroup, NIcon } from 'naive-ui'
 import { NCard, NForm, NFormItemRow, NButtonGroup, NRate, useMessage } from 'naive-ui'
 import { NRadio, NRadioGroup, NCheckbox, NCheckboxGroup, NInput, NButton } from 'naive-ui'
@@ -244,6 +244,11 @@ function handleOrderUpdate() {
   getQuestionsAndSetOrder()
 }
 
+async function handleCopyText(text: number | string) {
+  await navigator.clipboard.writeText(`${text}`)
+  message.success('复制成功')
+}
+
 const rules: FormRules = {
   examPaperName: [
     {
@@ -289,6 +294,11 @@ const rules: FormRules = {
                 {{ sub.optionCode }}.&nbsp;{{ sub.optionText }}
               </NRadio>
             </NRadioGroup>
+            <div>
+              <NTag size="small" type="info" class="mt-4" @click="handleCopyText(item.questionId)">
+                ID:&nbsp;{{ item.questionId }}
+              </NTag>
+            </div>
           </NCard>
         </VueDraggable>
       </div>
@@ -316,6 +326,9 @@ const rules: FormRules = {
                 {{ sub.optionCode }}.&nbsp;{{ sub.optionText }}
               </NCheckbox>
             </NCheckboxGroup>
+            <NTag size="small" type="info" class="mt-4" @click="handleCopyText(item.questionId)">
+              ID:&nbsp;{{ item.questionId }}
+            </NTag>
           </NCard>
         </VueDraggable>
       </div>
@@ -343,6 +356,11 @@ const rules: FormRules = {
               <NRadio value="1">对</NRadio>
               <NRadio value="0">错</NRadio>
             </NRadioGroup>
+            <div>
+              <NTag size="small" type="info" class="mt-4" @click="handleCopyText(item.questionId)">
+                ID:&nbsp;{{ item.questionId }}
+              </NTag>
+            </div>
           </NCard>
         </VueDraggable>
       </div>
@@ -366,6 +384,9 @@ const rules: FormRules = {
               <span>{{ item.index }}.&nbsp;{{ item.questionText }}</span>
             </div> -->
             <NInput type="textarea" v-model:value="item.correctAnswer" />
+            <NTag size="small" type="info" class="mt-4" @click="handleCopyText(item.questionId)">
+              ID:&nbsp;{{ item.questionId }}
+            </NTag>
           </NCard>
         </VueDraggable>
       </div>
@@ -375,9 +396,7 @@ const rules: FormRules = {
         <NButtonGroup size="small">
           <NSpace>
             <NButton :loading="loading" type="primary" @click="handleSaveClick">保存</NButton>
-            <NButton :loading="loading" type="info" @click="handleAppendQutesionsClick">
-              添加题目
-            </NButton>
+            <NButton type="info" @click="handleAppendQutesionsClick"> 添加题目 </NButton>
           </NSpace>
         </NButtonGroup>
       </template>

@@ -46,6 +46,10 @@ export function createColumns(): DataTableColumns<AnswerHistory> {
       width: 80,
     },
     {
+      title: '考试名称',
+      key: 'examinationName',
+    },
+    {
       title: '试卷名称',
       key: 'examPaperName',
     },

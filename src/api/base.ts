@@ -6,14 +6,37 @@ export class ValidationProblemError extends Error {
   public type: string = ''
   public title: string = ''
   public status: number = 400
-  public readonly detail: string
-  public readonly errors: string[]
+  public detail: string = ''
+  public errors: string[] = []
   public traceId: string = ''
 
-  public constructor(detail: string, errors: string[]) {
-    super(detail)
-    this.detail = detail
-    this.errors = errors
+  public toString() {
+    if (this.errors.length > 0) {
+      return this.detail ? `${this.detail}\n${this.errors.join('\n')}` : this.errors.join('\n')
+    }
+    return this.detail
+  }
+
+  public static from(data: any): ValidationProblemError {
+    const problem = new ValidationProblemError()
+    Object.assign(problem, data)
+    problem.errors = []
+    if (typeof data.errors === 'object') {
+      for (const key in data.errors) {
+        if (Object.prototype.hasOwnProperty.call(data.errors, key)) {
+          const element = data.errors[key]
+          if (typeof element === 'string') {
+            problem.errors.push(key ? `${key}: ${element}` : element)
+          } else if (Array.isArray(element)) {
+            for (const el of element) {
+              problem.errors.push(key ? `${key}: ${el}` : el)
+            }
+          }
+        }
+      }
+    }
+    problem.message = problem.toString()
+    return problem
   }
 }
 
@@ -70,8 +93,9 @@ axiosInstance.interceptors.response.use(
       }
     } else if (error.response.status === 400) {
       const data = error.response.data
-      const problem = new ValidationProblemError(data.detail, data.errors)
-      Object.assign(problem, data)
+      const problem = ValidationProblemError.from(data)
+      // const problem = new ValidationProblemError(data.detail, data.errors)
+      // Object.assign(problem, data)
       return Promise.reject(problem)
     }
     return Promise.reject(error)

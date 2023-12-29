@@ -19,6 +19,7 @@ export interface AnswerBoardQuestion {
   questionId: number
   questionText: string
   questionType: number
+  difficultyLevel: number
   isCorrect: boolean | null
   answerText: string | null
   correctAnswer: string | null

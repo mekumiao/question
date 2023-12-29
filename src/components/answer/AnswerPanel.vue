@@ -1,7 +1,7 @@
 <script setup lang="tsx">
 import SheetList from './SheetList.vue'
 import { nextTick, provide, reactive, ref, watch } from 'vue'
-import { NRadio, NRadioGroup, NCheckbox, NCheckboxGroup, NInput, NButton } from 'naive-ui'
+import { NRadio, NRadioGroup, NCheckbox, NCheckboxGroup, NInput, NButton, NRate } from 'naive-ui'
 import { NCard, NScrollbar, NAlert, NIcon } from 'naive-ui'
 import type { AnswerBoard, AnswerInput } from '@/api/answerBoard'
 import type { AnswerBoardQuestionWithIndex } from './data'
@@ -193,6 +193,7 @@ defineExpose({ toAnswerInputs })
           <NScrollbar class="my-5 xl:max-h-56">
             {{ data.question.questionText }}
           </NScrollbar>
+          <NRate readonly :value="data.question.difficultyLevel" :count="3"></NRate>
         </h4>
         <template v-if="data.question.questionType === 1">
           <NRadioGroup v-model:value="data.select.single" :disabled="!isEditable">

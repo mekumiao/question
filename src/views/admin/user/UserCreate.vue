@@ -143,18 +143,23 @@ defineExpose({ open })
         <h4>创建用户</h4>
       </template>
       <NSpin :show="loading">
-        <NForm ref="formRef" :rules="rules" :model="model">
+        <NForm ref="formRef" :rules="rules" :model="model" autocomplete="off">
           <NFormItem label="昵称" path="nickName">
             <NInput v-model:value="model.nickName"></NInput>
           </NFormItem>
           <NFormItem label="邮箱" path="email">
-            <NAutoComplete v-model:value="model.email" :options="autoCompleteOptions" />
+            <NAutoComplete
+              v-model:value="model.email"
+              :options="autoCompleteOptions"
+              :input-props="{ name: 'new-account', autocomplete: 'off' }"
+            />
           </NFormItem>
           <NFormItem label="密码" path="password">
             <NInput
               v-model:value="model.password"
               type="password"
               show-password-on="click"
+              :input-props="{ name: 'new-password', autocomplete: 'new-password' }"
             ></NInput>
           </NFormItem>
           <NFormItem label="确认密码" path="confirmPassword">
@@ -162,6 +167,7 @@ defineExpose({ open })
               v-model:value="model.confirmPassword"
               type="password"
               show-password-on="click"
+              :input-props="{ name: 'confirm-password', autocomplete: 'new-password' }"
             ></NInput>
           </NFormItem>
           <NFormItem label="角色" path="roles">

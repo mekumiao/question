@@ -149,12 +149,13 @@ const rules: FormRules = {
             </NForm>
           </NTabPane>
           <NTabPane name="signup" tab="安全信息">
-            <NForm ref="passwordFormRef" :rules="rules" :model="model">
+            <NForm ref="passwordFormRef" :rules="rules" :model="model" autocomplete="off">
               <NFormItemRow label="密码" path="password">
                 <NInput
                   v-model:value="model.password"
                   type="password"
                   show-password-on="click"
+                  :input-props="{ name: 'new-password', autocomplete: 'new-password' }"
                 ></NInput>
               </NFormItemRow>
               <NFormItemRow label="确认密码" path="confirmPassword">
@@ -162,6 +163,7 @@ const rules: FormRules = {
                   v-model:value="model.confirmPassword"
                   type="password"
                   show-password-on="click"
+                  :input-props="{ name: 'confirm-password', autocomplete: 'new-password' }"
                 ></NInput>
               </NFormItemRow>
             </NForm>

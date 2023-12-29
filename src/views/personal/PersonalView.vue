@@ -197,6 +197,7 @@ const rules: FormRules = {
               v-model:value="model.secure.oldPassword"
               type="password"
               show-password-on="click"
+              :input-props="{ name: 'old-password', autocomplete: 'new-password' }"
             ></NInput>
           </NFormItemRow>
           <NFormItemRow label="新密码" path="newPassword">
@@ -204,6 +205,7 @@ const rules: FormRules = {
               v-model:value="model.secure.newPassword"
               type="password"
               show-password-on="click"
+              :input-props="{ name: 'new-password', autocomplete: 'new-password' }"
             ></NInput>
           </NFormItemRow>
           <NFormItemRow label="确认新密码" path="confirmPassword">
@@ -211,6 +213,7 @@ const rules: FormRules = {
               v-model:value="model.secure.confirmPassword"
               type="password"
               show-password-on="click"
+              :input-props="{ name: 'confirm-password', autocomplete: 'new-password' }"
             ></NInput>
           </NFormItemRow>
         </NForm>

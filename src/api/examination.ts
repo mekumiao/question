@@ -67,6 +67,11 @@ export interface Certificate {
   isSuccess: boolean
 }
 
+export interface ExaminationPublishItemsInput {
+  isPublish: boolean
+  examinationIds: number[]
+}
+
 export async function count(params?: ExaminationFilter) {
   const response = await axios.get<number>(`/examination/count`, { params })
   return response.data
@@ -106,5 +111,15 @@ export async function listPublish(params?: Paging & ExaminationFilter) {
 
 export async function getCertificate(examinationId: number, userId: number) {
   const resp = await axios.get<Certificate>(`/examination/${examinationId}/${userId}/certificate`)
+  return resp.data
+}
+
+export async function publish(examinationId: number, isPublish: boolean) {
+  const resp = await axios.put<Examination>(`/examination/${examinationId}/publish`, { isPublish })
+  return resp.data
+}
+
+export async function publishItems(input: ExaminationPublishItemsInput) {
+  const resp = await axios.put<Examination[]>(`/examination/publish`, input)
   return resp.data
 }

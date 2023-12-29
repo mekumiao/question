@@ -8,7 +8,7 @@ import { createColumns, createDifficultyLevelOptions } from './data'
 import ExaminationCreate from './ExaminationCreate.vue'
 import ExaminationEdit from './ExaminationEdit.vue'
 import { list as fetchExaminationList, remove as fetchRemoveExamination } from '@/api/examination'
-import { update as fetchUpdateExamination } from '@/api/examination'
+import { publish as fetchPublish, publishItems as fetchPublishItems } from '@/api/examination'
 
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 const createRef = ref<InstanceType<typeof ExaminationCreate>>()
@@ -102,15 +102,23 @@ async function handlePublishClick(isPublish: boolean) {
     async onPositiveClick() {
       d.loading = true
       try {
-        for (const examinationId of checkedRowKeys.value) {
-          await fetchUpdateExamination(examinationId, { isPublish })
+        if (checkedRowKeys.value.length === 1) {
+          await fetchPublish(checkedRowKeys.value[0], isPublish)
+        } else {
+          await fetchPublishItems({
+            isPublish,
+            examinationIds: checkedRowKeys.value,
+          })
         }
         message.success('保存成功')
         checkedRowKeys.value = []
         await handlePageChange(pagination.page)
       } catch (error) {
         console.error(error)
-        if (error instanceof Error) message.error(error.message)
+        if (error instanceof Error) {
+          errorDetail.value = error.message
+          return false
+        }
       } finally {
         d.loading = false
       }

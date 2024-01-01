@@ -1,24 +1,33 @@
 <script setup lang="ts">
-import type { Question } from '@/api/questions'
+import type { OptionCreate, QuestionUpdate } from '@/api/questions'
 import { get as fetchItem, update as fetchUpdate } from '@/api/questions'
-import { NDrawer, NDrawerContent, NButton, NSpin } from 'naive-ui'
-import { useMessage } from 'naive-ui'
-import SingleChoiceForm from './form/SingleChoiceForm.vue'
-import MultipleChoiceForm from './form/MultipleChoiceForm.vue'
-import TrueFalseForm from './form/TrueFalseForm.vue'
-import FillInTheBlankForm from './form/FillInTheBlankForm.vue'
-import { createDefaultModel } from './data'
-import { ref } from 'vue'
+import { NCheckboxGroup, NCheckbox, type FormRules } from 'naive-ui'
+import { NDrawer, NDrawerContent, NButton, NSpin, NDynamicInput, NInput } from 'naive-ui'
+import { useMessage, NRadioGroup, NRadio, NFormItem, NForm, NRate, NSpace } from 'naive-ui'
+import { reactive, ref } from 'vue'
+import { numberToUpperCaseLetter } from '@/utils'
 
-const signleRef = ref<InstanceType<typeof SingleChoiceForm>>()
-const multipleRef = ref<InstanceType<typeof MultipleChoiceForm>>()
-const trueFalseRef = ref<InstanceType<typeof TrueFalseForm>>()
-const fillInTheBlankRef = ref<InstanceType<typeof FillInTheBlankForm>>()
+const formRef = ref<InstanceType<typeof NForm>>()
 
 const message = useMessage()
 const active = ref(false)
 const loading = ref(false)
-const model = ref<Question>(createDefaultModel())
+const data = reactive<{
+  questionId: number
+  questionType: number
+  model: QuestionUpdate
+  current: { single: string; multiple: string[]; truefalse: string; fillblank: string }
+}>({
+  questionId: 0,
+  questionType: 0,
+  model: defaultModel(),
+  current: {
+    single: '',
+    multiple: [],
+    truefalse: '',
+    fillblank: '',
+  },
+})
 
 let callback: VoidFunction
 
@@ -27,25 +36,60 @@ async function open(questionId: number, cb: VoidFunction) {
   active.value = true
   try {
     loading.value = true
-    model.value = await fetchItem(questionId)
+    const result = await fetchItem(questionId)
+    data.model = result
+    data.questionId = result.questionId
+    data.questionType = result.questionType
+    fromCorrectAnswer()
   } finally {
     loading.value = false
   }
 }
 
+function defaultModel(): QuestionUpdate {
+  return {
+    questionText: '',
+    correctAnswer: '',
+    difficultyLevel: 0,
+    options: [],
+  }
+}
+
 function handleAfterLeave() {
   loading.value = false
-  model.value = createDefaultModel()
+  data.model = defaultModel()
+}
+
+function ensureCorrectAnswer() {
+  if (data.questionType === 1) {
+    data.model.correctAnswer = data.current.single
+  } else if (data.questionType === 2) {
+    data.model.correctAnswer = data.current.multiple.sort().join('')
+  } else if (data.questionType === 3) {
+    data.model.correctAnswer = data.current.truefalse
+  } else if (data.questionType === 4) {
+    data.model.correctAnswer = data.current.fillblank.trim()
+  }
+}
+
+function fromCorrectAnswer() {
+  if (data.questionType === 1) {
+    data.current.single = data.model.correctAnswer
+  } else if (data.questionType === 2) {
+    data.current.multiple = data.model.correctAnswer.split('').sort()
+  } else if (data.questionType === 3) {
+    data.current.truefalse = data.model.correctAnswer
+  } else if (data.questionType === 4) {
+    data.current.fillblank = data.model.correctAnswer
+  }
 }
 
 async function handleSaveClick() {
   try {
     loading.value = true
-    await signleRef.value?.validate()
-    await multipleRef.value?.validate()
-    await trueFalseRef.value?.validate()
-    await fillInTheBlankRef.value?.validate()
-    model.value = await fetchUpdate(model.value.questionId, model.value)
+    ensureCorrectAnswer()
+    await formRef.value?.validate()
+    await fetchUpdate(data.questionId, data.model)
     active.value = false
     callback?.()
   } catch (error) {
@@ -56,34 +100,129 @@ async function handleSaveClick() {
   }
 }
 
+function handleCreateOption(): OptionCreate {
+  return { optionCode: '', optionText: '' }
+}
+
+function handleUpdateOption() {
+  data.model.options.forEach((v, i) => (v.optionCode = numberToUpperCaseLetter(i + 1)))
+}
+
 defineExpose({ open })
+
+const rules: FormRules = {
+  questionText: [
+    { required: true, message: '请输入题目' },
+    {
+      max: 256,
+      message: '题目最长支持256个字符',
+    },
+  ],
+  correctAnswer: [
+    {
+      required: true,
+      message: '请输入答案',
+    },
+    {
+      max: 256,
+      message: '答案最长支持256个字符',
+    },
+  ],
+  options: [
+    {
+      validator() {
+        if (data.questionType === 1 || data.questionType === 2) {
+          if (!data.model.options.every((v) => v.optionText)) {
+            return new Error('请填入选项值')
+          } else if (!data.model.correctAnswer) {
+            return new Error('请选择答案')
+          }
+        }
+        return true
+      },
+    },
+  ],
+}
 </script>
 
 <template>
   <NDrawer v-model:show="active" :width="502" @after-leave="handleAfterLeave">
     <NDrawerContent>
-      <template #header>编辑题目&nbsp;&nbsp;ID:&nbsp;{{ model.questionId }}</template>
+      <template #header>创建题目</template>
       <NSpin :show="loading">
-        <SingleChoiceForm
-          ref="signleRef"
-          v-if="model.questionType === 1"
-          :data="model"
-        ></SingleChoiceForm>
-        <MultipleChoiceForm
-          ref="multipleRef"
-          v-else-if="model.questionType === 2"
-          :data="model"
-        ></MultipleChoiceForm>
-        <TrueFalseForm
-          ref="trueFalseRef"
-          v-else-if="model.questionType === 3"
-          :data="model"
-        ></TrueFalseForm>
-        <FillInTheBlankForm
-          ref="fillInTheBlankRef"
-          v-else-if="model.questionType === 4"
-          :data="model"
-        ></FillInTheBlankForm>
+        <NForm ref="formRef" :rules="rules" :model="data.model">
+          <NFormItem label="题目" path="questionText">
+            <NInput
+              v-model:value="data.model.questionText"
+              type="textarea"
+              placeholder="请输入题目"
+            ></NInput>
+          </NFormItem>
+          <NFormItem label="难度" path="difficultyLevel">
+            <NRate v-model:value="data.model.difficultyLevel" :count="3"></NRate>
+          </NFormItem>
+          <NFormItem v-if="data.questionType === 1" label="选项" path="options">
+            <NRadioGroup v-model:value="data.current.single">
+              <NDynamicInput
+                v-model:value="data.model.options"
+                show-sort-button
+                placeholder="请输入选项"
+                @create="handleCreateOption"
+                @update:value="handleUpdateOption"
+              >
+                <template #create-button-default>添加选项</template>
+                <template #default="{ value }">
+                  <div class="flex flex-row items-baseline gap-2">
+                    <span>{{ value.optionCode }}.&nbsp;</span>
+                    <NRadio :value="value.optionCode"></NRadio>
+                    <NInput v-model:value="value.optionText"></NInput>
+                  </div>
+                </template>
+                <template #action>
+                  <span></span>
+                </template>
+              </NDynamicInput>
+            </NRadioGroup>
+          </NFormItem>
+          <NFormItem v-if="data.questionType === 2" label="选项" path="options">
+            <NCheckboxGroup v-model:value="data.current.multiple">
+              <NDynamicInput
+                v-model:value="data.model.options"
+                show-sort-button
+                placeholder="请输入选项"
+                @create="handleCreateOption"
+                @update:value="handleUpdateOption"
+              >
+                <template #create-button-default>添加选项</template>
+                <template #default="{ value }">
+                  <div class="flex flex-row items-baseline gap-2">
+                    <span>{{ value.optionCode }}.&nbsp;</span>
+                    <NCheckbox :value="value.optionCode"></NCheckbox>
+                    <NInput v-model:value="value.optionText"></NInput>
+                  </div>
+                </template>
+                <template #action>
+                  <span></span>
+                </template>
+              </NDynamicInput>
+            </NCheckboxGroup>
+          </NFormItem>
+          <NFormItem v-else-if="data.questionType === 3" label="答案" path="correctAnswer">
+            <NRadioGroup v-model:value="data.current.truefalse">
+              <NSpace>
+                <NRadio :value="'1'">√</NRadio>
+                <NRadio :value="'0'">×</NRadio>
+              </NSpace>
+            </NRadioGroup>
+          </NFormItem>
+          <NFormItem v-else-if="data.questionType === 4" label="答案" path="correctAnswer">
+            <NInput
+              v-model:value="data.current.fillblank"
+              type="textarea"
+              placeholder="请输入答案"
+            ></NInput>
+          </NFormItem>
+        </NForm>
       </NSpin>
       <template #footer>
         <NButton :loading="loading" type="primary" @click="handleSaveClick">保存</NButton>

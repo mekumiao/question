@@ -11,7 +11,7 @@ import {
 } from '@/api/questions'
 import type { Question, QuestionFilter } from '@/api/questions'
 import { createColumns, createDifficultyLevelOptions, createQuestionTypeOptions } from './data'
-import QuestionEdit from './QuestionEdit2.vue'
+import QuestionEdit from './QuestionEdit.vue'
 import QuestionCreate from './QuestionCreate.vue'
 import QuestionImport from './QuestionImport.vue'
 import { SearchOutline, RefreshOutline } from '@vicons/ionicons5'
